@@ -228,9 +228,9 @@ func bulk_cube_lines(cube_lines:Array) -> void:
 
 
 
-func aabb(p:Vector3, s:Vector3, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
-	var p1 := p
-	var p2 := p+s
+func aabb(aabb:AABB, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
+	var p1 := aabb.position
+	var p2 := p1+aabb.size
 
 	var a := Vector3( p1.x, p2.y, p1.z )
 	var b := Vector3( p2.x, p2.y, p1.z )
@@ -257,7 +257,7 @@ func aabb(p:Vector3, s:Vector3, color:=line_color, thickness:=line_thickness, dr
 func bulk_aabbs(aabbs:Array) -> void:
 	for c:Array in aabbs:
 		# pos, size, color, thickness, draw_faces
-		aabb(c[0], c[1], c[2], c[3], c[4])
+		aabb(c[0], c[1], c[2], c[3])
 
 
 

@@ -1,4 +1,4 @@
-extends Node
+extends CanvasLayer
 
 
 const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
@@ -17,13 +17,15 @@ var _input_checker_func:Callable
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region LOOP
 func _ready() -> void:
-	#name = "DebugDrawing2D"
+	# the info_tool is 128, and this should be behind it, but leave some space
+	# in case more UI stuff is added to the plugin
+	layer = 120
+
 	add_child(_dt)
 	_init_input_actions()
 
 
 func _process(_delta: float) -> void:
-	#if not _drawing_visible: return
 	assert(_drawing_visible == true)
 	_dt.queue_redraw()
 
@@ -104,6 +106,44 @@ func draw_arc(center: Vector2, radius: float, start_angle: float, end_angle: flo
 	if not _drawing_visible: return
 	_dt.add_arc([center, radius, start_angle, end_angle, point_count, color, width, antialiased])
 
+
+func draw_vector(position: Vector2, direction: Vector2, color: Color, width: float = 1.0, antialiased:=false):
+	if not _drawing_visible: return
+	var a := position
+	var b := position+direction
+
+	draw_line(position, position+direction, color, width, antialiased)
+
+	var inv_dir := (b-a).normalized()*20
+	var c := b + inv_dir.rotated(deg_to_rad(150))
+	var d := b + inv_dir.rotated(deg_to_rad(210))
+	#var points = PoolVector2Array([a, b, c])
+	#draw_polygon(points, PoolColorArray([color]))
+	draw_line(b, c, color, width, antialiased)
+	draw_line(b, d, color, width, antialiased)
+
+func draw_transform(node:Node2D, size:float, local:=false, width=1.0, antialiased:=false):
+	if not _drawing_visible: return
+	var t :Transform2D = node.global_transform if not local else node.transform
+	var o :Vector2 = node.global_transform.origin
+
+	draw_line(o, o+t.x.normalized()*size, Color.RED,             width, antialiased)
+	draw_line(o, o+t.y.normalized()*size, Color.GREEN,             width, antialiased)
+	#draw_vector(o, t.x*size, Color.RED,             width, antialiased)
+	#draw_vector(o, t.y*size, Color.GREEN,           width, antialiased)
+
+
+	#draw_vector(b, c, color, width, antialiased)
+
+#draw_string(font, Vector2(500, 300), str, 0, ss, font_size, Color.RED)
+func draw_text(position:Vector2, text:String, font_size:float, color:Color, outline:=false) -> void:
+	if not _drawing_visible: return
+	_dt.add_string([position, text, 0, font_size, color])
+
+
+func draw_text_outline(position:Vector2, text:String, font_size:float, out_size:float, color:Color) -> void:
+	if not _drawing_visible: return
+	_dt.add_string_outline([position, text,  0,  font_size, out_size, color])
 
 
 

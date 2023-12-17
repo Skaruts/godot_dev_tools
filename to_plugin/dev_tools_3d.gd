@@ -1,4 +1,3 @@
-#class_name DevTools3D
 extends Node3D
 
 
@@ -29,7 +28,6 @@ var _input_checker_func:Callable
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region LOOP
 func _ready() -> void:
-	#name = "DebugDrawing3D"
 	add_child(_dt)
 	_init_input_actions()
 
@@ -45,7 +43,6 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	#if not _drawing_visible: return
 	assert(_drawing_visible == true)
 	_redraw()
 	_clean_up()
@@ -104,13 +101,11 @@ func set_enabled(vis:bool, force:=false) -> void:
 func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0, duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([start, end, color, thickness])
-	#_dt.line(start, end, color, thickness)
 
 
 func draw_polyline(points:Array, color:Color, thickness:=1.0, duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["polylines"].append([points, color, thickness])
-	#_dt.polyline(points, color, thickness)
 
 
 func draw_cube(filled:bool, position:Variant, size:float, color:Color, duration:=0) -> void:
@@ -121,9 +116,9 @@ func draw_cube(filled:bool, position:Variant, size:float, color:Color, duration:
 		_draw_arrays["wire_cubes"].append([position, size, color])
 
 
-func draw_aabb(p1:Variant, size:Variant, color:Color, thickness:=1.0, duration:=0) -> void:
+func draw_aabb(aabb:AABB, color:Color, thickness:=1.0, duration:=0) -> void:
 	if not _drawing_visible: return
-	_draw_arrays["aabbs"].append([p1, size, color, thickness, false])
+	_draw_arrays["aabbs"].append([aabb, color, thickness, false])
 
 
 func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0, duration:=0.0) -> void:

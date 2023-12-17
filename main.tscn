@@ -42,3 +42,12 @@ material_override = SubResource("StandardMaterial3D_bkwcr")
 inner_radius = 0.75
 sides = 64
 ring_sides = 32
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(1000, 125)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_0jig6")
+
+[node name="Icon2" type="Sprite2D" parent="Icon"]
+position = Vector2(128, 126)
+texture = ExtResource("1_0jig6")
