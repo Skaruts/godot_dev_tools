@@ -71,24 +71,15 @@ var see_through := false  # TODO: this doesn't seem to work reliably
 # how thin must the unit-cube be in order to properly represent a line
 # of thickness 1. Lines will look too thick or too thin from too close
 # or too afar, so this must be tweaked according to the intended usage.
-const WIDTH_FACTOR := 0.01
+var width_factor := 0.01
 
-const SPHERE_RADIAL_SEGMENTS := 24
-const SPHERE_RINGS    := 12
-const CIRCLE_SEGMENTS := 32
-const CYLINDER_RADIAL_SEGMENTS := 5
+var sphere_radial_segments := 24
+var sphere_rings    := 12
+var circle_segments := 32
+var cylinder_radial_segments := 5
 
-
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
-
-# 		Internal settings
-
-#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 # how many instances to add when more instances are needed
-const _INSTANCE_INCREMENT := 16
-
-
-
+var instance_increment := 16
 
 
 
@@ -353,6 +344,8 @@ func _init(_name:Variant=null) -> void:
 
 
 func _ready() -> void:
+	_init_config()
+
 	name = "DrawTool3D"
 	backline_color = Color(line_color.darkened(darken_factor), back_alpha)
 	face_color     = Color(line_color, face_alpha)
@@ -366,6 +359,34 @@ func _ready() -> void:
 	_init_mmis()
 
 
+func _init_config() -> void:
+	var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
+
+	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
+		return
+
+	var config := load(data.DT_SETTINGS_PATH)
+
+	#line_color               = config.line_color
+	#backline_color           = config.backline_color
+	#face_color               = config.face_color
+	#backface_color           = config.backface_color
+	#line_thickness           = config.line_thickness
+	unshaded                 = config.unshaded
+	on_top                   = config.on_top
+	#no_shadows               = config.no_shadows
+	#transparent              = config.transparent
+	#double_sided             = config.double_sided
+	#back_alpha               = config.back_alpha
+	#face_alpha               = config.face_alpha
+	#darken_factor            = config.darken_factor
+	#see_through              = config.see_through
+	width_factor             = config.width_factor
+	sphere_radial_segments   = config.sphere_radial_segments
+	sphere_rings             = config.sphere_rings
+	circle_segments          = config.circle_segments
+	cylinder_radial_segments = config.cylinder_radial_segments
+	instance_increment       = config.instance_increment
 
 
 func _init_im() -> void:
@@ -435,10 +456,10 @@ func _create_material(color:Color) -> StandardMaterial3D:
 # this is the one used for lines, as cylinders
 func _init_line_mesh__cylinder(mat:StandardMaterial3D) -> MultiMesh:
 	var cylinder := CylinderMesh.new()
-	cylinder.top_radius = WIDTH_FACTOR
-	cylinder.bottom_radius = WIDTH_FACTOR
+	cylinder.top_radius = width_factor
+	cylinder.bottom_radius = width_factor
 	cylinder.height = 1
-	cylinder.radial_segments = CYLINDER_RADIAL_SEGMENTS
+	cylinder.radial_segments = cylinder_radial_segments
 	cylinder.rings = 0
 	cylinder.cap_top = false
 	cylinder.cap_bottom = false
@@ -450,7 +471,7 @@ func _init_line_mesh__cylinder(mat:StandardMaterial3D) -> MultiMesh:
 # this is the one used for lines, as cubes
 func _init_line_mesh__cube(mat:StandardMaterial3D) -> MultiMesh:
 	var cube := BoxMesh.new()
-	cube.size = Vector3(WIDTH_FACTOR, WIDTH_FACTOR, 1)
+	cube.size = Vector3(width_factor, width_factor, 1)
 
 	cube.material = mat
 	return _create_multimesh(cube, "CubeLines_MultiMeshInstance3D")
@@ -474,9 +495,9 @@ func _init_cone_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	# create cones (for vectors)
 	var cone := CylinderMesh.new()
 	cone.top_radius = 0
-	cone.bottom_radius = WIDTH_FACTOR*4
+	cone.bottom_radius = width_factor*4
 	cone.height = 0.04
-	cone.radial_segments = SPHERE_RADIAL_SEGMENTS
+	cone.radial_segments = sphere_radial_segments
 	cone.rings = 0
 	cone.material = mat
 
@@ -487,10 +508,10 @@ func _init_sphere_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	# ----------------------------------------
 	# create spheres
 	var sphere := SphereMesh.new()
-	sphere.radius = WIDTH_FACTOR
-	sphere.height = WIDTH_FACTOR*2
-	sphere.radial_segments = SPHERE_RADIAL_SEGMENTS
-	sphere.rings = SPHERE_RINGS
+	sphere.radius = width_factor
+	sphere.height = width_factor*2
+	sphere.radial_segments = sphere_radial_segments
+	sphere.rings = sphere_rings
 	sphere.material = mat
 
 	return _create_multimesh(sphere, "Spheres_MultiMeshInstance3D")
@@ -559,7 +580,7 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 	mm.use_colors = true
 	mm.mesh = mesh
 	mm.visible_instance_count = 0
-	mm.instance_count = _INSTANCE_INCREMENT
+	mm.instance_count = instance_increment
 
 	var mmi := MultiMeshInstance3D.new()
 	mmi.name = name
@@ -604,7 +625,7 @@ func _create_circle_points(position:Vector3, radius:float, axis:Vector3, _color:
 	#line(position, position+cross, _color, 2)
 	#cone(position+cross, cross, _color, 2)
 
-	for r:int in range(0, 360, 360/float(CIRCLE_SEGMENTS)):
+	for r:int in range(0, 360, 360/float(circle_segments)):
 		var c := cross.rotated(axis, deg_to_rad(r)).normalized()
 		var p := position + c * radius
 		points.append(p)
@@ -615,7 +636,7 @@ func _create_circle_points(position:Vector3, radius:float, axis:Vector3, _color:
 func _create_circle_points_OLD(position:Vector3, radius:Vector3, axis:Vector3) -> Array:
 	var points := []
 
-	for r:int in range(0, 360, 360/float(SPHERE_RADIAL_SEGMENTS)):
+	for r:int in range(0, 360, 360/float(sphere_radial_segments)):
 		var p := position + radius.rotated(axis, deg_to_rad(r))
 		points.append(p)
 
@@ -649,7 +670,7 @@ func _add_instance_to(mm:MultiMesh) -> int:
 	# if the visible count reaches the instance count, then more instances are needed
 	if mm.instance_count <= mm.visible_instance_count:
 		# this is enough to make the MultiMesh create more instances internally
-		mm.instance_count += _INSTANCE_INCREMENT
+		mm.instance_count += instance_increment
 
 	return idx
 
@@ -707,7 +728,7 @@ func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	#       but I've never seen any issues, so... I could be wrong.
 	transform.basis.x *= thickness
 	transform.basis.y *= thickness
-	transform.basis.z *= a.distance_to(b) + WIDTH_FACTOR * thickness
+	transform.basis.z *= a.distance_to(b) + width_factor * thickness
 
 	_commit_instance(mm, idx, transform, color)
 
@@ -738,7 +759,7 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 
 
 	transform.basis.x *= thickness
-	transform.basis.y *= a.distance_to(b) # + WIDTH_FACTOR * thickness # stretch the Y instead
+	transform.basis.y *= a.distance_to(b) # + width_factor * thickness # stretch the Y instead
 	transform.basis.z *= thickness
 
 	_commit_instance(mm, idx, transform, color)

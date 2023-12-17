@@ -1,13 +1,13 @@
 extends Node3D
 
-
-const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
+var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
 var _draw_arrays:Dictionary
 var _drawing_visible := false
 var _input_checker_func:Callable
 
-@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
+#@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
+@onready var _dt:Node = load(data.DT_3D_PATH).new()
 @onready var _api_lookup := {
 	lines     = _dt.bulk_lines,
 	polylines = _dt.bulk_polylines,
@@ -20,7 +20,6 @@ var _input_checker_func:Callable
 }
 
 
-
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
 #		LOOP
@@ -28,6 +27,7 @@ var _input_checker_func:Callable
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region LOOP
 func _ready() -> void:
+	#print(_ready)
 	add_child(_dt)
 	_init_input_actions()
 
@@ -73,7 +73,7 @@ func _init_input_actions() -> void:
 						   and not event.shift_pressed \
 						   and not event.alt_pressed
 
-					if event.keycode in _DEF_KEYS and event.pressed \
+					if event.keycode in data.DEF_KEYS and event.pressed \
 					and not event.echo and mods_ok:
 						toggle()
 

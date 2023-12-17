@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DevToolsConfig" load_steps=2 format=3 uid="uid://bp6slkfhvx6ac"]
+
+[ext_resource type="Script" path="res://addons/sk_debug_tools/dev_tools_config.gd" id="1_8f57y"]
+
+[resource]
+script = ExtResource("1_8f57y")
+info_tool_layer = 128
+drawing_tool_layer = 125
+text_size = 20
+default_float_precision = 2
+outline_size = 10
+draw_background = true
+draw_border = true
+background_color = Color(0.101961, 0.101961, 0.101961, 0.6)
+border_width = 1
+border_color = Color(1, 1, 1, 0.364706)
+key_color = Color(0.827451, 0.827451, 0.827451, 1)
+group_color = Color(1, 0.37, 0.37, 1)
+null_color = Color(1, 0, 1, 1)
+number_color = Color(0.81, 0.64, 0.99, 1)
+string_color = Color(1, 0.9, 0.66, 1)
+bool_color = Color(1, 0.72, 0.26, 1)
+builtin_color = Color(0.74, 0.84, 1, 1)
+object_color = Color(0.3, 0.86, 0.3, 1)
+instance_increment = 16
+width_factor = 0.01
+sphere_radial_segments = 24
+sphere_rings = 12
+circle_segments = 32
+cylinder_radial_segments = 5
+unshaded = true
+on_top = false

@@ -1,36 +1,35 @@
 extends CanvasLayer
 
 
-const text_size       := 20
-const FLOAT_PRECISION :int = 2
-const outline_size    := 10
-
-const draw_background := true
-const draw_border     := true
-const bg_color        := Color("1a1a1a99")
-const border_width    := 1
-const border_color    := Color("ffffff5d")
-
-const color_null    := Color.FUCHSIA
-const color_number  := Color(0.81, 0.64, 0.99)
-const color_string  := Color(1, 0.90, 0.66)
-const _color_bool   := Color(1, 0.72, 0.26)
-const color_builtin := Color(0.74, 0.84, 1)
-const color_object  := Color(0.30, 0.86, 0.30)
-
-const color_key     := Color.LIGHT_GRAY
-const color_group   := Color(1, 0.37, 0.37)
-#const color_group_bg := Color.GREEN
 
 
+var text_size       := 20
+var default_float_precision :int = 2
+var outline_size    := 10
 
+var draw_background := true
+var draw_border     := true
+var bg_color        := Color("1a1a1a99")
+var border_width    := 1
+var border_color    := Color("ffffff5d")
+
+var color_null    := Color.FUCHSIA
+var color_number  := Color(0.81, 0.64, 0.99)
+var color_string  := Color(1, 0.90, 0.66)
+var color_bool    := Color(1, 0.72, 0.26)
+var color_builtin := Color(0.74, 0.84, 1)
+var color_object  := Color(0.30, 0.86, 0.30)
+
+var color_key     := Color.LIGHT_GRAY
+var color_group   := Color(1, 0.37, 0.37)
+#var color_group_bg := Color.GREEN
 
 
 const GROUP_PREFIX := "      "
 const _SPACER := ' ' # this prevents outlines getting cut off at the edges of the labels
 
-const _COLORS_LOOKUP := {
-	TYPE_NIL                   : color_null,		TYPE_BOOL                  : _color_bool,
+var _colors_lookup := {
+	TYPE_NIL                   : color_null,		TYPE_BOOL                  : color_bool,
 	TYPE_INT                   : color_number,		TYPE_FLOAT                 : color_number,
 	TYPE_STRING                : color_string,		TYPE_VECTOR2               : color_builtin,
 	TYPE_VECTOR2I              : color_builtin,		TYPE_RECT2                 : color_builtin,
@@ -74,16 +73,11 @@ var _info_visible    := false
 
 
 func _ready() -> void:
+	_init_config()
 	_init_text_sizes()
 	_init_background()
 
 	set_info_enabled(_info_visible, true)
-
-
-#func _input(event: InputEvent) -> void:
-	#if event.is_action_pressed("toggle_debug_info"):
-		#toggle()
-		#get_viewport().set_input_as_handled()
 
 
 func _process(_delta: float) -> void:
@@ -112,6 +106,34 @@ func _init_background() -> void:
 	style.border_width_bottom = border_width
 
 
+
+func _init_config() -> void:
+	var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
+
+	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
+		return
+
+	var config := load(data.DT_SETTINGS_PATH)
+
+	layer                   = config.info_tool_layer
+
+	text_size               = config.text_size
+	default_float_precision = config.default_float_precision
+	outline_size            = config.outline_size
+	draw_background         = config.draw_background
+	draw_border             = config.draw_border
+	bg_color                = config.background_color
+	border_width            = config.border_width
+	border_color            = config.border_color
+	color_null              = config.null_color
+	color_number            = config.number_color
+	color_string            = config.string_color
+	color_bool              = config.bool_color
+	color_builtin           = config.builtin_color
+	color_object            = config.object_color
+	color_key               = config.key_color
+	color_group             = config.group_color
+	#color_group_bg         = #color_group_bg
 
 
 func _finish_processing() -> void:
@@ -161,9 +183,9 @@ func _add_line(line:Dictionary, prefix:="") -> void:
 	_text_vals += _SPACER
 
 	if tp == TYPE_FLOAT:
-		_text_vals += _SPACER + _tag_color(("%." + fp + "f") % [val], _COLORS_LOOKUP[tp])
+		_text_vals += _SPACER + _tag_color(("%." + fp + "f") % [val], _colors_lookup[tp])
 	else:
-		_text_vals += _SPACER + _tag_color(str(val), _COLORS_LOOKUP[tp])
+		_text_vals += _SPACER + _tag_color(str(val), _colors_lookup[tp])
 
 	_text_vals += '\n'
 
@@ -207,13 +229,13 @@ func _create_line(key:String, val:Variant, fp:float) -> Dictionary:
 	return { key=key, val=val, fp=fp }
 
 
-func print(key:String, val:Variant=null, fp:=FLOAT_PRECISION) -> void:
+func print(key:String, val:Variant=null, fp:=default_float_precision) -> void:
 	if not _info_visible: return
 	var line := _create_line(key, val, fp)
 	_lines.append(line)
 
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:=FLOAT_PRECISION) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null, fp:=default_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)

@@ -1,14 +1,15 @@
 extends CanvasLayer
 
-
-const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
+var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
 var _drawing_visible := false
 var _input_checker_func:Callable
 
-@onready var _dt :Node = preload("res://to_plugin/draw_tool_2d.gd").new()
+#@onready var _dt :Node = preload("res://to_plugin/draw_tool_2d.gd").new()
 
 
+
+@onready var _dt:Node = load(data.DT_2D_PATH).new()
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
@@ -17,9 +18,11 @@ var _input_checker_func:Callable
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region LOOP
 func _ready() -> void:
+	_init_config()
+	#print(_ready)
 	# the info_tool is 128, and this should be behind it, but leave some space
 	# in case more UI stuff is added to the plugin
-	layer = 120
+
 
 	add_child(_dt)
 	_init_input_actions()
@@ -48,9 +51,21 @@ func _init_input_actions() -> void:
 						   and not event.shift_pressed \
 						   and not event.alt_pressed
 
-					if event.keycode in _DEF_KEYS and event.pressed \
+					if event.keycode in data.DEF_KEYS and event.pressed \
 					and not event.echo and mods_ok:
 						toggle()
+
+
+func _init_config() -> void:
+	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
+		return
+
+	var config := load(data.DT_SETTINGS_PATH)
+
+	layer = config.drawing_tool_layer
+
+
+
 
 #endregion LOOP
 

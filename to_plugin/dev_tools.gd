@@ -1,10 +1,10 @@
 extends Node
 
-
-const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
+var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
 var _info_input_checker_func:Callable
 var _drawing_input_checker_func:Callable
+
 
 @onready var _it:CanvasLayer = $info_tool
 
@@ -15,7 +15,18 @@ var _drawing_input_checker_func:Callable
 #		LOOP
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
+func _enter_tree() -> void:
+
+	# TODO: should I do this automatically, or should I leave it for users to
+	# decide whether they want the config file or not?
+
+	#if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
+		#var dtc := DevToolsConfig.new()
+		#ResourceSaver.save(dtc, data.DT_SETTINGS_PATH)
+	pass
+
 func _ready() -> void:
+	#print(_ready)
 	_init_input_actions()
 
 
@@ -35,7 +46,7 @@ func _init_input_actions() -> void:
 				func(event:InputEventKey) -> void:
 					var mods_ok := not (event.ctrl_pressed or event.shift_pressed or event.alt_pressed)
 
-					if event.keycode in _DEF_KEYS and event.pressed \
+					if event.keycode in data.DEF_KEYS and event.pressed \
 					and not event.echo and mods_ok:
 						toggle_info()
 
@@ -52,9 +63,9 @@ func enable_info()  -> void: _it.set_info_enabled(true)
 func disable_info() -> void: _it.set_info_enabled(false)
 
 
-func print(key:String, val:Variant=null, fp:int=_it.FLOAT_PRECISION) -> void:
+func print(key:String, val:Variant=null, fp:int=_it.default_float_precision) -> void:
 	_it.print(key, val, fp)
 
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:int=_it.FLOAT_PRECISION) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null, fp:int=_it.default_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)

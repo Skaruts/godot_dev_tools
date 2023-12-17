@@ -27,10 +27,6 @@ DevTools3D="*res://to_plugin/dev_tools_3d.gd"
 gdscript/warnings/enable=false
 gdscript/warnings/untyped_declaration=2
 
-[display]
-
-window/size/always_on_top=true
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/plugin_refresher/plugin.cfg", "res://addons/sk_debug_tools/plugin.cfg")
