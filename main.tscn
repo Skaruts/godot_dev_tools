@@ -4,16 +4,16 @@
 [ext_resource type="Script" path="res://main.gd" id="1_s3vue"]
 [ext_resource type="Script" path="res://addons/free-look-camera/free_look_camera.gd" id="2_3x2oj"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_be2vr"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1fmt2"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_6brxp"]
-sky_material = SubResource("ProceduralSkyMaterial_be2vr")
+[sub_resource type="Sky" id="Sky_4c7e7"]
+sky_material = SubResource("ProceduralSkyMaterial_1fmt2")
 
-[sub_resource type="Environment" id="Environment_yhslb"]
+[sub_resource type="Environment" id="Environment_q4mke"]
 background_mode = 2
-sky = SubResource("Sky_6brxp")
+sky = SubResource("Sky_4c7e7")
 tonemap_mode = 2
 glow_enabled = true
 
@@ -25,12 +25,12 @@ uv1_triplanar = true
 [node name="main" type="Node3D"]
 script = ExtResource("1_s3vue")
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_q4mke")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_yhslb")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.208959, -0.244702, 0.946814, -0.0227998, 0.966705, 0.254874, -0.977659, -0.0748453, 0.196422, 4.673, 3.65966, 0.457564)

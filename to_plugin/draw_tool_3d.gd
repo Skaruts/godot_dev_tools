@@ -56,7 +56,7 @@ var face_color:Color
 var backface_color:Color
 
 var line_thickness := 1.0
-var unshaded := false    # actually looks great shaded, except for the cylinder caps
+var unshaded := true    # actually looks great shaded, except for the cylinder caps
 var on_top := false
 var no_shadows := true
 #var render_priority := 0

@@ -88,14 +88,15 @@ var _info_visible    := false
 var _drawing_visible := false
 var _console_visible := false
 
-@onready var _canvas_layer: CanvasLayer = $CanvasLayer
-@onready var _ui_base: TabContainer = $CanvasLayer/TabContainer
+@onready var _canvas_layer: CanvasLayer = $info_tool
+@onready var _ui_base: TabContainer = %ui_base
+@onready var _container: MarginContainer = %container
 @onready var _label_keys: RichTextLabel = %label_keys
 @onready var _label_vals: RichTextLabel = %label_vals
-@onready var _draw_3d := preload("res://to_plugin/debug_draw_3d_2.gd").new()
-@onready var _draw_2d := preload("res://to_plugin/debug_draw_2d.gd").new()
-
-
+#@onready var _draw_3d := preload("res://to_plugin/dev_tools_3d.gd").new()
+#@onready var _draw_2d := preload("res://to_plugin/dev_tools_2d.gd").new()
+@onready var _draw_3d: Node3D  = DevTools3D
+@onready var _draw_2d: Node    = DevTools2D
 
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
@@ -109,6 +110,7 @@ func _ready() -> void:
 	_init_text_sizes()
 	_init_background()
 
+	await get_tree().process_frame
 	set_show_info(_info_visible, true)
 	set_show_drawing(_drawing_visible, true)
 	# set_show_console(_console_visible, true)
@@ -202,8 +204,9 @@ func _process_grouped_lines() -> void:
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 func _init_drawing() -> void:
-	add_child(_draw_3d)
-	add_child(_draw_2d)
+	#add_child(_draw_3d)
+	#add_child(_draw_2d)
+	pass
 
 
 func _init_text_sizes() -> void:
@@ -281,7 +284,6 @@ func _init_input_actions() -> void:
 func toggle_info() -> void: set_show_info(not _info_visible)
 func show_info()   -> void: set_show_info(true)
 func hide_info()   -> void: set_show_info(false)
-
 func set_show_info(vis:bool, force:=false) -> void:
 	if vis == _info_visible and not force: return
 	_info_visible = vis
@@ -290,13 +292,12 @@ func set_show_info(vis:bool, force:=false) -> void:
 	# this fixes the TabContainer's panel failing to resize to the label's size
 	# when it becomes visible again
 	await get_tree().process_frame
-	$CanvasLayer/TabContainer/MarginContainer.visible = _info_visible
+	_container.visible = _info_visible
 
 
 func toggle_drawing() -> void: set_show_drawing(not _drawing_visible)
 func show_drawing()   -> void: set_show_drawing(true)
 func hide_drawing()   -> void: set_show_drawing(false)
-
 func set_show_drawing(vis:bool, force:=false) -> void:
 	if vis == _drawing_visible and not force: return
 	_drawing_visible = vis
@@ -304,11 +305,9 @@ func set_show_drawing(vis:bool, force:=false) -> void:
 	_draw_2d.visible = _drawing_visible
 
 
-
 func toggle_console() -> void: set_show_console(not _console_visible)
 func show_console()   -> void: set_show_console(true)
 func hide_console()   -> void: set_show_console(false)
-
 func set_show_console(vis:bool, force:=false) -> void:
 	if vis == _console_visible and not force: return
 	_console_visible = vis
@@ -344,70 +343,70 @@ func print_grouped(group_name:String, key:String, val:Variant=null, fp:=float_pr
 #		PUBLIC DRAWING API
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
-# 2D - pos:Vector2  |  3D - pos:Vector3
-func draw_text(pos:Variant, text:String, color:Color, size:=1.0, fixed_size:=false, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_text(pos, text, color, size, fixed_size, duration)
-	elif pos is Vector2: print("2D drawing NIY")
-
-# 2D - start:Vector2, end:Vector2  |  3D - start:Vector3, end:Vector3
-func draw_line(start:Variant, end:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   start is Vector3: _draw_3d.draw_line(start, end, color, thickness, duration)
-	elif start is Vector2: _draw_2d.line(start, end, color, thickness, duration)
-
-
-# TODO draw_polyline
-func draw_polyline(points:Array, color:Color, thickness:=1.0, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   points[0] is Vector3: _draw_3d.draw_polyline(points, color, thickness, duration)
-	elif points[0] is Vector2: print("2D drawing NIY")
-
-# TODO draw_box()
-func draw_box(pos:Variant, size:float, color:Color, duration:=0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_box(pos, size, color, duration)
-	elif pos is Vector2: print("2D drawing NIY")
-
-# TODO draw_aabb()
-func draw_aabb(p1:Variant, size:Variant, color:Color, thickness:=1.0, draw_faces:=false, duration:=0) -> void:
-	if not _drawing_visible: return
-	if   p1 is Vector3: _draw_3d.draw_aabb(p1, size, color, thickness, draw_faces, duration)
-	elif p1 is Vector2: print("2D drawing NIY")
-
-
-# 2D - pos:Vector2, radius:float  |  3D - pos:Vector3, radius:Vector4( dir.xyz, radius )
-func draw_circle(pos:Variant, radius:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_circle(pos, radius, color, thickness, duration)
-	elif pos is Vector2: _draw_2d.circle(pos, radius, color, thickness)
-
-func draw_ball(pos:Variant, radius:float, color:Color, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_sphere(pos, color, radius, duration)
-	elif pos is Vector2: _draw_2d.filled_circle(pos, radius, color)
-
-# 2D - pos:Vector2, dir:Vector2  |  3D - pos:Vector3, dir:Vector3
-func draw_cone(pos:Variant, dir:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_cone(pos, dir, color, thickness, duration)
-	elif pos is Vector2: print("2D drawing NIY")
-
-
-
-# 2D - pos:Vector2, dir:Vector2  |  3D - pos:Vector3, dir:Vector3
-func draw_vector(pos:Variant, dir:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
-	if not _drawing_visible: return
-	if   pos is Vector3: _draw_3d.draw_vector(pos, dir, color, thickness, duration)
-	elif pos is Vector2: print("2D drawing NIY")
-
-func draw_origin(pos:Variant, size:=1.0, thickness:=1.0, duration:=0.0) -> void:
-	if   pos is Vector3:_draw_3d.draw_origin(pos, size, thickness, duration)
-	elif pos is Vector2: print("2D drawing NIY")
-
-func draw_transform(node:Variant, size:float, local:=false, thickness:=1.0, duration:=0.0) -> void:
-	if   node is Node3D: _draw_3d.draw_transform(node, size, local, thickness, duration)
-	elif node is Node2D: print("2D drawing NIY")
-
-
-
+## 2D - pos:Vector2  |  3D - pos:Vector3
+#func draw_text(pos:Variant, text:String, color:Color, size:=1.0, fixed_size:=false, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_text(pos, text, color, size, fixed_size, duration)
+	#elif pos is Vector2: print("2D drawing NIY")
+#
+## 2D - start:Vector2, end:Vector2  |  3D - start:Vector3, end:Vector3
+#func draw_line(start:Variant, end:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   start is Vector3: _draw_3d.draw_line(start, end, color, thickness, duration)
+	#elif start is Vector2: _draw_2d.line(start, end, color, thickness, duration)
+#
+#
+## TODO draw_polyline
+#func draw_polyline(points:Array, color:Color, thickness:=1.0, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   points[0] is Vector3: _draw_3d.draw_polyline(points, color, thickness, duration)
+	#elif points[0] is Vector2: print("2D drawing NIY")
+#
+## TODO draw_box()
+#func draw_box(pos:Variant, size:float, color:Color, duration:=0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_box(pos, size, color, duration)
+	#elif pos is Vector2: print("2D drawing NIY")
+#
+## TODO draw_aabb()
+#func draw_aabb(p1:Variant, size:Variant, color:Color, thickness:=1.0, draw_faces:=false, duration:=0) -> void:
+	#if not _drawing_visible: return
+	#if   p1 is Vector3: _draw_3d.draw_aabb(p1, size, color, thickness, draw_faces, duration)
+	#elif p1 is Vector2: print("2D drawing NIY")
+#
+#
+## 2D - pos:Vector2, radius:float  |  3D - pos:Vector3, radius:Vector4( dir.xyz, radius )
+#func draw_circle(pos:Variant, radius:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_circle(pos, radius, color, thickness, duration)
+	#elif pos is Vector2: _draw_2d.circle(pos, radius, color, thickness)
+#
+#func draw_ball(pos:Variant, radius:float, color:Color, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_sphere(pos, color, radius, duration)
+	#elif pos is Vector2: _draw_2d.filled_circle(pos, radius, color)
+#
+## 2D - pos:Vector2, dir:Vector2  |  3D - pos:Vector3, dir:Vector3
+#func draw_cone(pos:Variant, dir:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_cone(pos, dir, color, thickness, duration)
+	#elif pos is Vector2: print("2D drawing NIY")
+#
+#
+#
+## 2D - pos:Vector2, dir:Vector2  |  3D - pos:Vector3, dir:Vector3
+#func draw_vector(pos:Variant, dir:Variant, color:Color, thickness:=1.0, duration:=0.0) -> void:
+	#if not _drawing_visible: return
+	#if   pos is Vector3: _draw_3d.draw_vector(pos, dir, color, thickness, duration)
+	#elif pos is Vector2: print("2D drawing NIY")
+#
+#func draw_origin(pos:Variant, size:=1.0, thickness:=1.0, duration:=0.0) -> void:
+	#if   pos is Vector3:_draw_3d.draw_origin(pos, size, thickness, duration)
+	#elif pos is Vector2: print("2D drawing NIY")
+#
+#func draw_transform(node:Variant, size:float, local:=false, thickness:=1.0, duration:=0.0) -> void:
+	#if   node is Node3D: _draw_3d.draw_transform(node, size, local, thickness, duration)
+	#elif node is Node2D: print("2D drawing NIY")
+#
+#
+#
