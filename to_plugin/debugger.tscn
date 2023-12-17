@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://bxu56djnkfm06"]
+
+[ext_resource type="Script" path="res://to_plugin/debugger.gd" id="1_aj6jm"]
+[ext_resource type="StyleBox" uid="uid://do2uw4dfnyi88" path="res://addons/sk_debug_tools/bg.tres" id="2_q381b"]
+
+[node name="DebugTools" type="Node"]
+script = ExtResource("1_aj6jm")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 128
+
+[node name="TabContainer" type="TabContainer" parent="CanvasLayer"]
+offset_right = 58.0
+offset_bottom = 11.0
+theme_override_styles/panel = ExtResource("2_q381b")
+tabs_visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TabContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="label_keys" type="RichTextLabel" parent="CanvasLayer/TabContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "dsdssdsdsdsdsdsdsdsdsdsdsds
+dsds
+sd
+sd
+s
+ds
+dsd
+sd
+sds
+s
+ds
+d
+sd
+s
+"
+fit_content = true
+autowrap_mode = 0
+shortcut_keys_enabled = false
+
+[node name="label_vals" type="RichTextLabel" parent="CanvasLayer/TabContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "dsdssdsds
+sd
+sd"
+fit_content = true
+autowrap_mode = 0
+shortcut_keys_enabled = false

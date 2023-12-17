@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://dryiod0tautyv"]
+
+[ext_resource type="Texture2D" uid="uid://cs76gk034ofvt" path="res://icon.svg" id="1_0jig6"]
+[ext_resource type="Script" path="res://main.gd" id="1_s3vue"]
+[ext_resource type="Script" path="res://addons/free-look-camera/free_look_camera.gd" id="2_3x2oj"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_be2vr"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_6brxp"]
+sky_material = SubResource("ProceduralSkyMaterial_be2vr")
+
+[sub_resource type="Environment" id="Environment_yhslb"]
+background_mode = 2
+sky = SubResource("Sky_6brxp")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bkwcr"]
+albedo_texture = ExtResource("1_0jig6")
+uv1_offset = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+
+[node name="main" type="Node3D"]
+script = ExtResource("1_s3vue")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_yhslb")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.208959, -0.244702, 0.946814, -0.0227998, 0.966705, 0.254874, -0.977659, -0.0748453, 0.196422, 4.673, 3.65966, 0.457564)
+script = ExtResource("2_3x2oj")
+
+[node name="CSGTorus3D" type="CSGTorus3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+material_override = SubResource("StandardMaterial3D_bkwcr")
+inner_radius = 0.75
+sides = 64
+ring_sides = 32
