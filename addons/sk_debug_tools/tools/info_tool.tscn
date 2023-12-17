@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bvy0x88a1qcxv"]
 
 [ext_resource type="StyleBox" uid="uid://do2uw4dfnyi88" path="res://addons/sk_debug_tools/bg.tres" id="1_de4x1"]
-[ext_resource type="Script" path="res://to_plugin/info_tool.gd" id="1_kgxg4"]
+[ext_resource type="Script" path="res://addons/sk_debug_tools/tools/info_tool.gd" id="1_kgxg4"]
 
 [node name="info_tool" type="CanvasLayer"]
 layer = 128

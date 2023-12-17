@@ -3,7 +3,7 @@ extends CanvasLayer
 
 
 
-var text_size       := 20
+var text_size       := 16
 var default_float_precision :int = 2
 var outline_size    := 10
 

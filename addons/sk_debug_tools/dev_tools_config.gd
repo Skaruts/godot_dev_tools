@@ -24,7 +24,7 @@ extends Resource
 @export_category("Info Display")
 
 ## The size of all the text displayed in the info panel.
-@export_range(1, 1000) var text_size := 20
+@export_range(1, 1000) var text_size := 16
 
 ## The float precision that will be used when no precision is specified
 ## in calls to DevTool.print().

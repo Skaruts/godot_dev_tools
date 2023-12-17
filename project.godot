@@ -18,9 +18,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DevTools="*res://to_plugin/dev_tools.tscn"
-DevTools2D="*res://to_plugin/dev_tools_2d.gd"
-DevTools3D="*res://to_plugin/dev_tools_3d.gd"
+DevTools="*res://addons/sk_debug_tools/tools/dev_tools.tscn"
+DevTools2D="*res://addons/sk_debug_tools/tools/dev_tools_2d.gd"
+DevTools3D="*res://addons/sk_debug_tools/tools/dev_tools_3d.gd"
 
 [debug]
 

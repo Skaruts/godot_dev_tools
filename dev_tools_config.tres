@@ -6,7 +6,7 @@
 script = ExtResource("1_8f57y")
 info_tool_layer = 128
 drawing_tool_layer = 125
-text_size = 20
+text_size = 16
 default_float_precision = 2
 outline_size = 10
 draw_background = true
