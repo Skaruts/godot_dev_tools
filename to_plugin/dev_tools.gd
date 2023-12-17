@@ -1,11 +1,12 @@
 extends Node
 
 
-
-@onready var _it:CanvasLayer = $info_tool
+const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
 
 var _info_input_checker_func:Callable
 var _drawing_input_checker_func:Callable
+
+@onready var _it:CanvasLayer = $info_tool
 
 
 
@@ -25,18 +26,19 @@ func _input(event: InputEvent) -> void:
 
 func _init_input_actions() -> void:
 	if InputMap.has_action("dev_tools_info"):
-		_info_input_checker_func = func(event:InputEventKey) -> void:
-				if event.is_action_pressed("dev_tools_info"):
-					toggle_info()
+		_info_input_checker_func = \
+				func(event:InputEventKey) -> void:
+					if event.is_action_pressed("dev_tools_info"):
+						toggle_info()
 	else:
-		_info_input_checker_func = func(event:InputEventKey) -> void:
-			var mods_ok := not (event.ctrl_pressed or event.shift_pressed or event.alt_pressed)
+		_info_input_checker_func = \
+				func(event:InputEventKey) -> void:
+					var mods_ok := not (event.ctrl_pressed or event.shift_pressed or event.alt_pressed)
 
-			if event.keycode in [KEY_BACKSLASH, KEY_ASCIITILDE] \
-			and event.pressed  \
-			and not event.echo \
-			and mods_ok:
-				toggle_info()
+					if event.keycode in _DEF_KEYS and event.pressed \
+					and not event.echo and mods_ok:
+						toggle_info()
+
 
 
 

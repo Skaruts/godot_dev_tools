@@ -2,13 +2,13 @@
 extends Node3D
 
 
+const _DEF_KEYS:Array[int] = [KEY_BACKSLASH, KEY_ASCIITILDE]
+
 var _draw_arrays:Dictionary
 var _drawing_visible := false
 var _input_checker_func:Callable
 
-
 @onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
-
 @onready var _api_lookup := {
 	lines     = _dt.bulk_lines,
 	polylines = _dt.bulk_polylines,
@@ -19,6 +19,7 @@ var _input_checker_func:Callable
 	aabbs     = _dt.bulk_aabbs,
 	labels    = _dt.bulk_text,
 }
+
 
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
@@ -49,6 +50,7 @@ func _process(_delta: float) -> void:
 	_redraw()
 	_clean_up()
 
+
 func _redraw() -> void:
 	_dt.clear()
 
@@ -63,20 +65,20 @@ func _clean_up() -> void:
 
 func _init_input_actions() -> void:
 	if InputMap.has_action("dev_tools_drawing"):
-		_input_checker_func = func(event:InputEventKey) -> void:
-				if event.is_action_pressed("dev_tools_drawing"):
-					toggle()
+		_input_checker_func = \
+				func(event:InputEventKey) -> void:
+					if event.is_action_pressed("dev_tools_drawing"):
+						toggle()
 	else:
-		_input_checker_func = func(event:InputEventKey) -> void:
-			var mods_ok := event.ctrl_pressed  \
-				   and not event.shift_pressed \
-				   and not event.alt_pressed
+		_input_checker_func = \
+				func(event:InputEventKey) -> void:
+					var mods_ok := event.ctrl_pressed  \
+						   and not event.shift_pressed \
+						   and not event.alt_pressed
 
-			if event.keycode in [KEY_BACKSLASH, KEY_ASCIITILDE] \
-			and event.pressed  \
-			and not event.echo \
-			and mods_ok:
-				toggle()
+					if event.keycode in _DEF_KEYS and event.pressed \
+					and not event.echo and mods_ok:
+						toggle()
 
 #endregion LOOP
 

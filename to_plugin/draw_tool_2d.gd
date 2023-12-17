@@ -7,9 +7,11 @@ var _draw_arrays:Dictionary
 	polylines         = _render_polylines,
 	multilines        = _render_multilines,
 	#colored_polylines = _render_polyline_colors,
-	#rects             = bulk_rects,
+	rects             = _render_rects,
+	#filled_rects      = _render_filled_rects,
 	circles           = _render_circles,
 	filled_circles    = _render_filled_circles,
+	arcs              = _render_arcs,
 	#polygons          = bulk_polygons,
 	#col_polygons      = bulk_col_polygons,
 	#primitives        = bulk_primitives,
@@ -108,6 +110,26 @@ func add_filled_circle(filled_circle:Array) -> void:
 func _render_filled_circles(filled_circles:Array) -> void:
 	for c:Array in filled_circles:
 		draw_circle(c[0], c[1], c[2])
+
+
+
+func add_rect(rect:Array) -> void:
+	_draw_arrays["rects"].append(rect)
+
+func _render_rects(rects:Array) -> void:
+	for c:Array in rects:
+		draw_rect(c[0], c[1], c[2], c[3])
+
+
+
+func add_arc(arc:Array) -> void:
+	_draw_arrays["arcs"].append(arc)
+
+func _render_arcs(arcs:Array) -> void:
+	for c:Array in arcs:
+		draw_arc(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7])
+
+
 
 
 #endregion Private API

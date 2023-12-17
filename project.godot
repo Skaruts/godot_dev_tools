@@ -19,13 +19,17 @@ config/icon="res://icon.svg"
 [autoload]
 
 DevTools="*res://to_plugin/dev_tools.tscn"
-DevTools3D="*res://to_plugin/dev_tools_3d.gd"
 DevTools2D="*res://to_plugin/dev_tools_2d.gd"
+DevTools3D="*res://to_plugin/dev_tools_3d.gd"
 
 [debug]
 
 gdscript/warnings/enable=false
 gdscript/warnings/untyped_declaration=2
+
+[display]
+
+window/size/always_on_top=true
 
 [editor_plugins]
 

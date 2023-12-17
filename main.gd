@@ -91,13 +91,31 @@ func drawing_in_3d() -> void:
 
 func drawing_in_2d() -> void:
 	# DevTools2D.draw_line( p1, p2, color, thickness=1.0 )
-	DevTools2D.draw_line(Vector2(100, 50), Vector2(200, 150), Color.DARK_GREEN, 3)
+	DevTools2D.draw_line(Vector2(100, 50), Vector2(200, 150), Color.DARK_GREEN, 4)
 
-	# DevTools2D.draw_circle( filled?, position, axis/radius, color, thickness=1.0 )
+	# DevTools2D.draw_polyline( [points], color, thickness:=1.0 )
+	DevTools2D.draw_polyline([
+		Vector2(120,  70), Vector2(180,  70),
+		Vector2(180, 130), Vector2(120, 130),
+		Vector2(120,  90), Vector2(160,  90),
+		Vector2(160, 110), Vector2(140, 110)
+	], Color.BLUE_VIOLET, 4)
+
+	# DevTools2D.draw_circle( filled?, center, axis/radius, color, thickness=1.0 )
 	DevTools2D.draw_circle(false, Vector2(300, 100), 50, Color.BLUE, 4)
 	DevTools2D.draw_circle(true, Vector2(300, 100), 20, Color.RED)
 
-	## DevTools2D.draw_vector( position, direction, color, thickness=1.0 )
+	# DevTools2D.draw_rect( filled?, rect, color, thickness:=1.0 )
+	DevTools2D.draw_rect(false, Rect2(400, 50, 100, 100), Color.GREEN_YELLOW, 4)
+	DevTools2D.draw_rect(true, Rect2(425, 75, 50, 50), Color.GOLD)
+
+	# DevTools2D.draw_arc(center, radius, start_angle, end_angle, point_count, color, width, antialiased)
+	var t := Time.get_ticks_msec()*0.001
+	DevTools2D.draw_arc(Vector2(600, 100), 50, 0,  TAU*cos(t), 32, Color.ORANGE_RED, 4)
+	DevTools2D.draw_arc(Vector2(600, 100), 30, 0, -TAU*cos(t), 32, Color.ORANGE_RED, 4)
+
+
+	## DevTools2D.draw_vector( center, direction, color, thickness=1.0 )
 	# DevTools2D.draw_vector(Vector3(0, 0, 1.5), Vector3(0, 2, 2), Color.GREEN, 3)
 	# DevTools2D.draw_vector(Vector3(0, 0, 1.5), Vector3.UP, Color.RED, 3)
 
