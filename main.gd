@@ -3,9 +3,14 @@ extends Node3D
 @onready var node := Node.new() # used in 'monitoring_data()'
 
 func _ready() -> void:
-	DevTools.show_info()
-	DevTools.show_drawing()
+	DevTools.enable_info()
+	DevTools2D.enable()
+	DevTools3D.enable()
 
+
+#func _input(event: InputEvent) -> void:
+	#if event.is_action_pressed("foo", false):
+		#print("FOOOOOOOOOO!")
 
 
 func _process(delta: float) -> void:

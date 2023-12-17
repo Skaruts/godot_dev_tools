@@ -1,0 +1,61 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfxtoulyb3ev"]
+
+[ext_resource type="StyleBox" uid="uid://do2uw4dfnyi88" path="res://addons/sk_debug_tools/bg.tres" id="1_de4x1"]
+[ext_resource type="Script" path="res://to_plugin/info_tool.gd" id="1_kgxg4"]
+
+[node name="info_tool" type="CanvasLayer"]
+layer = 128
+script = ExtResource("1_kgxg4")
+
+[node name="ui_base" type="TabContainer" parent="."]
+unique_name_in_owner = true
+offset_right = 58.0
+offset_bottom = 11.0
+theme_override_styles/panel = ExtResource("1_de4x1")
+tabs_visible = false
+
+[node name="container" type="MarginContainer" parent="ui_base"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ui_base/container"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="label_keys" type="RichTextLabel" parent="ui_base/container/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "dsdssdsdsdsdsdsdsdsdsdsdsds
+dsds
+sd
+sd
+s
+ds
+dsd
+sd
+sds
+s
+ds
+d
+sd
+s
+"
+fit_content = true
+autowrap_mode = 0
+shortcut_keys_enabled = false
+
+[node name="label_vals" type="RichTextLabel" parent="ui_base/container/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "dsdssdsds
+sd
+sd"
+fit_content = true
+autowrap_mode = 0
+shortcut_keys_enabled = false

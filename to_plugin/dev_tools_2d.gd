@@ -1,11 +1,10 @@
-#class_name DevTools2D
 extends Node
 
-@onready var _dt :Node = preload("res://to_plugin/draw_tool_2d.gd").new()
 
-var visible : bool :
-	get: return _dt.visible
-	set(v): _dt.visible = v
+var _drawing_visible := false
+var _input_checker_func:Callable
+
+@onready var _dt :Node = preload("res://to_plugin/draw_tool_2d.gd").new()
 
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
@@ -17,10 +16,36 @@ var visible : bool :
 func _ready() -> void:
 	#name = "DebugDrawing2D"
 	add_child(_dt)
+	_init_input_actions()
 
 
-func _process_drawing() -> void:
+func _process(_delta: float) -> void:
+	#if not _drawing_visible: return
+	assert(_drawing_visible == true)
 	_dt.queue_redraw()
+
+
+func _input(event: InputEvent) -> void:
+	if not event is InputEventKey: return
+	_input_checker_func.call(event)
+
+
+func _init_input_actions() -> void:
+	if InputMap.has_action("dev_tools_drawing"):
+		_input_checker_func = func(event:InputEventKey) -> void:
+				if event.is_action_pressed("dev_tools_drawing"):
+					toggle()
+	else:
+		_input_checker_func = func(event:InputEventKey) -> void:
+			var mods_ok := event.ctrl_pressed  \
+				   and not event.shift_pressed \
+				   and not event.alt_pressed
+
+			if event.keycode in [KEY_BACKSLASH, KEY_ASCIITILDE] \
+			and event.pressed  \
+			and not event.echo \
+			and mods_ok:
+				toggle()
 
 
 #endregion LOOP
@@ -34,17 +59,31 @@ func _process_drawing() -> void:
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region Public API
+func toggle()  -> void: set_enabled(not _drawing_visible)
+func enable()  -> void: set_enabled(true)
+func disable() -> void: set_enabled(false)
+func set_enabled(vis:bool, force:=false) -> void:
+	if vis == _drawing_visible and not force: return
+	_drawing_visible = vis
+	_dt.visible = _drawing_visible
+	set_process(_drawing_visible)
+
+
 
 func draw_line(from: Vector2, to: Vector2, color: Color, width: float = 1.0, antialiased: bool = false) -> void:
+	if not _drawing_visible: return
 	_dt.add_line([from, to, color, width, antialiased])
 
 func draw_polyline(points: Array, color: Color, width: float = 1.0, antialiased: bool = false ) -> void:
+	if not _drawing_visible: return
 	_dt.add_polyline([points, color, width, antialiased])
 
 func draw_multiline(points: Array, color: Color, width: float = 1.0) -> void:
+	if not _drawing_visible: return
 	_dt.add_multiline([points, color, width])
 
 func draw_polyline_colors(points:Array, colors:Array, width: float = 1.0, antialiased: bool = false) -> void:
+	if not _drawing_visible: return
 	_dt.add_polyline_colors([points, colors, width, antialiased])
 
 # func primitive(points: PoolVector2Array, colors: PoolColorArray, uvs: PoolVector2Array, texture: Texture = null, width: float = 1.0, normal_map: Texture = null )
@@ -63,6 +102,7 @@ func draw_polyline_colors(points:Array, colors:Array, width: float = 1.0, antial
 # 	col_polygons.append([points, color, antialiased])
 
 func draw_circle(filled:bool, position:Vector2, radius:float, color:Color, width:=-1.0, antialiased:=false) -> void:
+	if not _drawing_visible: return
 	if filled: _dt.add_filled_circle([position, radius, color])
 	else:      _dt.add_circle([position, radius, color, width, antialiased])
 
