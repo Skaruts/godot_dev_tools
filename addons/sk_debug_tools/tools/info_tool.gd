@@ -295,21 +295,14 @@ func is_registered(node:Object) -> bool:
 	return node in _nodes
 
 
-func register(node:Object, property_name:String, fp:=2) -> void:
+func register(node:Object, property_names:Array, fp:=2) -> void:
 	if not node in _nodes:
 		_nodes[node] = {}
 
-	var prop := {
-		name = property_name,
-		fp = fp,
-	}
-	_nodes[node][property_name] = prop
-
-
-func register_batch(node:Object, property_names:Array, fp:=2) -> void:
-	for n:String in property_names:
-		assert(n is String)
-		register(node, n, fp)
+	for pname:String in property_names:
+		assert(pname is String)
+		var prop := { name=pname, fp=fp }
+		_nodes[node][pname] = prop
 
 
 func unregister(node:Object, property_name:="") -> void:

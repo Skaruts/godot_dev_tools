@@ -2,8 +2,9 @@ extends Node3D
 
 @onready var node := Node.new() # used in 'monitoring_data()'
 
+# dummy class for demonstration purposes
 class Foo:
-	var name := "MvVertex"
+	var name := "Foo"
 	var x:int
 	var y:int
 	var z:int
@@ -19,11 +20,18 @@ class Foo:
 
 
 func _ready() -> void:
+	# you can optionally turn things on at startup
 	DevTools.enable_info()
 	DevTools2D.enable()
 	DevTools3D.enable()
 
-	DevTools.register_batch(foo, ["x", "y"])
+	# this will register the listed properties of 'foo', which will
+	# be displayed and updated automatically
+	DevTools.register(foo, ["x", "y"])
+
+	# NOTE: register() should be called only once, in _init,
+	# _ready or _enter_tree (and temporary nodes have to also
+	# use unregister() in _exit_tree)
 
 
 func _process(_delta: float) -> void:
@@ -40,10 +48,9 @@ func _process(_delta: float) -> void:
 	, 200, 5) # <-- NOTE: these arguments are all optional
 
 
-
 func monitoring_data() -> void:
 
-	# example printing
+	# Example printing
 
 	# DevTools.print(key value, float_precision=2)
 	DevTools.print("fps", Engine.get_frames_per_second())
@@ -62,8 +69,8 @@ func monitoring_data() -> void:
 	DevTools.print("object", foo)
 	DevTools.print("null value", null)
 
-	# 'print_prop()' will attach the print to the node's properties group
-	# along with the registered ones.
+	# 'print_prop()' will attach the key/value to the node's property group
+	# along with the ones already registered in _ready().
 	DevTools.print_prop(foo, "z", foo.z)
 
 	# grouped prints don't need to be together like they are here

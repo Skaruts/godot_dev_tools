@@ -65,11 +65,11 @@ func print_prop(node:Object, key:String, val:Variant=null, fp:float = _it.def_fl
 func is_registered(node:Object) -> bool:
 	return _it.is_registered(node)
 
-func register(node:Object, property_name:String, fp:=2) -> void:
-	_it.register(node, property_name, fp)
 
-func register_batch(node:Object, values:Array) -> void:
-	_it.register_batch(node, values)
+func register(node:Object, values:Array) -> void:
+	_it.register(node, values)
+
+
 
 # TODO: There should be a better way to relay this to users
 enum {
