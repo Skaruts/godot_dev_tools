@@ -24,17 +24,14 @@ extends Resource
 
 @export_category("Info Display")
 
-## The size of all the text displayed in the info panel.
-@export_range(1, 1000) var text_size := 16
-
 ## The float precision that will be used when no precision is specified
 ## in calls to DevTool.print().
 ## NOTE: this doesn't affect the way Vectors, Rects, etc, are displayed.
-@export_range(0, 16) var default_float_precision :int = 2
+@export_range(0, 16) var float_precision :int = 2
 
-## The size of the outline around the text. You can set this to 0 to turn off
-## outlines.
-@export_range(0, 500) var outline_size := 10
+
+
+@export_group("Background")
 
 ## Whether or not to draw the background panel.
 @export var draw_background := true
@@ -51,6 +48,17 @@ extends Resource
 ## The color of the background panel's border.
 @export var border_color := Color("ffffff5d")
 
+
+@export_group("Text")
+
+## The size of all the text displayed in the info panel.
+@export_range(1, 1000) var text_size := 16
+
+## The size of the outline around the text. You can set this to 0 to turn off
+## outlines.
+@export_range(0, 500) var outline_size := 10
+
+@export_subgroup("Colors")
 ## The color of keys text
 @export var key_color := Color.LIGHT_GRAY
 
@@ -77,12 +85,20 @@ extends Resource
 
 
 
+@export_group("Benchmarking")
+
+## The smoothing value the benchmark function will use by default
+@export var benchmark_smoothing := 15
+
+## If true, benchmark times will be reported in seconds. Otherwise
+## they'll be in milliseconds.
+@export var benchmarks_in_seconds := true
+
+
+
+
 
 @export_category("3D Drawing")
-
-@export var x_axis_color := Color(0.72, 0.02, 0.02)
-@export var y_axis_color := Color(0.025, 0.31, 0)
-@export var z_axis_color := Color(0, 0.10, 1)
 
 ## How many new instances should be added to the MultiMeshInstance's pool when
 ## the pool is full.
@@ -94,6 +110,15 @@ extends Resource
 ## Lines will look too thick or too thin when viewed from too close or too far,
 ## and this value can be tweaked to accomodate for different use cases.
 @export var width_factor := 0.01
+
+@export_group("Colors")
+
+@export var x_axis_color := Color(0.72, 0.02, 0.02)
+@export var y_axis_color := Color(0.025, 0.31, 0)
+@export var z_axis_color := Color(0, 0.10, 1)
+
+@export_group("Shapes")
+
 
 ## How many radial segments the spheres will be made of (the vertical lines)
 @export var sphere_radial_segments := 24
@@ -109,7 +134,7 @@ extends Resource
 @export var cylinder_radial_segments := 5
 
 
-
+@export_group("Material")
 
 ## (iirc) If true, then all objects will use the same color and
 ## ignore the colors provided in the functions (not very useful here, I think)

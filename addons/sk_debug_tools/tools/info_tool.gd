@@ -23,6 +23,10 @@ var color_group   := Color(1, 0.37, 0.37)
 #var color_group_bg := Color.GREEN
 
 
+var def_bm_smoothing:int = 15
+var bm_time_in_seconds := true
+
+
 const GROUP_PREFIX := "    "
 const NODE_PROP_PREFIX := "    "
 const _SPACER := ' ' # this prevents outlines getting cut off at the edges of the labels
@@ -120,7 +124,7 @@ func _init_config() -> void:
 	layer                   = config.info_tool_layer
 
 	text_size               = config.text_size
-	default_float_precision = config.default_float_precision
+	default_float_precision = config.float_precision
 	outline_size            = config.outline_size
 	draw_background         = config.draw_background
 	draw_border             = config.draw_border
@@ -136,6 +140,8 @@ func _init_config() -> void:
 	color_key               = config.key_color
 	color_group             = config.group_color
 	#color_group_bg         = #color_group_bg
+	def_bm_smoothing        = config.benchmark_smoothing
+	bm_time_in_seconds      = config.benchmarks_in_seconds
 
 
 func _finish_processing() -> void:
@@ -309,3 +315,57 @@ func unregister(node, property_name:="") -> void:
 			_nodes.erase(node)
 	else:
 		_nodes.erase(node)
+
+
+var _bm_cache: Dictionary
+func _get_cached(name:String) -> Dictionary:
+	if not _bm_cache.has(name):
+		_bm_cache[name] = {
+			frames = 0,
+			time = 0,
+			history = [],
+		}
+	return _bm_cache[name]
+
+#func _count_frame(cached:Dictionary) -> void:
+	#cached.frames += 1
+	#if cached.frames > 500:
+		#cached.frames = 1
+		#cached.time = 0
+
+
+func bm(name:String, f:Callable, smoothing:=def_bm_smoothing) -> float:
+	if not _info_visible:
+		f.call()
+		return 0
+
+	smoothing = clamp(smoothing, 0, 100)
+
+	var t1:float = Time.get_ticks_msec()
+	f.call()
+	var t2:float = (Time.get_ticks_msec() - t1)
+
+	var cached := _get_cached(name)
+	#_count_frame(cached)
+
+	#cached.time += t2
+	var avg:float = t2 # = cached.time/cached.frames
+
+	if smoothing > 1:
+		cached.time += t2
+		if cached.history.size() > def_bm_smoothing:
+			cached.time -= cached.history.pop_front()
+
+		cached.history.append(t2)
+		avg = cached.time/cached.history.size()
+
+	var times_str:String
+	if bm_time_in_seconds:
+		times_str = "%.4f s" % [avg/1000]
+	else:
+		times_str = "%.2f ms" % [avg]
+
+	self.print("> " + name, times_str)
+
+	#return ("%s: " + times_str) % [name]
+	return t2

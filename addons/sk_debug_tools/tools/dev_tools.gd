@@ -74,3 +74,7 @@ func register(node:Object, property_name:String, fp:=2) -> void:
 
 func register_batch(node:Object, values:Array) -> void:
 	_it.register_batch(node, values)
+
+
+func bm(name:String, f:Callable, smoothing:int =_it.def_bm_smoothing) -> float:
+	return _it.bm(name, f, smoothing)

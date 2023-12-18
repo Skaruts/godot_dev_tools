@@ -27,15 +27,23 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	monitoring_data()
-	drawing_in_3d()
-	drawing_in_2d()
+
+	# example benchmark using a lambda
+
+	# DevTools.bm(name, func, smoothing=15)
+	DevTools.bm("process", func():
+		monitoring_data()
+		drawing_in_3d()
+		drawing_in_2d()
+	, 20) # <-- NOTE: the smoothing value is optional
+
 
 	draw_helper_info()
 
 
-
 func monitoring_data() -> void:
+
+	# example printing
 
 	# DevTools.print(key value, float_precision=2)
 	DevTools.print("fps", Engine.get_frames_per_second())
@@ -66,6 +74,9 @@ func monitoring_data() -> void:
 
 
 func drawing_in_2d() -> void:
+
+	# Example 2D drawing
+
 	# func draw_text(position, text, font_size, color, alignment=0)
 	DevTools2D.draw_text(Vector2(250, 250), "Text without outline", 30, Color.ORANGE, true)
 	# draw_text_outlined(position, text, font_size, out_size, color)
@@ -123,13 +134,15 @@ func drawing_in_2d() -> void:
 
 
 func drawing_in_3d() -> void:
-	var red := Color(0.72, 0.02, 0.02)
 
+	# Example 3D drawing
+
+	var red := Color(0.72, 0.02, 0.02)
 
 	# DevTools3D.draw_text( position, text, color, size=1 )
 	DevTools3D.draw_text(Vector3(0, 2.2, 0), "Lines", Color.GREEN_YELLOW, 1)
 	# DevTools.draw_line( p1, p2, color, thickness=1.0 )
-	DevTools3D.draw_line(Vector3(0, 2, -2), Vector3(0, 2, 2), red, 1)
+	DevTools3D.draw_line(Vector3(0, 2, -2), Vector3(0, 2, 2), Color.DARK_RED, 1)
 
 
 	DevTools3D.draw_text(Vector3(-1, 1.2, 2.5), "Polylines", Color.GREEN_YELLOW, 1)
@@ -156,13 +169,13 @@ func drawing_in_3d() -> void:
 
 	DevTools3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_cube( filled?, position, size, color )
-	DevTools3D.draw_cube(true, Vector3(0, 0, -2), 0.25, red)
+	DevTools3D.draw_cube(true, Vector3(0, 0, -2), 0.25, Color.DARK_RED)
 
 
 	DevTools3D.draw_text(Vector3(0.75, 0.75, 2), "Vectors", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_vector( position, direction, color, thickness=1.0 )
 	DevTools3D.draw_vector(Vector3(1, 0, 1.5), Vector3(0, 2, 2), Color.GREEN, 3)
-	DevTools3D.draw_vector(Vector3(0.5, 0, 1.5), Vector3.UP, red, 3)
+	DevTools3D.draw_vector(Vector3(0.5, 0, 1.5), Vector3.UP, Color.DARK_RED, 3)
 
 
 	DevTools3D.draw_text(Vector3(0, -0.2, 0.75), "Origins", Color.GREEN_YELLOW, 1)
@@ -187,10 +200,10 @@ func draw_helper_info() -> void:
 	var ws := DisplayServer.window_get_size()
 	var font_size := 20
 
-	var text1 := "Default keys: '\\' or '~' to toggle info   | 'ctrl' + '\\' or '~' to toggle drawing"
-	var text2 := "Mouse + WASD to fly around  |  Shift to speed up"
+	var text1 := "Default keys: '\\' or '~' to toggle info   |   'ctrl' + '\\' or '~' to toggle drawing"
 	var width1 := DevTools2D.get_text_size(text1, font_size).x
-	var width2 := DevTools2D.get_text_size(text2, font_size).x
-
 	DevTools2D.draw_text(Vector2(ws.x/2-width1/2, ws.y-50), text1, font_size, Color.WHITE, true, 10)
+
+	var text2 := "Right-Mouse + WASD to fly around   |   Shift to speed up"
+	var width2 := DevTools2D.get_text_size(text2, font_size).x
 	DevTools2D.draw_text(Vector2(ws.x/2-width2/2, ws.y-15), text2, font_size, Color.WHITE, true, 10)
