@@ -6,9 +6,9 @@ var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 var _draw_arrays:Dictionary
 var _drawing_visible := false
 
-var _color_x_axis:Color
-var _color_y_axis:Color
-var _color_z_axis:Color
+var _color_x_axis:Color = Color(0.72, 0.02, 0.02)
+var _color_y_axis:Color = Color(0.025, 0.31, 0)
+var _color_z_axis:Color = Color(0, 0.10, 1)
 
 #@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
 @onready var _dt:Node = load(data.DT_3D_PATH).new()
@@ -43,8 +43,6 @@ func _ready() -> void:
 
 
 func _init_config() -> void:
-	var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
-
 	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
 		return
 
@@ -110,17 +108,18 @@ func set_enabled(vis:bool, force:=false) -> void:
 
 
 
-func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0, duration:=0.0) -> void:
+func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([start, end, color, thickness])
 
 
-func draw_polyline(points:Array, color:Color, thickness:=1.0, duration:=0.0) -> void:
+func draw_polyline(points:Array, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["polylines"].append([points, color, thickness])
 
 
-func draw_cube(filled:bool, position:Variant, size:float, color:Color, duration:=0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_cube(filled:bool, position:Variant, size:float, color:Color, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	if filled:
 		_draw_arrays["cubes"].append([position, size, color])
@@ -128,12 +127,13 @@ func draw_cube(filled:bool, position:Variant, size:float, color:Color, duration:
 		_draw_arrays["wire_cubes"].append([position, size, color])
 
 
-func draw_aabb(aabb:AABB, color:Color, thickness:=1.0, duration:=0) -> void:
+func draw_aabb(aabb:AABB, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["aabbs"].append([aabb, color, thickness, false])
 
 
-func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	if filled:
 		_draw_arrays["cones"].append([position, direction, color, length, thickness])
@@ -141,7 +141,8 @@ func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, le
 		pass # _draw_arrays["wire_cones"].append([position, direction, color, length, thickness])
 
 
-func draw_sphere(filled:bool, position:Vector3, size:float, color:Color, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_sphere(filled:bool, position:Vector3, size:float, color:Color, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	if filled:
 		_draw_arrays["spheres"].append([position, color, size])
@@ -149,7 +150,8 @@ func draw_sphere(filled:bool, position:Vector3, size:float, color:Color, duratio
 		pass # _draw_arrays["wire_spheres"].append([position, color, size])
 
 
-func draw_circle(filled:bool, position:Vector3, radius:float, size:Vector3, color:Color, thickness:=1.0, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_circle(filled:bool, position:Vector3, radius:float, size:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	if filled:
 		pass # _draw_arrays["filled_circles"].append([position, radius, size, color])
@@ -157,33 +159,32 @@ func draw_circle(filled:bool, position:Vector3, radius:float, size:Vector3, colo
 		_draw_arrays["circles"].append([position, radius, size, color, thickness])
 
 
-func draw_text(position:Vector3, text:String, color:Color, size:=1.0, fixed_size:=false, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_text(position:Vector3, text:String, color:Color, size:=1.0, fixed_size:=false, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["labels"].append([position, text, color, size, fixed_size])
 
 
-func draw_vector(position:Vector3, direction:Vector3, color:Color, thickness:=1.0, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_vector(position:Vector3, direction:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([position, position+direction, color, thickness])
 	draw_cone(true, position+direction, direction, color, thickness*3, thickness)
 
 
-func draw_transform(node:Node3D, size:float, local:=false, thickness:=1, duration:=0.0) -> void:
+func draw_transform(node:Node3D, size:float, local:=false, thickness:=1, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	var b := node.global_basis if not local else node.basis
 	var o := node.global_position
 	#var basis = tr.basis.orthonormalized()
-
-
-
-
 
 	draw_line(o, o+b.x*size, _color_x_axis, thickness)
 	draw_line(o, o+b.y*size, _color_y_axis, thickness)
 	draw_line(o, o+b.z*size, _color_z_axis, thickness)
 
 
-func draw_origin(position:Vector3, size:=1.0, thickness:=1.0, duration:=0.0) -> void:
+@warning_ignore("shadowed_variable_base_class")
+func draw_origin(position:Vector3, size:=1.0, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	draw_line(position, Vector3.RIGHT*size, _color_x_axis, thickness)
 	draw_line(position, Vector3.UP*size, _color_y_axis, thickness)

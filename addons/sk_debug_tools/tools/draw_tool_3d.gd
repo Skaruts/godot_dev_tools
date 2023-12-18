@@ -213,17 +213,17 @@ func cube_lines(p1:Vector3, p2:Vector3, color:=line_color, thickness:=line_thick
 	if draw_faces:
 		cube_faces(p1, p2, color)
 
-func bulk_cube_lines(cube_lines:Array) -> void:
-	for c:Array in cube_lines:
+func bulk_cube_lines(_cube_lines:Array) -> void:
+	for c:Array in _cube_lines:
 		# p1, p2, color, thickness, draw_faces
 		cube_lines(c[0], c[1], c[2], c[3], c[4])
 
 
 
 
-func aabb(aabb:AABB, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
-	var p1 := aabb.position
-	var p2 := p1+aabb.size
+func aabb(_aabb:AABB, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
+	var p1 := _aabb.position
+	var p2 := p1+_aabb.size
 
 	var a := Vector3( p1.x, p2.y, p1.z )
 	var b := Vector3( p2.x, p2.y, p1.z )
@@ -256,6 +256,7 @@ func bulk_aabbs(aabbs:Array) -> void:
 
 
 # useful for drawing vectors as arrows, for example
+@warning_ignore("shadowed_variable_base_class")
 func cone(position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0) -> void:
 	_add_cone(position, direction, color, length, thickness)
 
@@ -267,6 +268,7 @@ func bulk_cones(cones:Array) -> void:
 
 
 
+@warning_ignore("shadowed_variable_base_class")
 func sphere(position:Vector3, color:Color, size:=1.0) -> void:
 	_add_sphere(position, color, size)
 
@@ -287,6 +289,7 @@ func bulk_spheres(points:Array) -> void:
 
 
 
+@warning_ignore("shadowed_variable_base_class")
 func circle(position:Vector3, radius:float, axis:Vector3, color:Color, thickness:=1.0) -> void:
 	var points := _create_circle_points(position, radius, axis, color)
 	points.append(points[0])
@@ -299,6 +302,7 @@ func bulk_circles(circles:Array) -> void:
 
 
 
+@warning_ignore("shadowed_variable_base_class")
 func text(position:Vector3, string:String, color:Color, size:=1.0) -> void:
 	_add_label(position, string, color, size)
 
@@ -346,9 +350,10 @@ func _init(_name:Variant=null) -> void:
 
 
 func _ready() -> void:
+	name = "DrawTool3D"
+
 	_init_config()
 
-	name = "DrawTool3D"
 	backline_color = Color(line_color.darkened(darken_factor), back_alpha)
 	face_color     = Color(line_color, face_alpha)
 	backface_color = Color(face_color.darkened(darken_factor), back_alpha)
@@ -495,6 +500,7 @@ func _init_cube_mesh(mat:StandardMaterial3D) -> MultiMesh:
 func _init_cone_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	# ----------------------------------------
 	# create cones (for vectors)
+	@warning_ignore("shadowed_variable")
 	var cone := CylinderMesh.new()
 	cone.top_radius = 0
 	cone.bottom_radius = width_factor*4
@@ -509,6 +515,7 @@ func _init_cone_mesh(mat:StandardMaterial3D) -> MultiMesh:
 func _init_sphere_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	# ----------------------------------------
 	# create spheres
+	@warning_ignore("shadowed_variable")
 	var sphere := SphereMesh.new()
 	sphere.radius = width_factor
 	sphere.height = width_factor*2
@@ -575,6 +582,7 @@ func _init_sphere_mesh(mat:StandardMaterial3D) -> MultiMesh:
 #	set(enabled): _mat2.no_depth_test = enabled
 
 
+@warning_ignore("shadowed_variable_base_class")
 func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
@@ -599,6 +607,7 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region Internal API
+@warning_ignore("shadowed_variable_base_class")
 func _create_circle_points(position:Vector3, radius:float, axis:Vector3, _color:Color) -> Array:
 	axis = axis.normalized()
 
@@ -635,6 +644,7 @@ func _create_circle_points(position:Vector3, radius:float, axis:Vector3, _color:
 	return points
 
 
+@warning_ignore("shadowed_variable_base_class")
 func _create_circle_points_OLD(position:Vector3, radius:Vector3, axis:Vector3) -> Array:
 	var points := []
 
@@ -646,6 +656,8 @@ func _create_circle_points_OLD(position:Vector3, radius:Vector3, axis:Vector3) -
 
 
 # http://kidscancode.org/godot_recipes/3.x/3d/3d_align_surface/
+@warning_ignore("shadowed_variable_base_class")
+# 'tr' is actually a an Object method? -- WTF?!?!?
 func align_with_y(tr:Transform3D, new_y:Vector3) -> Transform3D:
 	if new_y.dot(Vector3.FORWARD) in [-1, 1]:
 #		new_y = Vector3.RIGHT
@@ -677,6 +689,7 @@ func _add_instance_to(mm:MultiMesh) -> int:
 	return idx
 
 
+@warning_ignore("shadowed_variable_base_class")
 func _commit_instance(mm:MultiMesh, idx:int, transform:Transform3D, color:Color) -> void:
 	mm.set_instance_transform(idx, transform)
 	# TODO: check what to do about this when using 'single_color'
@@ -716,6 +729,7 @@ func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 
 	# if transform is to be orthonormalized, do it here beback applying any
 	# scaling, or it will revert the scaling
+	@warning_ignore("shadowed_variable_base_class")
 	var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
 #	var transform := Transform()
 	transform.origin = (a+b)/2
@@ -741,6 +755,7 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 	var mm:MultiMesh = _mms["cylinder_lines"]
 	var idx := _add_instance_to(mm)
 
+	@warning_ignore("shadowed_variable_base_class")
 	var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
 	transform.origin = (a+b)/2
 
@@ -767,6 +782,7 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 	_commit_instance(mm, idx, transform, color)
 
 
+@warning_ignore("shadowed_variable_base_class", "unused_parameter")
 func _add_cone(position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0) -> void:
 	var mm:MultiMesh = _mms["cones"]
 
@@ -784,6 +800,7 @@ func _add_cone(position:Vector3, direction:Vector3, color:Color, length:=3.0, th
 	_commit_instance(mm, idx, transform, color)
 
 
+@warning_ignore("shadowed_variable_base_class")
 func _add_sphere(position:Vector3, color:Color, size:=1.0) -> void:
 	var mm:MultiMesh = _mms["spheres"]
 
@@ -797,6 +814,7 @@ func _add_sphere(position:Vector3, color:Color, size:=1.0) -> void:
 	_commit_instance(mm, idx, transform, color)
 
 
+@warning_ignore("shadowed_variable_base_class")
 func _add_cube(position:Vector3, size:Vector3, color:Color) -> void:
 	var mm:MultiMesh = _mms["cubes"]
 	var idx := _add_instance_to(mm)
@@ -830,6 +848,7 @@ func _clear_labels() -> void:
 	_num_visible_labels = 0
 
 # using a similar system to the MultiMeshInstance
+@warning_ignore("shadowed_variable_base_class")
 func _add_label(position:Vector3, string:String, color:Color, size:=1.0, fixed_size:=false) -> void:
 	var l:Label3D
 	_num_visible_labels += 1

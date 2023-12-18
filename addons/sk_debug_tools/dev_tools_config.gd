@@ -87,14 +87,24 @@ extends Resource
 
 @export_group("Benchmarking")
 
-## The smoothing value the benchmark function will use by default
-@export var benchmark_smoothing := 15
+## The smoothing value the benchmark function will use by default. This can
+## prevent values that fluctuate too much from being unreadable.
+## Higher values mean less fluctuation but less accuracy.
+@export var smoothing := 15
+
+## The maximum smoothing that can be applied to benchmarking reports. Smoothing
+## is done by keeping a history of reports and averaging them over time. This
+## value is effectively how big the array is. Values are added and removed from
+## this array every frame, and the elements have to be shifted.
+@export var max_smoothing := 100
 
 ## If true, benchmark times will be reported in seconds. Otherwise
 ## they'll be in milliseconds.
-@export var benchmarks_in_seconds := true
+@export_enum("Seconds", "Milliseconds") var time_units := 0
 
-
+## The float precision of benchmark values that are reported in seconds.
+## (Millisecond reports always use a low precision.)
+@export var decimal_precision := 4
 
 
 

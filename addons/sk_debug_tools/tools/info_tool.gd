@@ -2,7 +2,7 @@ extends CanvasLayer
 
 
 var text_size       := 16
-var default_float_precision :int = 2
+var def_float_precision :int = 2
 var outline_size    := 10
 
 var draw_background := true
@@ -20,12 +20,16 @@ var color_object  := Color(0.30, 0.86, 0.30)
 
 var color_key     := Color.LIGHT_GRAY
 var color_group   := Color(1, 0.37, 0.37)
-#var color_group_bg := Color.GREEN
 
+enum {
+	SEC,
+	MSEC,
+}
 
 var def_bm_smoothing:int = 15
-var bm_time_in_seconds := true
-
+var bm_time_units:int = SEC
+var bm_precision_secs:int = 4
+var max_smoothing := 100
 
 const GROUP_PREFIX := "    "
 const NODE_PROP_PREFIX := "    "
@@ -68,8 +72,10 @@ var _node_properties:Dictionary
 
 var _text_keys:String
 var _text_vals:String
+var _bm_cache: Dictionary
 
 var _info_visible    := false
+
 @onready var _ui_base: TabContainer = %ui_base
 @onready var _container: MarginContainer = %container
 @onready var _label_keys: RichTextLabel = %label_keys
@@ -85,8 +91,8 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	#if not _info_visible: return
 	assert(_info_visible == true)
+
 	_process_lines.call_deferred()
 	_process_grouped_lines.call_deferred()
 	_process_node_properties.call_deferred()
@@ -97,9 +103,7 @@ func _process(_delta: float) -> void:
 func _init_background() -> void:
 	var style:StyleBoxFlat = _ui_base.get("theme_override_styles/panel")
 	if not draw_background:
-		#_ui_base.set("theme_override_styles/panel", StyleBoxEmpty.new())
 		style.bg_color = Color.TRANSPARENT
-		#return
 	else:
 		style.bg_color = bg_color
 
@@ -124,7 +128,7 @@ func _init_config() -> void:
 	layer                   = config.info_tool_layer
 
 	text_size               = config.text_size
-	default_float_precision = config.float_precision
+	def_float_precision     = config.float_precision
 	outline_size            = config.outline_size
 	draw_background         = config.draw_background
 	draw_border             = config.draw_border
@@ -139,9 +143,11 @@ func _init_config() -> void:
 	color_object            = config.object_color
 	color_key               = config.key_color
 	color_group             = config.group_color
-	#color_group_bg         = #color_group_bg
-	def_bm_smoothing        = config.benchmark_smoothing
-	bm_time_in_seconds      = config.benchmarks_in_seconds
+	def_bm_smoothing        = config.smoothing
+	bm_time_units           = config.time_units
+	bm_precision_secs       = config.decimal_precision
+	max_smoothing           = config.max_smoothing
+
 
 
 func _finish_processing() -> void:
@@ -174,13 +180,13 @@ func _process_grouped_lines() -> void:
 
 
 func _process_node_properties() -> void:
-	for node in _nodes:
+	for node:Object in _nodes:
 		if node == null: continue
 
 		_text_keys += '\n' + _SPACER + _tag_color(node.name, color_object) + _SPACER + '\n'
 		_text_vals += '\n\n'
 
-		for prop in _nodes[node].values():
+		for prop:Dictionary in _nodes[node].values():
 			var line := {
 				key = prop.name,
 				val = node.get(prop.name),
@@ -189,7 +195,7 @@ func _process_node_properties() -> void:
 			_add_line(line, GROUP_PREFIX)
 
 		if node in _node_properties:
-			for line in _node_properties[node]:
+			for line:Dictionary in _node_properties[node]:
 				_add_line(line, NODE_PROP_PREFIX)
 
 
@@ -257,13 +263,13 @@ func _create_line(key:String, val:Variant, fp:float) -> Dictionary:
 	return { key=key, val=val, fp=fp }
 
 
-func print(key:String, val:Variant=null, fp:=default_float_precision) -> void:
+func print(key:String, val:Variant=null, fp:=def_float_precision) -> void:
 	if not _info_visible: return
 	var line := _create_line(key, val, fp)
 	_lines.append(line)
 
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:=default_float_precision) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null, fp:=def_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)
@@ -275,7 +281,7 @@ func print_grouped(group_name:String, key:String, val:Variant=null, fp:=default_
 	_grouped_lines[group_name].append(line)
 
 
-func print_prop(node:Object, key:String, val:Variant=null, fp:=default_float_precision) -> void:
+func print_prop(node:Object, key:String, val:Variant=null, fp:=def_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)
@@ -301,12 +307,12 @@ func register(node:Object, property_name:String, fp:=2) -> void:
 
 
 func register_batch(node:Object, property_names:Array, fp:=2) -> void:
-	for n in property_names:
+	for n:String in property_names:
 		assert(n is String)
 		register(node, n, fp)
 
 
-func unregister(node, property_name:="") -> void:
+func unregister(node:Object, property_name:="") -> void:
 	if not node in _nodes: return
 
 	if property_name != "":
@@ -317,9 +323,10 @@ func unregister(node, property_name:="") -> void:
 		_nodes.erase(node)
 
 
-var _bm_cache: Dictionary
+
+@warning_ignore("shadowed_variable_base_class")
 func _get_cached(name:String) -> Dictionary:
-	if not _bm_cache.has(name):
+	if not name in _bm_cache:
 		_bm_cache[name] = {
 			frames = 0,
 			time = 0,
@@ -334,12 +341,17 @@ func _get_cached(name:String) -> Dictionary:
 		#cached.time = 0
 
 
-func bm(name:String, f:Callable, smoothing:=def_bm_smoothing) -> float:
+
+
+@warning_ignore("shadowed_variable_base_class")
+func bm(name:String, f:Callable, smoothing:=def_bm_smoothing,
+		precision:=bm_precision_secs, time_units:=bm_time_units
+) -> float:
 	if not _info_visible:
 		f.call()
 		return 0
 
-	smoothing = clamp(smoothing, 0, 100)
+	smoothing = clamp(smoothing, 0, max_smoothing)
 
 	var t1:float = Time.get_ticks_msec()
 	f.call()
@@ -360,10 +372,9 @@ func bm(name:String, f:Callable, smoothing:=def_bm_smoothing) -> float:
 		avg = cached.time/cached.history.size()
 
 	var times_str:String
-	if bm_time_in_seconds:
-		times_str = "%.4f s" % [avg/1000]
-	else:
-		times_str = "%.2f ms" % [avg]
+	match time_units:
+		SEC:  times_str = ("%." + str(precision) + "f s") % [avg/1000]
+		MSEC: times_str = "%.1f ms" % [avg]
 
 	self.print("> " + name, times_str)
 

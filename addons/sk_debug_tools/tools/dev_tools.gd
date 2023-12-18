@@ -3,9 +3,6 @@ extends Node
 
 var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
-var _info_input_checker_func:Callable
-var _drawing_input_checker_func:Callable
-
 @onready var _it:CanvasLayer = $info_tool
 
 
@@ -16,9 +13,8 @@ var _drawing_input_checker_func:Callable
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 func _enter_tree() -> void:
-	# TODO: should I do this automatically, or should I leave it for users to
-	# decide whether they want the config file or not?
-
+	# TODO: should I do this automatically, or should I leave it to the users
+	# to decide whether they want the config file or not?
 	#if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
 		#var dtc := DevToolsConfig.new()
 		#ResourceSaver.save(dtc, data.DT_SETTINGS_PATH)
@@ -53,17 +49,17 @@ func enable_info()  -> void: _it.set_info_enabled(true)
 func disable_info() -> void: _it.set_info_enabled(false)
 
 
-func print(key:String, val:Variant=null, fp:int=_it.default_float_precision) -> void:
+func print(key:String, val:Variant=null, fp:int=_it.def_float_precision) -> void:
 	_it.print(key, val, fp)
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:int=_it.default_float_precision) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null, fp:int=_it.def_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)
 
 
-func printg(group_name:String, key:String, val:Variant=null, fp:float = _it.default_float_precision) -> void:
+func printg(group_name:String, key:String, val:Variant=null, fp:float = _it.def_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)
 
-func print_prop(node:Object, key:String, val:Variant=null, fp:float = _it.default_float_precision) -> void:
+func print_prop(node:Object, key:String, val:Variant=null, fp:float = _it.def_float_precision) -> void:
 	_it.print_prop(node, key, val, fp)
 
 func is_registered(node:Object) -> bool:
@@ -75,6 +71,15 @@ func register(node:Object, property_name:String, fp:=2) -> void:
 func register_batch(node:Object, values:Array) -> void:
 	_it.register_batch(node, values)
 
+# TODO: There should be a better way to relay this to users
+enum {
+	SEC,
+	MSEC,
+}
 
-func bm(name:String, f:Callable, smoothing:int =_it.def_bm_smoothing) -> float:
-	return _it.bm(name, f, smoothing)
+@warning_ignore("shadowed_variable_base_class")
+func bm(name:String, f:Callable, smoothing:int = _it.def_bm_smoothing,
+		precision:float = _it.bm_precision_secs
+		, time_units:float = _it.bm_time_units
+) -> float:
+	return _it.bm(name, f, smoothing, precision, time_units)

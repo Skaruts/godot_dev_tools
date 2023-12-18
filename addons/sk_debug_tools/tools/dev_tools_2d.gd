@@ -16,6 +16,7 @@ var _drawing_visible := false
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region LOOP
 func _ready() -> void:
+	layer = 125
 	_init_config()
 	#print(_ready)
 	add_child(_dt)
@@ -102,13 +103,14 @@ func draw_rect(filled:bool, rect:Rect2, color:Color, width:=-1.0) -> void:
 	if not _drawing_visible: return
 	_dt.add_rect([rect, color, filled, width])
 
+
 # draw_arc(center, radius, start_angle, end_angle, point_count, color, width)
-func draw_arc(center: Vector2, radius: float, start_angle: float, end_angle: float, point_count: int, color: Color, width: float = 1.0, antialiased:=false):
+func draw_arc(center: Vector2, radius: float, start_angle: float, end_angle: float, point_count: int, color: Color, width: float = 1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	_dt.add_arc([center, radius, start_angle, end_angle, point_count, color, width, antialiased])
 
 
-func draw_vector(position: Vector2, direction: Vector2, color: Color, width: float = 1.0, antialiased:=false):
+func draw_vector(position: Vector2, direction: Vector2, color: Color, width: float = 1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	var a := position
 	var b := position+direction
@@ -123,7 +125,8 @@ func draw_vector(position: Vector2, direction: Vector2, color: Color, width: flo
 	draw_line(b, c, color, width, antialiased)
 	draw_line(b, d, color, width, antialiased)
 
-func draw_transform(node:Node2D, size:float, local:=false, width=1.0, antialiased:=false):
+
+func draw_transform(node:Node2D, size:float, local:=false, width:=1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	var t :Transform2D = node.global_transform if not local else node.transform
 	var o :Vector2 = node.global_transform.origin

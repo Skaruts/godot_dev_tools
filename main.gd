@@ -3,7 +3,7 @@ extends Node3D
 @onready var node := Node.new() # used in 'monitoring_data()'
 
 class Foo:
-	var name = "MvVertex"
+	var name := "MvVertex"
 	var x:int
 	var y:int
 	var z:int
@@ -26,19 +26,19 @@ func _ready() -> void:
 	DevTools.register_batch(foo, ["x", "y"])
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 
 	# example benchmark using a lambda
 
-	# DevTools.bm(name, func, smoothing=15)
-	DevTools.bm("process", func():
+	# DevTools.bm(name, func, smoothing=15, precision=4, time_units=DevTools.SEC)
+	DevTools.bm("DevTools bm", func() -> void:
 		monitoring_data()
 		drawing_in_3d()
 		drawing_in_2d()
-	, 20) # <-- NOTE: the smoothing value is optional
+		draw_helper_info()
+	#, 200, 5, DevTools.MSEC) # <-- NOTE: these arguments are all optional
+	, 200, 5) # <-- NOTE: these arguments are all optional
 
-
-	draw_helper_info()
 
 
 func monitoring_data() -> void:
@@ -137,8 +137,6 @@ func drawing_in_3d() -> void:
 
 	# Example 3D drawing
 
-	var red := Color(0.72, 0.02, 0.02)
-
 	# DevTools3D.draw_text( position, text, color, size=1 )
 	DevTools3D.draw_text(Vector3(0, 2.2, 0), "Lines", Color.GREEN_YELLOW, 1)
 	# DevTools.draw_line( p1, p2, color, thickness=1.0 )
@@ -202,8 +200,8 @@ func draw_helper_info() -> void:
 
 	var text1 := "Default keys: '\\' or '~' to toggle info   |   'ctrl' + '\\' or '~' to toggle drawing"
 	var width1 := DevTools2D.get_text_size(text1, font_size).x
-	DevTools2D.draw_text(Vector2(ws.x/2-width1/2, ws.y-50), text1, font_size, Color.WHITE, true, 10)
+	DevTools2D.draw_text(Vector2(ws.x/2.0-width1/2.0, ws.y-50), text1, font_size, Color.WHITE, true, 10)
 
 	var text2 := "Right-Mouse + WASD to fly around   |   Shift to speed up"
 	var width2 := DevTools2D.get_text_size(text2, font_size).x
-	DevTools2D.draw_text(Vector2(ws.x/2-width2/2, ws.y-15), text2, font_size, Color.WHITE, true, 10)
+	DevTools2D.draw_text(Vector2(ws.x/2.0-width2/2.0, ws.y-15), text2, font_size, Color.WHITE, true, 10)

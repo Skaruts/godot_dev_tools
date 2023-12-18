@@ -24,12 +24,9 @@ DevTools3D="*res://addons/sk_debug_tools/tools/dev_tools_3d.gd"
 
 [debug]
 
-gdscript/warnings/enable=false
+gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=2
-
-[display]
-
-window/size/always_on_top=true
+gdscript/warnings/int_as_enum_without_match=2
 
 [editor_plugins]
 

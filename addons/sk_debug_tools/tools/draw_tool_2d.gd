@@ -139,12 +139,13 @@ func add_string(string:Array) -> void:
 
 func _render_strings(strings:Array) -> void:
 	for a:Array in strings:
-		var str:String = a[1]
-		var font_size:float = a[3]
-		var width := _font.get_string_size(str, 0, -1, font_size).x
+		var text:String = a[1]
+		var font_size:int = a[3]
+
+		var width :float = _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 					#( pos, text, align, font_size, color)
-		#draw_string(font, pos,  str, align, width, font_size, color)
-		draw_string(_font, a[0], str, a[2], width, font_size, a[4])
+		#draw_string(font, pos,  text, align, width, font_size, color)
+		draw_string(_font, a[0], text, a[2], width, font_size, a[4])
 
 
 func add_string_outline(string_outline:Array) -> void:
@@ -152,15 +153,15 @@ func add_string_outline(string_outline:Array) -> void:
 
 func _render_string_outlines(string_outlines:Array) -> void:
 	for a:Array in string_outlines:
-		var str:String = a[1]
-		var font_size:float = a[3]
-		var width := _font.get_string_size(str, 0, -1, font_size).x
+		var text:String = a[1]
+		var font_size:int = a[3]
+		var width := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 						#p, t, alin, fs, os, c
 		#draw_string_outline(f, p, t, alin, w, fs, os, c)
-		draw_string_outline(_font, a[0], str, a[2], width, font_size, a[4], a[5])
+		draw_string_outline(_font, a[0], text, a[2], width, font_size, a[4], a[5])
 
 func get_text_size(text:String, font_size:int) -> Vector2:
-	return ThemeDB.fallback_font.get_string_size(text, 0, -1, font_size)
+	return ThemeDB.fallback_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
 
 
 
