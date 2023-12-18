@@ -1,6 +1,7 @@
 extends Node3D
 
-@onready var node := Node.new() # used in 'monitoring_data()'
+
+
 
 # dummy class for demonstration purposes
 class Foo:
@@ -15,8 +16,8 @@ class Foo:
 	func _to_string() -> String:
 		return "(%s, %s, %s)" % [x, y, z]
 
-
 @onready var foo := Foo.new(10, 20, 30)
+
 
 
 func _ready() -> void:
@@ -34,6 +35,7 @@ func _ready() -> void:
 	# use unregister() in _exit_tree)
 
 
+
 func _process(_delta: float) -> void:
 
 	# example benchmark using a lambda
@@ -43,9 +45,9 @@ func _process(_delta: float) -> void:
 		monitoring_data()
 		drawing_in_3d()
 		drawing_in_2d()
-		draw_helper_info()
-	#, 200, 5, DevTools.MSEC) # <-- NOTE: these arguments are all optional
-	, 200, 5) # <-- NOTE: these arguments are all optional
+		draw_help_info()
+	, 200, 5, DevTools.MSEC) # <-- NOTE: these arguments are all optional
+
 
 
 func monitoring_data() -> void:
@@ -201,7 +203,7 @@ func drawing_in_3d() -> void:
 
 
 
-func draw_helper_info() -> void:
+func draw_help_info() -> void:
 	var ws := DisplayServer.window_get_size()
 	var font_size := 20
 
