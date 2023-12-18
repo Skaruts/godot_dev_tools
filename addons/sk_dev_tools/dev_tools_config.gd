@@ -1,13 +1,14 @@
 class_name DevToolsConfig
 extends Resource
 
-# NOTE (TODO): some of the 3D drawing settings are commented out because
-# I don't quite remember exactly how they work, since I've not been working on
-# or using the drawing tool for many months now.
-# I'll have to recap and see what's useful for the plugin.
+## The configuration file for the Godot Dev Tools Addon
 
 
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
+#    	General
+
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 @export_category("CanvasLayers")
 
 ## The CanvasLayer the info panel uses. Keep it high enough so the panel
@@ -21,7 +22,11 @@ extends Resource
 
 
 
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
+#    	Info Tool
+
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 @export_category("Info Display")
 
 ## The float precision that will be used when no precision is specified
@@ -30,8 +35,9 @@ extends Resource
 @export_range(0, 16) var float_precision :int = 2
 
 
-
+#-------------------------------------------------------------------------------
 @export_group("Background")
+#-------------------------------------------------------------------------------
 
 ## Whether or not to draw the background panel.
 @export var draw_background := true
@@ -49,7 +55,9 @@ extends Resource
 @export var border_color := Color("ffffff5d")
 
 
+#-------------------------------------------------------------------------------
 @export_group("Text")
+#-------------------------------------------------------------------------------
 
 ## The size of all the text displayed in the info panel.
 @export_range(1, 1000) var text_size := 16
@@ -58,7 +66,11 @@ extends Resource
 ## outlines.
 @export_range(0, 500) var outline_size := 10
 
-@export_subgroup("Colors")
+
+#-------------------------------------------------------------------------------
+@export_group("Text Colors")
+#-------------------------------------------------------------------------------
+
 ## The color of keys text
 @export var key_color := Color.LIGHT_GRAY
 
@@ -85,7 +97,9 @@ extends Resource
 
 
 
+#-------------------------------------------------------------------------------
 @export_group("Benchmarking")
+#-------------------------------------------------------------------------------
 
 ## The smoothing value the benchmark function will use by default. This can
 ## prevent values that fluctuate too much from being unreadable.
@@ -108,6 +122,11 @@ extends Resource
 
 
 
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
+
+#    	Drawing
+
+#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 @export_category("3D Drawing")
 
 ## How many new instances should be added to the MultiMeshInstance's pool when
@@ -121,14 +140,26 @@ extends Resource
 ## and this value can be tweaked to accomodate for different use cases.
 @export var width_factor := 0.01
 
-@export_group("Colors")
 
+
+#-------------------------------------------------------------------------------
+@export_group("Colors")
+#-------------------------------------------------------------------------------
+
+## The color used for lines that represent the X axis (in transforms, origins, etc)
 @export var x_axis_color := Color(0.72, 0.02, 0.02)
+
+## The color used for lines that represent the Y axis (in transforms, origins, etc)
 @export var y_axis_color := Color(0.025, 0.31, 0)
+
+## The color used for lines that represent the Z axis (in transforms, origins, etc)
 @export var z_axis_color := Color(0, 0.10, 1)
 
-@export_group("Shapes")
 
+
+#-------------------------------------------------------------------------------
+@export_group("Shapes")
+#-------------------------------------------------------------------------------
 
 ## How many radial segments the spheres will be made of (the vertical lines)
 @export var sphere_radial_segments := 24
@@ -144,19 +175,10 @@ extends Resource
 @export var cylinder_radial_segments := 5
 
 
+
+#-------------------------------------------------------------------------------
 @export_group("Material")
-
-## (iirc) If true, then all objects will use the same color and
-## ignore the colors provided in the functions (not very useful here, I think)
-#@export var single_color := false
-
-#@export var line_color := Color.WHITE
-#@export var backline_color:Color
-#@export var face_color:Color
-#@export var backface_color:Color
-
-#@export var line_thickness := 1.0
-
+#-------------------------------------------------------------------------------
 
 ## Whether lines are affected by lighting or not. (Ideally this is better kept
 ## off. I have the option available only because the shaded lines can actually
@@ -169,15 +191,6 @@ extends Resource
 ## it confusing to see where things actually are.)
 @export var on_top := false
 
-
-#@export var no_shadows := true
-#@export var transparent := false
-#@export var double_sided := false
-
-#@export var back_alpha := 0.5
-#@export var face_alpha := 0.5
-#@export var darken_factor := 0.25
-#@export var see_through := false  # TODO: this doesn't seem to work reliably
 
 
 

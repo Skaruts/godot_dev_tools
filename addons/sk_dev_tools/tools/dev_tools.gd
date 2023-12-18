@@ -1,7 +1,7 @@
 extends Node
 
 
-var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
+var _data: Resource = load("res://addons/sk_dev_tools/shared.gd")
 
 @onready var _it:CanvasLayer = $info_tool
 
@@ -13,27 +13,21 @@ var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 func _enter_tree() -> void:
-	# TODO: should I do this automatically, or should I leave it to the users
-	# to decide whether they want the config file or not?
-	#if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
-		#var dtc := DevToolsConfig.new()
-		#ResourceSaver.save(dtc, data.DT_SETTINGS_PATH)
+	# TODO: should I create a config file automatically, or should I
+	# leave it to the users to decide whether they want the config file or not?
+	# _data.check_config()
 	pass
-
-#func _ready() -> void:
-	#print(_ready)
-	#_init_input_actions()
 
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
-	#_info_input_checker_func.call(event)
+
 	if InputMap.has_action("dev_tools_info"):
 		if event.is_action_pressed("dev_tools_info"):
 			toggle_info()
 	else:
 		var mods_ok:bool = not (event.ctrl_pressed or event.shift_pressed or event.alt_pressed)
-		if event.keycode in data.DEF_KEYS and event.pressed \
+		if event.keycode in _data.DEF_KEYS and event.pressed \
 		and not event.echo and mods_ok:
 			toggle_info()
 
@@ -49,17 +43,20 @@ func enable_info()  -> void: _it.set_info_enabled(true)
 func disable_info() -> void: _it.set_info_enabled(false)
 
 
-func print(key:String, val:Variant=null, fp:int=_it.def_float_precision) -> void:
+func print(key:String, val:Variant=null, fp:int=_it._def_float_precision) -> void:
 	_it.print(key, val, fp)
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:int=_it.def_float_precision) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null,
+				   fp:int=_it._def_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)
 
 
-func printg(group_name:String, key:String, val:Variant=null, fp:float = _it.def_float_precision) -> void:
+func printg(group_name:String, key:String, val:Variant=null,
+			fp:float = _it._def_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)
 
-func print_prop(node:Object, key:String, val:Variant=null, fp:float = _it.def_float_precision) -> void:
+func print_prop(node:Object, key:String, val:Variant=null,
+				fp:float = _it._def_float_precision) -> void:
 	_it.print_prop(node, key, val, fp)
 
 func is_registered(node:Object) -> bool:
@@ -71,15 +68,15 @@ func register(node:Object, values:Array) -> void:
 
 
 
-# TODO: There should be a better way to relay this to users
+# TODO: Must find a better way to relay this to users
+# As well as the rest of this API...
 enum {
 	SEC,
 	MSEC,
 }
 
 @warning_ignore("shadowed_variable_base_class")
-func bm(name:String, f:Callable, smoothing:int = _it.def_bm_smoothing,
-		precision:float = _it.bm_precision_secs
-		, time_units:float = _it.bm_time_units
-) -> float:
+func bm(name:String, f:Callable, smoothing:int = _it._def_bm_smoothing,
+		precision:float = _it._bm_precision_secs
+		, time_units:float = _it._bm_time_units) -> float:
 	return _it.bm(name, f, smoothing, precision, time_units)

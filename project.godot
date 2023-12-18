@@ -18,19 +18,18 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DevTools="*res://addons/sk_debug_tools/tools/dev_tools.tscn"
-DevTools2D="*res://addons/sk_debug_tools/tools/dev_tools_2d.gd"
-DevTools3D="*res://addons/sk_debug_tools/tools/dev_tools_3d.gd"
+DevTools="*res://addons/sk_dev_tools/tools/dev_tools.tscn"
+DevTools2D="*res://addons/sk_dev_tools/tools/dev_tools_2d.gd"
+DevTools3D="*res://addons/sk_dev_tools/tools/dev_tools_3d.gd"
 
 [debug]
 
-gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=2
 gdscript/warnings/int_as_enum_without_match=2
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/plugin_refresher/plugin.cfg", "res://addons/sk_debug_tools/plugin.cfg")
+enabled=PackedStringArray("res://addons/plugin_refresher/plugin.cfg", "res://addons/sk_dev_tools/plugin.cfg")
 
 [input]
 

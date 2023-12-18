@@ -2,7 +2,7 @@
 extends Node3D
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
-#        DrawTool3D 0.9.9 (Godot 4) by Skaruts  (adapted here for the plugin)
+#        DrawTool3D 0.9.9 (Godot 4) by Skaruts  (adapted here for the addon)
 #
 #
 #    - Uses MultiMeshes for lines, cones, spheres, cubes...
@@ -367,13 +367,9 @@ func _ready() -> void:
 
 
 func _init_config() -> void:
-	var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
-
-	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
-		return
-
-	var config := load(data.DT_SETTINGS_PATH)
-
+	var data: Resource = preload("res://addons/sk_dev_tools/shared.gd")
+	var config: Resource = data.get_config()
+	if not config: return
 	#line_color               = config.line_color
 	#backline_color           = config.backline_color
 	#face_color               = config.face_color

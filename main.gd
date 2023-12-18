@@ -27,13 +27,14 @@ func _ready() -> void:
 	DevTools3D.enable()
 
 	# this will register the listed properties of 'foo', which will
-	# be displayed and updated automatically
+	# be displayed and updated automatically forever, or until you
+	# call DevTools.unregister().
 	DevTools.register(foo, ["x", "y"])
 
-	# NOTE: register() should be called only once, in _init,
-	# _ready or _enter_tree (and temporary nodes have to also
-	# use unregister() in _exit_tree)
+	# NOTE: register() should be called only once, in _init, _ready
+	# or _enter_tree
 
+	# NOTE: objects must call DevTools.unregister() before being freed.
 
 
 func _process(_delta: float) -> void:

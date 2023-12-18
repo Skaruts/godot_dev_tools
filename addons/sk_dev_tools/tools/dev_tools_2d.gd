@@ -1,11 +1,10 @@
 extends CanvasLayer
 
-
-var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
+var _data:Resource = preload("res://addons/sk_dev_tools/shared.gd")
 
 var _drawing_visible := false
 
-@onready var _dt:Node = load(data.DT_2D_PATH).new()
+@onready var _dt:Node = load(_data.DT_2D_PATH).new()
 
 
 
@@ -29,7 +28,7 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
-	#_input_checker_func.call(event)
+
 	if InputMap.has_action("dev_tools_drawing"):
 		if event.is_action_pressed("dev_tools_drawing"):
 			toggle()
@@ -38,16 +37,14 @@ func _input(event: InputEvent) -> void:
 			   and not event.shift_pressed \
 			   and not event.alt_pressed
 
-		if event.keycode in data.DEF_KEYS and event.pressed \
+		if event.keycode in _data.DEF_KEYS and event.pressed \
 		and not event.echo and mods_ok:
 			toggle()
 
 
 func _init_config() -> void:
-	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
-		return
-
-	var config := load(data.DT_SETTINGS_PATH)
+	var config: Resource = _data.get_config()
+	if not config: return
 
 	layer = config.drawing_tool_layer
 

@@ -1,7 +1,7 @@
 extends Node3D
 
 
-var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
+var _data:Resource = preload("res://addons/sk_dev_tools/shared.gd")
 
 var _draw_arrays:Dictionary
 var _drawing_visible := false
@@ -11,7 +11,7 @@ var _color_y_axis:Color = Color(0.025, 0.31, 0)
 var _color_z_axis:Color = Color(0, 0.10, 1)
 
 #@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
-@onready var _dt:Node = load(data.DT_3D_PATH).new()
+@onready var _dt:Node = load(_data.DT_3D_PATH).new()
 @onready var _api_lookup := {
 	lines     = _dt.bulk_lines,
 	polylines = _dt.bulk_polylines,
@@ -43,10 +43,8 @@ func _ready() -> void:
 
 
 func _init_config() -> void:
-	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
-		return
-
-	var config := load(data.DT_SETTINGS_PATH)
+	var config: Resource = _data.get_config()
+	if not config: return
 
 	_color_x_axis = config.x_axis_color
 	_color_y_axis = config.y_axis_color
@@ -55,6 +53,7 @@ func _init_config() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
+
 	if InputMap.has_action("dev_tools_drawing"):
 		if event.is_action_pressed("dev_tools_drawing"):
 			toggle()
@@ -63,7 +62,7 @@ func _input(event: InputEvent) -> void:
 			   and not event.shift_pressed \
 			   and not event.alt_pressed
 
-		if event.keycode in data.DEF_KEYS and event.pressed \
+		if event.keycode in _data.DEF_KEYS and event.pressed \
 		and not event.echo and mods_ok:
 			toggle()
 

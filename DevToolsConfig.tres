@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="DevToolsConfig" load_steps=2 format=3 uid="uid://bp6slkfhvx6ac"]
+[gd_resource type="Resource" script_class="DevToolsConfig" load_steps=2 format=3 uid="uid://x7s0um8aux44"]
 
-[ext_resource type="Script" path="res://addons/sk_debug_tools/dev_tools_config.gd" id="1_8f57y"]
+[ext_resource type="Script" path="res://addons/sk_dev_tools/dev_tools_config.gd" id="1_mmtyv"]
 
 [resource]
-script = ExtResource("1_8f57y")
+script = ExtResource("1_mmtyv")
 info_tool_layer = 128
 drawing_tool_layer = 125
 float_precision = 2

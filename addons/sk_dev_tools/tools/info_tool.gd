@@ -1,60 +1,60 @@
 extends CanvasLayer
 
 
-var text_size       := 16
-var def_float_precision :int = 2
-var outline_size    := 10
+var _text_size       := 16
+var _def_float_precision :int = 2
+var _outline_size    := 10
 
-var draw_background := true
-var draw_border     := true
-var bg_color        := Color("1a1a1a99")
-var border_width    := 1
-var border_color    := Color("ffffff5d")
+var _draw_background := true
+var _draw_border     := true
+var _bg_color        := Color("1a1a1a99")
+var _border_width    := 1
+var _border_color    := Color("ffffff5d")
 
-var color_null    := Color.FUCHSIA
-var color_number  := Color(0.81, 0.64, 0.99)
-var color_string  := Color(1, 0.90, 0.66)
-var color_bool    := Color(1, 0.72, 0.26)
-var color_builtin := Color(0.74, 0.84, 1)
-var color_object  := Color(0.30, 0.86, 0.30)
+var _color_null    := Color.FUCHSIA
+var _color_number  := Color(0.81, 0.64, 0.99)
+var _color_string  := Color(1, 0.90, 0.66)
+var _color_bool    := Color(1, 0.72, 0.26)
+var _color_builtin := Color(0.74, 0.84, 1)
+var _color_object  := Color(0.30, 0.86, 0.30)
 
-var color_key     := Color.LIGHT_GRAY
-var color_group   := Color(1, 0.37, 0.37)
+var _color_key     := Color.LIGHT_GRAY
+var _color_group   := Color(1, 0.37, 0.37)
 
 enum {
 	SEC,
 	MSEC,
 }
 
-var def_bm_smoothing:int = 15
-var bm_time_units:int = SEC
-var bm_precision_secs:int = 4
-var max_smoothing := 100
+var _def_bm_smoothing:int = 15
+var _bm_time_units:int = SEC
+var _bm_precision_secs:int = 4
+var _max_smoothing := 100
 
-const GROUP_PREFIX := "    "
-const NODE_PROP_PREFIX := "    "
+const _GROUP_PREFIX := "    "
+const _NODE_PROP_PREFIX := "    "
 const _SPACER := ' ' # this prevents outlines getting cut off at the edges of the labels
 
 var _colors_lookup := {
-	TYPE_NIL                   : color_null,		TYPE_BOOL                  : color_bool,
-	TYPE_INT                   : color_number,		TYPE_FLOAT                 : color_number,
-	TYPE_STRING                : color_string,		TYPE_VECTOR2               : color_builtin,
-	TYPE_VECTOR2I              : color_builtin,		TYPE_RECT2                 : color_builtin,
-	TYPE_RECT2I                : color_builtin,		TYPE_VECTOR3               : color_builtin,
-	TYPE_VECTOR3I              : color_builtin,		TYPE_TRANSFORM2D           : color_builtin,
-	TYPE_VECTOR4               : color_builtin,		TYPE_VECTOR4I              : color_builtin,
-	TYPE_PLANE                 : color_builtin,		TYPE_QUATERNION            : color_builtin,
-	TYPE_AABB                  : color_builtin,		TYPE_BASIS                 : color_builtin,
-	TYPE_TRANSFORM3D           : color_builtin,		TYPE_PROJECTION            : color_builtin,
-	TYPE_COLOR                 : color_builtin,		TYPE_STRING_NAME           : color_string,
-	TYPE_NODE_PATH             : color_string,		TYPE_RID                   : color_number,
-	TYPE_OBJECT                : color_object,		TYPE_CALLABLE              : color_builtin,
-	TYPE_SIGNAL                : color_builtin,		TYPE_DICTIONARY            : color_builtin,
-	TYPE_ARRAY                 : color_builtin,		TYPE_PACKED_BYTE_ARRAY     : color_builtin,
-	TYPE_PACKED_INT32_ARRAY    : color_builtin,		TYPE_PACKED_INT64_ARRAY    : color_builtin,
-	TYPE_PACKED_FLOAT32_ARRAY  : color_builtin,		TYPE_PACKED_FLOAT64_ARRAY  : color_builtin,
-	TYPE_PACKED_STRING_ARRAY   : color_builtin,		TYPE_PACKED_VECTOR2_ARRAY  : color_builtin,
-	TYPE_PACKED_VECTOR3_ARRAY  : color_builtin,		TYPE_PACKED_COLOR_ARRAY    : color_builtin,
+	TYPE_NIL                   : _color_null,		TYPE_BOOL                  : _color_bool,
+	TYPE_INT                   : _color_number,		TYPE_FLOAT                 : _color_number,
+	TYPE_STRING                : _color_string,		TYPE_VECTOR2               : _color_builtin,
+	TYPE_VECTOR2I              : _color_builtin,		TYPE_RECT2                 : _color_builtin,
+	TYPE_RECT2I                : _color_builtin,		TYPE_VECTOR3               : _color_builtin,
+	TYPE_VECTOR3I              : _color_builtin,		TYPE_TRANSFORM2D           : _color_builtin,
+	TYPE_VECTOR4               : _color_builtin,		TYPE_VECTOR4I              : _color_builtin,
+	TYPE_PLANE                 : _color_builtin,		TYPE_QUATERNION            : _color_builtin,
+	TYPE_AABB                  : _color_builtin,		TYPE_BASIS                 : _color_builtin,
+	TYPE_TRANSFORM3D           : _color_builtin,		TYPE_PROJECTION            : _color_builtin,
+	TYPE_COLOR                 : _color_builtin,		TYPE_STRING_NAME           : _color_string,
+	TYPE_NODE_PATH             : _color_string,		TYPE_RID                   : _color_number,
+	TYPE_OBJECT                : _color_object,		TYPE_CALLABLE              : _color_builtin,
+	TYPE_SIGNAL                : _color_builtin,		TYPE_DICTIONARY            : _color_builtin,
+	TYPE_ARRAY                 : _color_builtin,		TYPE_PACKED_BYTE_ARRAY     : _color_builtin,
+	TYPE_PACKED_INT32_ARRAY    : _color_builtin,		TYPE_PACKED_INT64_ARRAY    : _color_builtin,
+	TYPE_PACKED_FLOAT32_ARRAY  : _color_builtin,		TYPE_PACKED_FLOAT64_ARRAY  : _color_builtin,
+	TYPE_PACKED_STRING_ARRAY   : _color_builtin,		TYPE_PACKED_VECTOR2_ARRAY  : _color_builtin,
+	TYPE_PACKED_VECTOR3_ARRAY  : _color_builtin,		TYPE_PACKED_COLOR_ARRAY    : _color_builtin,
 }
 
 const _FONT_SIZE_PROPS:Array[String] = [
@@ -102,57 +102,54 @@ func _process(_delta: float) -> void:
 
 func _init_background() -> void:
 	var style:StyleBoxFlat = _ui_base.get("theme_override_styles/panel")
-	if not draw_background:
+	if not _draw_background:
 		style.bg_color = Color.TRANSPARENT
 	else:
-		style.bg_color = bg_color
+		style.bg_color = _bg_color
 
-	if not draw_border:
+	if not _draw_border:
 		style.border_color = Color.TRANSPARENT
 		return
 
-	style.border_color = border_color
-	style.border_width_right = border_width
-	style.border_width_bottom = border_width
+	style.border_color = _border_color
+	style.border_width_right = _border_width
+	style.border_width_bottom = _border_width
 
 
 
 func _init_config() -> void:
-	var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
-
-	if not FileAccess.file_exists(data.DT_SETTINGS_PATH):
-		return
-
-	var config := load(data.DT_SETTINGS_PATH)
+	var data: Resource = preload("res://addons/sk_dev_tools/shared.gd")
+	var config: Resource = data.get_config()
+	if not config: return
 
 	layer                   = config.info_tool_layer
 
-	text_size               = config.text_size
-	def_float_precision     = config.float_precision
-	outline_size            = config.outline_size
-	draw_background         = config.draw_background
-	draw_border             = config.draw_border
-	bg_color                = config.background_color
-	border_width            = config.border_width
-	border_color            = config.border_color
-	color_null              = config.null_color
-	color_number            = config.number_color
-	color_string            = config.string_color
-	color_bool              = config.bool_color
-	color_builtin           = config.builtin_color
-	color_object            = config.object_color
-	color_key               = config.key_color
-	color_group             = config.group_color
-	def_bm_smoothing        = config.smoothing
-	bm_time_units           = config.time_units
-	bm_precision_secs       = config.decimal_precision
-	max_smoothing           = config.max_smoothing
+	_text_size               = config.text_size
+	_def_float_precision     = config.float_precision
+	_outline_size            = config.outline_size
+	_draw_background         = config.draw_background
+	_draw_border             = config.draw_border
+	_bg_color                = config.background_color
+	_border_width            = config.border_width
+	_border_color            = config.border_color
+	_color_null              = config.null_color
+	_color_number            = config.number_color
+	_color_string            = config.string_color
+	_color_bool              = config.bool_color
+	_color_builtin           = config.builtin_color
+	_color_object            = config.object_color
+	_color_key               = config.key_color
+	_color_group             = config.group_color
+	_def_bm_smoothing        = config.smoothing
+	_bm_time_units           = config.time_units
+	_bm_precision_secs       = config.decimal_precision
+	_max_smoothing           = config.max_smoothing
 
 
 
 func _finish_processing() -> void:
-	_label_keys.text = _tag_outline_color(_tag_outline_size(_text_keys, outline_size), Color.BLACK)
-	_label_vals.text = _tag_outline_color(_tag_outline_size(_text_vals, outline_size), Color.BLACK)
+	_label_keys.text = _tag_outline_color(_tag_outline_size(_text_keys, _outline_size), Color.BLACK)
+	_label_vals.text = _tag_outline_color(_tag_outline_size(_text_vals, _outline_size), Color.BLACK)
 
 
 func _clean_up() -> void:
@@ -171,19 +168,19 @@ func _process_lines() -> void:
 
 func _process_grouped_lines() -> void:
 	for group_name:String in _grouped_lines:
-		_text_keys += '\n' + _SPACER + _tag_color(group_name, color_group) + _SPACER + '\n'
+		_text_keys += '\n' + _SPACER + _tag_color(group_name, _color_group) + _SPACER + '\n'
 		#_text_vals += '\n' + _tag_bgcolor(group_name, color_group_bg) + '\n'
 		_text_vals += '\n\n'
 
 		for line:Dictionary in _grouped_lines[group_name]:
-			_add_line(line, GROUP_PREFIX)
+			_add_line(line, _GROUP_PREFIX)
 
 
 func _process_node_properties() -> void:
 	for node:Object in _nodes:
 		if node == null: continue
 
-		_text_keys += '\n' + _SPACER + _tag_color(node.name, color_object) + _SPACER + '\n'
+		_text_keys += '\n' + _SPACER + _tag_color(node.name, _color_object) + _SPACER + '\n'
 		_text_vals += '\n\n'
 
 		for prop:Dictionary in _nodes[node].values():
@@ -192,17 +189,17 @@ func _process_node_properties() -> void:
 				val = node.get(prop.name),
 				fp = prop.fp,
 			}
-			_add_line(line, GROUP_PREFIX)
+			_add_line(line, _GROUP_PREFIX)
 
 		if node in _node_properties:
 			for line:Dictionary in _node_properties[node]:
-				_add_line(line, NODE_PROP_PREFIX)
+				_add_line(line, _NODE_PROP_PREFIX)
 
 
 func _init_text_sizes() -> void:
 	for prop in _FONT_SIZE_PROPS:
-		_label_keys.set(prop, text_size)
-		_label_vals.set(prop, text_size)
+		_label_keys.set(prop, _text_size)
+		_label_vals.set(prop, _text_size)
 
 
 func _add_line(line:Dictionary, prefix:="") -> void:
@@ -210,7 +207,7 @@ func _add_line(line:Dictionary, prefix:="") -> void:
 	var val:Variant = line.val
 	var fp:String   = str(int(line.fp))
 
-	_text_keys += _SPACER + prefix + _tag_color(key, color_key) + _SPACER + '\n'
+	_text_keys += _SPACER + prefix + _tag_color(key, _color_key) + _SPACER + '\n'
 
 	#if val != null:
 	var tp := typeof(val)
@@ -233,8 +230,8 @@ func _tag_outline_color(text:String, color:Color) -> String:
 	return "[outline_color=%s]%s[/outline_color]" % [color.to_html(false), text]
 
 func _tag_outline_size(text:String, size:int) -> String:
-	#return "[outline_size=" + str(size) + "]" + text + "[/outline_size]"
-	return "[outline_size=%d]%s[/outline_size]" % [size, text]
+	#return "[_outline_size=" + str(size) + "]" + text + "[/_outline_size]"
+	return "[_outline_size=%d]%s[/_outline_size]" % [size, text]
 
 
 
@@ -263,13 +260,13 @@ func _create_line(key:String, val:Variant, fp:float) -> Dictionary:
 	return { key=key, val=val, fp=fp }
 
 
-func print(key:String, val:Variant=null, fp:=def_float_precision) -> void:
+func print(key:String, val:Variant=null, fp:=_def_float_precision) -> void:
 	if not _info_visible: return
 	var line := _create_line(key, val, fp)
 	_lines.append(line)
 
 
-func print_grouped(group_name:String, key:String, val:Variant=null, fp:=def_float_precision) -> void:
+func print_grouped(group_name:String, key:String, val:Variant=null, fp:=_def_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)
@@ -281,7 +278,7 @@ func print_grouped(group_name:String, key:String, val:Variant=null, fp:=def_floa
 	_grouped_lines[group_name].append(line)
 
 
-func print_prop(node:Object, key:String, val:Variant=null, fp:=def_float_precision) -> void:
+func print_prop(node:Object, key:String, val:Variant=null, fp:=_def_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)
@@ -337,14 +334,14 @@ func _get_cached(name:String) -> Dictionary:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func bm(name:String, f:Callable, smoothing:=def_bm_smoothing,
-		precision:=bm_precision_secs, time_units:=bm_time_units
+func bm(name:String, f:Callable, smoothing:=_def_bm_smoothing,
+		precision:=_bm_precision_secs, time_units:=_bm_time_units
 ) -> float:
 	if not _info_visible:
 		f.call()
 		return 0
 
-	smoothing = clamp(smoothing, 0, max_smoothing)
+	smoothing = clamp(smoothing, 0, _max_smoothing)
 
 	var t1:float = Time.get_ticks_msec()
 	f.call()
@@ -358,7 +355,7 @@ func bm(name:String, f:Callable, smoothing:=def_bm_smoothing,
 
 	if smoothing > 1:
 		cached.time += t2
-		if cached.history.size() > def_bm_smoothing:
+		if cached.history.size() > _def_bm_smoothing:
 			cached.time -= cached.history.pop_front()
 
 		cached.history.append(t2)
