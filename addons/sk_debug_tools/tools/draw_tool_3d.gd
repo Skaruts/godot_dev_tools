@@ -2,43 +2,45 @@
 extends Node3D
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
-#        DrawTool3D 0.9.9 (Godot 4) by Skaruts
+#        DrawTool3D 0.9.9 (Godot 4) by Skaruts  (adapted here for the plugin)
 #
-#    (Slightly adapted here for the DebugTools plugin)
 #
 #    - Uses MultiMeshes for lines, cones, spheres, cubes...
 #    - Uses an ImmediateMesh to draw faces, since they don't require a thickness.
 #    - Uses Label3D for text (may use TextMeshes in the future - need testing).
 #
 #
-#    This uses MultiMeshInstances to draw instances of a cube or cylinder MultiMesh,
+#    This draws instances of a cube or cylinder MultiMesh,
 #    stretched to represent lines, and instances of spheres for 3D points.
-#    For each line AB, scales an instance of a cube in one axis to equal the
-#    distance from A to B, and then rotates it accordingly using
+#    For each line AB, it scales an instance of the cube in one axis to equal
+#    the distance from A to B, and then rotates it accordingly using
 #     'transform.looking_at()'.
 #    Cylinders, however, are upright by default, so they have to be
 #    manually rotated to compensate for this.
 #
 #    NOTE: currently, the code I wrote for cylinders in Godot 3 isn't
 #    working properly in Godot 4. It's best to keep '_use_cylinders_for_lines'
-#    set to false until this is fixed.
+#    set to false until this is fixed. Using cylinders will result in some
+#    lines being oriented wrong.
 #
-#    NOTE: bulk_* functions require that the arrays that are provided to them
-#    contain all the arguments, including optional argumetns, that you'd pass
-#    to the original drawing function. They are intended for usage in tools,
-#    rather than directly by users (the batch_* functions are intended for users).
+#    NOTE: the 'bulk_*' functions require that the arrays provided to them
+#    contain all the arguments that you'd pass to the original drawing
+#    functions, including optional arguments. They're intended for usage
+#    in tools, rather than directly by users (the batch_* functions are
+#    intended for users).
 #
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #
 # TODO:
 #   - consider periodically lowering the 'instance_count', since currently it
-#     grows as needed, and stays as is to serve as an object pool,
+#     just grows as needed, and stays as is to serve as an object pool,
 #     but it never comes back down (not sure it's really an issue)
 #
 #   - draw quads
 #   - draw polygons
 #
-#   - create cylinders without caps through code (and cones) ?
+#   - figure out how to create cylinders through code (and cones), in order
+#     to create naturaly a rotated cylinder that will work properly.
 #
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
@@ -78,7 +80,7 @@ var sphere_rings    := 12
 var circle_segments := 32
 var cylinder_radial_segments := 5
 
-# how many instances to add when more instances are needed
+# how many instances to add to the MultiMeshInstance when the pool is full
 var instance_increment := 16
 
 

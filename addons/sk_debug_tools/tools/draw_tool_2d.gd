@@ -13,11 +13,11 @@ var _draw_arrays:Dictionary
 	circles           = _render_circles,
 	filled_circles    = _render_filled_circles,
 	arcs              = _render_arcs,
-	strings           = _render_strings,
-	string_outlines   = _render_string_outlines,
 	#polygons          = bulk_polygons,
 	#col_polygons      = bulk_col_polygons,
 	#primitives        = bulk_primitives,
+	string_outlines   = _render_string_outlines,
+	strings           = _render_strings,
 }
 
 
@@ -159,7 +159,8 @@ func _render_string_outlines(string_outlines:Array) -> void:
 		#draw_string_outline(f, p, t, alin, w, fs, os, c)
 		draw_string_outline(_font, a[0], str, a[2], width, font_size, a[4], a[5])
 
-
+func get_text_size(text:String, font_size:int) -> Vector2:
+	return ThemeDB.fallback_font.get_string_size(text, 0, -1, font_size)
 
 
 

@@ -1,15 +1,13 @@
 extends CanvasLayer
 
+
 var data: Node = load("res://addons/sk_debug_tools/data.gd").new()
 
 var _drawing_visible := false
-var _input_checker_func:Callable
-
-#@onready var _dt :Node = preload("res://to_plugin/draw_tool_2d.gd").new()
-
-
 
 @onready var _dt:Node = load(data.DT_2D_PATH).new()
+
+
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
@@ -20,12 +18,7 @@ var _input_checker_func:Callable
 func _ready() -> void:
 	_init_config()
 	#print(_ready)
-	# the info_tool is 128, and this should be behind it, but leave some space
-	# in case more UI stuff is added to the plugin
-
-
 	add_child(_dt)
-	_init_input_actions()
 
 
 func _process(_delta: float) -> void:
@@ -35,25 +28,18 @@ func _process(_delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
-	_input_checker_func.call(event)
-
-
-func _init_input_actions() -> void:
+	#_input_checker_func.call(event)
 	if InputMap.has_action("dev_tools_drawing"):
-		_input_checker_func = \
-				func(event:InputEventKey) -> void:
-					if event.is_action_pressed("dev_tools_drawing"):
-						toggle()
+		if event.is_action_pressed("dev_tools_drawing"):
+			toggle()
 	else:
-		_input_checker_func = \
-				func(event:InputEventKey) -> void:
-					var mods_ok := event.ctrl_pressed  \
-						   and not event.shift_pressed \
-						   and not event.alt_pressed
+		var mods_ok: bool = event.ctrl_pressed  \
+			   and not event.shift_pressed \
+			   and not event.alt_pressed
 
-					if event.keycode in data.DEF_KEYS and event.pressed \
-					and not event.echo and mods_ok:
-						toggle()
+		if event.keycode in data.DEF_KEYS and event.pressed \
+		and not event.echo and mods_ok:
+			toggle()
 
 
 func _init_config() -> void:
@@ -151,16 +137,24 @@ func draw_transform(node:Node2D, size:float, local:=false, width=1.0, antialiase
 	#draw_vector(b, c, color, width, antialiased)
 
 #draw_string(font, Vector2(500, 300), str, 0, ss, font_size, Color.RED)
-func draw_text(position:Vector2, text:String, font_size:float, color:Color, outline:=false) -> void:
+func draw_text(position:Vector2, text:String, font_size:float,
+			   color:Color, outline:=false, outline_size:=1.0,
+			   outline_color:=Color.BLACK
+) -> void:
 	if not _drawing_visible: return
 	_dt.add_string([position, text, 0, font_size, color])
+	if outline:
+		draw_text_outline(position, text, font_size, outline_size, outline_color)
 
 
-func draw_text_outline(position:Vector2, text:String, font_size:float, out_size:float, color:Color) -> void:
+func draw_text_outline(position:Vector2, text:String, font_size:float,
+					   outline_size:float, color:Color
+) -> void:
 	if not _drawing_visible: return
-	_dt.add_string_outline([position, text,  0,  font_size, out_size, color])
+	_dt.add_string_outline([position, text,  0,  font_size, outline_size, color])
 
-
+func get_text_size(text:String, font_size:int) -> Vector2:
+	return _dt.get_text_size(text, font_size)
 
 
 # func polygon(points: Array, colors: PoolColorArray, antialiased:=false ) -> void:

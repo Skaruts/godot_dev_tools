@@ -21,6 +21,7 @@ extends Resource
 
 
 
+
 @export_category("Info Display")
 
 ## The size of all the text displayed in the info panel.
@@ -50,28 +51,28 @@ extends Resource
 ## The color of the background panel's border.
 @export var border_color := Color("ffffff5d")
 
-## The color of key text (left side)
+## The color of keys text
 @export var key_color := Color.LIGHT_GRAY
 
-## The color of group names (left side)
+## The color of group names
 @export var group_color := Color(1, 0.37, 0.37)
 
-## The color of null values (right side)
+## The color of null values
 @export var null_color := Color.FUCHSIA
 
-## The color of number values (right side)
+## The color of number values
 @export var number_color := Color(0.81, 0.64, 0.99)
 
-## The color of string values (right side)
+## The color of string values
 @export var string_color := Color(1, 0.90, 0.66)
 
-## The color of bool values (right side)
+## The color of bool values
 @export var bool_color := Color(1, 0.72, 0.26)
 
-## The color of builtin values (right side)
+## The color of built-in type values (Vectors, Arrays, AABBs, etc)
 @export var builtin_color := Color(0.74, 0.84, 1)
 
-## The color of object values (right side)
+## The color of object values
 @export var object_color := Color(0.30, 0.86, 0.30)
 
 
@@ -79,14 +80,19 @@ extends Resource
 
 @export_category("3D Drawing")
 
-## How many instances to add to the MultiMeshInstance when more instances
-## are needed in the pool. If you don't know what this means, just leave it
-## as it is.
+@export var x_axis_color := Color(0.72, 0.02, 0.02)
+@export var y_axis_color := Color(0.025, 0.31, 0)
+@export var z_axis_color := Color(0, 0.10, 1)
+
+## How many new instances should be added to the MultiMeshInstance's pool when
+## the pool is full.
+## May be better to leave this unchanged if you don't know what that means.
 @export var instance_increment := 16
 
-## The fraction of a unit that represents a line thickness of 1.
-## Lines will look too thick or too thin from too close or too far, so this
-## must be tweaked according to the intended usage.
+## The fraction of a 3d unit that represents a line thickness of 1. Higher
+## values mean thicker lines.
+## Lines will look too thick or too thin when viewed from too close or too far,
+## and this value can be tweaked to accomodate for different use cases.
 @export var width_factor := 0.01
 
 ## How many radial segments the spheres will be made of (the vertical lines)
