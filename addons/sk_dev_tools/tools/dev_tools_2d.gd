@@ -19,6 +19,7 @@ func _ready() -> void:
 	_init_config()
 	#print(_ready)
 	add_child(_dt)
+	set_enabled(_drawing_visible, true)
 
 
 func _process(_delta: float) -> void:
