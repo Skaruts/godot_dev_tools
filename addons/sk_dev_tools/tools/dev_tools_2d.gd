@@ -30,17 +30,17 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
 
-	if InputMap.has_action("dev_tools_drawing"):
-		if event.is_action_pressed("dev_tools_drawing"):
+	if InputMap.has_action("dev_tools_2d_drawing"):
+		if event.is_action_pressed("dev_tools_2d_drawing"):
 			toggle()
-	else:
-		var mods_ok: bool = event.ctrl_pressed  \
-			   and not event.shift_pressed \
-			   and not event.alt_pressed
-
-		if event.keycode in _data.DEF_KEYS and event.pressed \
-		and not event.echo and mods_ok:
-			toggle()
+	#else:
+		#var mods_ok: bool = event.ctrl_pressed  \
+			   #and not event.shift_pressed \
+			   #and not event.alt_pressed
+#
+		#if event.keycode in _data.DEF_KEYS and event.pressed \
+		#and not event.echo and mods_ok:
+			#toggle()
 
 
 func _init_config() -> void:

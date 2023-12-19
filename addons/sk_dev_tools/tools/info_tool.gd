@@ -87,7 +87,7 @@ func _ready() -> void:
 	_init_text_sizes()
 	_init_background()
 
-	set_info_enabled(_info_visible, true)
+	set_enabled(_info_visible, true)
 
 
 func _process(_delta: float) -> void:
@@ -236,10 +236,10 @@ func _tag_outline_size(text:String, size:int) -> String:
 
 
 
-func toggle()  -> void: set_info_enabled(not _info_visible)
-#func enable()  -> void: set_info_enabled(true)
-#func disable() -> void: set_info_enabled(false)
-func set_info_enabled(vis:bool, force:=false) -> void:
+func toggle()  -> void: set_enabled(not _info_visible)
+#func enable()  -> void: set_enabled(true)
+#func disable() -> void: set_enabled(false)
+func set_enabled(vis:bool, force:=false) -> void:
 	if vis == _info_visible and not force: return
 	_info_visible = vis
 	_ui_base.visible = _info_visible

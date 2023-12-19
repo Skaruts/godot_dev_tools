@@ -31,7 +31,19 @@ func _input(event: InputEvent) -> void:
 		and not event.echo and mods_ok:
 			toggle_info()
 
+	if InputMap.has_action("dev_tools_drawing"):
+		if event.is_action_pressed("dev_tools_drawing"):
+			DevTools2D.toggle()
+			DevTools3D.toggle()
+	else:
+		var mods_ok :bool = event.ctrl_pressed  \
+			   and not event.shift_pressed \
+			   and not event.alt_pressed
 
+		if event.keycode in _data.DEF_KEYS and event.pressed \
+		and not event.echo and mods_ok:
+			DevTools2D.toggle()
+			DevTools3D.toggle()
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
@@ -39,8 +51,20 @@ func _input(event: InputEvent) -> void:
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 func toggle_info()  -> void: _it.toggle()
-func enable_info()  -> void: _it.set_info_enabled(true)
-func disable_info() -> void: _it.set_info_enabled(false)
+func enable_info()  -> void: _it.set_enabled(true)
+func disable_info() -> void: _it.set_enabled(false)
+
+func toggle_drawing()  -> void:
+	DevTools2D.toggle()
+	DevTools3D.toggle()
+
+func enable_drawing()  -> void:
+	DevTools2D.set_enabled(true)
+	DevTools3D.set_enabled(true)
+
+func disable_drawing() -> void:
+	DevTools2D.set_enabled(false)
+	DevTools3D.set_enabled(false)
 
 
 func print(key:String, val:Variant=null, fp:int=_it._def_float_precision) -> void:

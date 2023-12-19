@@ -23,8 +23,8 @@ class Foo:
 func _ready() -> void:
 	# you can optionally turn things on at startup
 	DevTools.enable_info()
-	DevTools2D.enable()
-	DevTools3D.enable()
+	DevTools.enable_drawing()
+
 
 	# this will register the listed properties of 'foo', which will
 	# be displayed and updated automatically forever, or until you
