@@ -172,7 +172,7 @@ func drawing_in_3d() -> void:
 
 	DevTools3D.draw_text(Vector3(0, 0.2, -0.5), "Spheres", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_sphere( filled?, position, radius, color )
-	DevTools3D.draw_sphere(true, Vector3(0, 0, 0), 20, Color.BLUE)
+	DevTools3D.draw_sphere(true, Vector3(0, 0, 0), 0.3, Color.BLUE)
 
 
 	DevTools3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", Color.GREEN_YELLOW, 1)

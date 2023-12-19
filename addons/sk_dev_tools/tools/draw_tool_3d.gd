@@ -499,8 +499,8 @@ func _init_cone_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	@warning_ignore("shadowed_variable")
 	var cone := CylinderMesh.new()
 	cone.top_radius = 0
-	cone.bottom_radius = width_factor*4
-	cone.height = 0.04
+	cone.bottom_radius = width_factor
+	cone.height = width_factor*4
 	cone.radial_segments = sphere_radial_segments
 	cone.rings = 0
 	cone.material = mat
@@ -513,8 +513,8 @@ func _init_sphere_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	# create spheres
 	@warning_ignore("shadowed_variable")
 	var sphere := SphereMesh.new()
-	sphere.radius = width_factor
-	sphere.height = width_factor*2
+	sphere.radius = 0.5
+	sphere.height = 1
 	sphere.radial_segments = sphere_radial_segments
 	sphere.rings = sphere_rings
 	sphere.material = mat
