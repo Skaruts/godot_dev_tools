@@ -27,8 +27,8 @@ func _input(event: InputEvent) -> void:
 			toggle_info()
 	else:
 		var mods_ok:bool = not (event.ctrl_pressed or event.shift_pressed or event.alt_pressed)
-		if event.keycode in _data.DEF_KEYS and event.pressed \
-		and not event.echo and mods_ok:
+		if event.keycode in _data.DEF_KEYS \
+		and event.pressed and not event.echo and mods_ok:
 			toggle_info()
 
 	if InputMap.has_action("dev_tools_drawing"):
@@ -36,12 +36,12 @@ func _input(event: InputEvent) -> void:
 			DevTools2D.toggle()
 			DevTools3D.toggle()
 	else:
-		var mods_ok :bool = event.ctrl_pressed  \
-			   and not event.shift_pressed \
-			   and not event.alt_pressed
+		var mods_ok :bool = event.ctrl_pressed          \
+			   				and not event.shift_pressed \
+			   				and not event.alt_pressed
 
-		if event.keycode in _data.DEF_KEYS and event.pressed \
-		and not event.echo and mods_ok:
+		if event.keycode in _data.DEF_KEYS \
+		and event.pressed and not event.echo and mods_ok:
 			DevTools2D.toggle()
 			DevTools3D.toggle()
 

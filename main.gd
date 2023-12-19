@@ -147,6 +147,8 @@ func drawing_in_3d() -> void:
 
 	# Example 3D drawing
 
+	var t := Time.get_ticks_msec()*0.001
+
 	# DevTools3D.draw_text( position, text, color, size=1 )
 	DevTools3D.draw_text(Vector3(0, 2.2, 0), "Lines", Color.GREEN_YELLOW, 1)
 	# DevTools.draw_line( p1, p2, color, thickness=1.0 )
@@ -164,7 +166,7 @@ func drawing_in_3d() -> void:
 
 	DevTools3D.draw_text(Vector3(0, 1.2, 0), "Circles", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_circle( filled?, position, axis/radius, color, thickness=1.0 )
-	var t := Time.get_ticks_msec()*0.001
+
 	DevTools3D.draw_circle(false, Vector3(), 1.0,  Vector3(0, cos(t), sin(t)), Color.RED,   2)
 	DevTools3D.draw_circle(false, Vector3(), 0.75, Vector3(cos(t), 0, sin(t)), Color.GREEN, 2)
 	DevTools3D.draw_circle(false, Vector3(), 0.5,  Vector3(cos(t), sin(t), 0), Color.BLUE,  2)
@@ -182,18 +184,19 @@ func drawing_in_3d() -> void:
 
 	DevTools3D.draw_text(Vector3(0.75, 0.75, 2), "Vectors", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_vector( position, direction, color, thickness=1.0 )
-	DevTools3D.draw_vector(Vector3(1, 0, 1.5), Vector3(0, 2, 2), Color.GREEN, 3)
-	DevTools3D.draw_vector(Vector3(0.5, 0, 1.5), Vector3.UP, Color.DARK_RED, 3)
+	DevTools3D.draw_vector(Vector3(1, 0, 1.5), Vector3(0, 2*sin(t), 2*sin(t)), Color.GREEN, 3)
+	DevTools3D.draw_vector(Vector3(0.5, 0, 1.5), Vector3.UP*cos(t), Color.DARK_RED, 3)
 
 
 	DevTools3D.draw_text(Vector3(0, -0.2, 0.75), "Origins", Color.GREEN_YELLOW, 1)
 	# DevTools3D.draw_origin( position, size, thickness=1.0 )
 	DevTools3D.draw_origin(Vector3(), 1, 4)
 
-
 	DevTools3D.draw_text(Vector3(0, 1.3, -1.75), "AABBs", Color.GREEN_YELLOW, 1)
+	var pos := Vector3(0.1*cos(t), 0, -2+(0.1*sin(t)))
+	var size := Vector3.ONE
 	# DevTools3D.draw_aabb( position, size, color, thickness=1.0 )
-	DevTools3D.draw_aabb(AABB(Vector3(0, 0, -2), Vector3(1, 1, 1)), Color.DARK_SALMON, 1)
+	DevTools3D.draw_aabb(AABB(pos, size), Color.DARK_SALMON, 1)
 
 
 	DevTools3D.draw_text(Vector3(0, 1.3, -4.5), "Transforms", Color.GREEN_YELLOW, 1)
