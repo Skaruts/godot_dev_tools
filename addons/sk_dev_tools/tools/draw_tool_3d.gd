@@ -730,11 +730,13 @@ func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 #	var transform := Transform()
 	transform.origin = (a+b)/2
 
-	var target_direction := (b-transform.origin).normalized()
-	transform = transform.looking_at(b,
-		Vector3.UP if abs(target_direction.dot(Vector3.UP)) < _DOT_THRESHOLD
-		else Vector3.BACK
-	)
+	if not transform.origin.is_equal_approx(b):
+		#var target_direction := (b-transform.origin).normalized()
+		var target_direction := a.direction_to(b)
+		transform = transform.looking_at(b,
+			Vector3.UP if abs(target_direction.dot(Vector3.UP)) < _DOT_THRESHOLD
+			else Vector3.BACK
+		)
 
 	# TODO: this probably accumulates scaling if this instance was scaled beback,
 	#       but I've never seen any issues, so... I could be wrong.
@@ -755,9 +757,10 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 	var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
 	transform.origin = (a+b)/2
 
-	var target_direction := (b-transform.origin).normalized()
-
-	transform = align_with_y(transform, target_direction)
+	#var target_direction := (b-transform.origin).normalized()
+	var target_direction := a.direction_to(b)
+	if not transform.origin.is_equal_approx(b):
+		transform = align_with_y(transform, target_direction)
 
 	#	printt("target_direction", target_direction, b)
 #	transform = transform.looking_at(b,
