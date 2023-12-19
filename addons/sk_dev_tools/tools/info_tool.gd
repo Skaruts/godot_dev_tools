@@ -76,6 +76,9 @@ var _bm_cache: Dictionary
 
 var _info_visible    := false
 
+var _size_update_interval := 5.0
+var _size_update_timer := 0.0
+
 @onready var _ui_base: TabContainer = %ui_base
 @onready var _container: MarginContainer = %container
 @onready var _label_keys: RichTextLabel = %label_keys
@@ -90,7 +93,7 @@ func _ready() -> void:
 	set_enabled(_info_visible, true)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	assert(_info_visible == true)
 
 	_process_lines.call_deferred()
@@ -98,6 +101,15 @@ func _process(_delta: float) -> void:
 	_process_node_properties.call_deferred()
 	_finish_processing.call_deferred()
 	_clean_up.call_deferred()
+
+	# prevent the panel size from twitching when displaying fluctuating values
+	_size_update_timer -= delta
+	if _size_update_timer <= 0:
+		_size_update_timer = _size_update_interval
+		_label_vals.custom_minimum_size = Vector2.ZERO
+	else:
+		_label_vals.custom_minimum_size = _label_vals.size
+	#DevTools.print("size_update_timer", _size_update_timer, 2)
 
 
 func _init_background() -> void:
