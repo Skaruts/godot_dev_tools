@@ -25,9 +25,7 @@ extends Node3D
 #
 #    NOTE: the 'bulk_*' functions require that the arrays provided to them
 #    contain all the arguments that you'd pass to the original drawing
-#    functions, including optional arguments. They're intended for usage
-#    in tools, rather than directly by users (the batch_* functions are
-#    intended for users).
+#    functions, including optional arguments.
 #
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #
@@ -259,13 +257,13 @@ func bulk_aabbs(aabbs:Array) -> void:
 
 # useful for drawing vectors as arrows, for example
 @warning_ignore("shadowed_variable_base_class")
-func cone(position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0) -> void:
-	_add_cone(position, direction, color, length, thickness)
+func cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
+	_add_cone(position, direction, color, thickness)
 
 # cones = array of arrays: [position, direction, color, thickness]
 func bulk_cones(cones:Array) -> void:
 	for c:Array in cones:
-		_add_cone(c[0], c[1], c[2], c[3], c[4])
+		_add_cone(c[0], c[1], c[2], c[3])
 
 
 
@@ -790,7 +788,7 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 
 
 @warning_ignore("shadowed_variable_base_class", "unused_parameter")
-func _add_cone(position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0) -> void:
+func _add_cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
 	var mm:MultiMesh = _mms["cones"]
 
 	var idx := _add_instance_to(mm)

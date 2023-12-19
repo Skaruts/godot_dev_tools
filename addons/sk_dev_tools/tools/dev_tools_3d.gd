@@ -132,12 +132,12 @@ func draw_aabb(aabb:AABB, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, length:=3.0, thickness:=1.0, _duration:=0.0) -> void:
+func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	if filled:
-		_draw_arrays["cones"].append([position, direction, color, length, thickness])
+		_draw_arrays["cones"].append([position, direction, color, thickness])
 	else:
-		pass # _draw_arrays["wire_cones"].append([position, direction, color, length, thickness])
+		pass # _draw_arrays["wire_cones"].append([position, direction, color, thickness])
 
 
 @warning_ignore("shadowed_variable_base_class")
@@ -168,7 +168,7 @@ func draw_text(position:Vector3, text:String, color:Color, size:=1.0, fixed_size
 func draw_vector(position:Vector3, direction:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([position, position+direction, color, thickness])
-	draw_cone(true, position+direction, direction, color, thickness*3, thickness)
+	draw_cone(true, position+direction, direction, color, thickness*2)
 
 
 func draw_transform(node:Node3D, size:float, local:=false, thickness:=1, _duration:=0.0) -> void:
