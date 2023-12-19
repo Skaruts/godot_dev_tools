@@ -66,6 +66,8 @@ func is_registered(node:Object) -> bool:
 func register(node:Object, values:Array) -> void:
 	_it.register(node, values)
 
+func unregister(node:Object, property_name:="") -> void:
+	_it.unregister(node, property_name)
 
 
 # TODO: Must find a better way to relay this to users
