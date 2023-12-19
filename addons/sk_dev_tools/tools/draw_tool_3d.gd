@@ -57,6 +57,8 @@ var backline_color:Color
 var face_color:Color
 var backface_color:Color
 
+var cast_shadows := GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
 var line_thickness := 1.0
 var unshaded := true    # actually looks great shaded, except for the cylinder caps
 var on_top := false
@@ -390,7 +392,7 @@ func _init_config() -> void:
 	circle_segments          = config.circle_segments
 	cylinder_radial_segments = config.cylinder_radial_segments
 	instance_increment       = config.instance_increment
-
+	cast_shadows             = int(config.cast_shadows)  as GeometryInstance3D.ShadowCastingSetting
 
 func _init_im() -> void:
 	if not see_through:
@@ -591,6 +593,12 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 	var mmi := MultiMeshInstance3D.new()
 	mmi.name = name
 	mmi.multimesh = mm
+
+	# for some reason only the setter function works
+	#mmi.set("cast_shadows", 0 as GeometryInstance3D.ShadowCastingSetting)
+	#mmi.cast_shadows = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mmi.set_cast_shadows_setting(cast_shadows)
+
 	add_child(mmi)
 	return mm
 

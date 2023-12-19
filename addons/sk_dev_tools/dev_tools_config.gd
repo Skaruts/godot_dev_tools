@@ -141,20 +141,24 @@ extends Resource
 @export var width_factor := 0.01
 
 
-
 #-------------------------------------------------------------------------------
-@export_group("Colors")
+@export_group("Geometry")
 #-------------------------------------------------------------------------------
 
-## The color used for lines that represent the X axis (in transforms, origins, etc)
-@export var x_axis_color := Color(0.72, 0.02, 0.02)
+## Whether lines are affected by lighting or not. (Ideally this is better kept
+## off. I have the option available only because the shaded lines can actually
+## look quite nice, depending on lighting. But they will be invisible, or hard
+## to see without lighting.)
+@export var unshaded := true
 
-## The color used for lines that represent the Y axis (in transforms, origins, etc)
-@export var y_axis_color := Color(0.025, 0.31, 0)
+## If true, the 3D drawing tool will draw on top of everything. Otherwise
+## the drawing may be obstructed by other geometry. (Leaving it on can make
+## it confusing to see where things actually are.)
+@export var on_top := false
 
-## The color used for lines that represent the Z axis (in transforms, origins, etc)
-@export var z_axis_color := Color(0, 0.10, 1)
-
+## If true, the geometry will cast shadows. For most debugging/development
+## purposes it's usually better to keep this off.
+@export var cast_shadows := false
 
 
 #-------------------------------------------------------------------------------
@@ -175,22 +179,18 @@ extends Resource
 @export var cylinder_radial_segments := 5
 
 
-
 #-------------------------------------------------------------------------------
-@export_group("Material")
+@export_group("Colors")
 #-------------------------------------------------------------------------------
 
-## Whether lines are affected by lighting or not. (Ideally this is better kept
-## off. I have the option available only because the shaded lines can actually
-## look quite nice, depending on lighting. But they will be invisible, or hard
-## to see without lighting.)
-@export var unshaded := true
+## The color used for lines that represent the X axis (in transforms, origins, etc)
+@export var x_axis_color := Color(0.72, 0.02, 0.02)
 
-## If true, the 3D drawing tool will draw on top of everything. Otherwise
-## the drawing may be obstructed by other geometry. (Leaving it on can make
-## it confusing to see where things actually are.)
-@export var on_top := false
+## The color used for lines that represent the Y axis (in transforms, origins, etc)
+@export var y_axis_color := Color(0.025, 0.31, 0)
 
+## The color used for lines that represent the Z axis (in transforms, origins, etc)
+@export var z_axis_color := Color(0, 0.10, 1)
 
 
 

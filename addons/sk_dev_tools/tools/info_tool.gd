@@ -39,22 +39,22 @@ var _colors_lookup := {
 	TYPE_NIL                   : _color_null,		TYPE_BOOL                  : _color_bool,
 	TYPE_INT                   : _color_number,		TYPE_FLOAT                 : _color_number,
 	TYPE_STRING                : _color_string,		TYPE_VECTOR2               : _color_builtin,
-	TYPE_VECTOR2I              : _color_builtin,		TYPE_RECT2                 : _color_builtin,
-	TYPE_RECT2I                : _color_builtin,		TYPE_VECTOR3               : _color_builtin,
-	TYPE_VECTOR3I              : _color_builtin,		TYPE_TRANSFORM2D           : _color_builtin,
-	TYPE_VECTOR4               : _color_builtin,		TYPE_VECTOR4I              : _color_builtin,
-	TYPE_PLANE                 : _color_builtin,		TYPE_QUATERNION            : _color_builtin,
-	TYPE_AABB                  : _color_builtin,		TYPE_BASIS                 : _color_builtin,
-	TYPE_TRANSFORM3D           : _color_builtin,		TYPE_PROJECTION            : _color_builtin,
-	TYPE_COLOR                 : _color_builtin,		TYPE_STRING_NAME           : _color_string,
+	TYPE_VECTOR2I              : _color_builtin,	TYPE_RECT2                 : _color_builtin,
+	TYPE_RECT2I                : _color_builtin,	TYPE_VECTOR3               : _color_builtin,
+	TYPE_VECTOR3I              : _color_builtin,	TYPE_TRANSFORM2D           : _color_builtin,
+	TYPE_VECTOR4               : _color_builtin,	TYPE_VECTOR4I              : _color_builtin,
+	TYPE_PLANE                 : _color_builtin,	TYPE_QUATERNION            : _color_builtin,
+	TYPE_AABB                  : _color_builtin,	TYPE_BASIS                 : _color_builtin,
+	TYPE_TRANSFORM3D           : _color_builtin,	TYPE_PROJECTION            : _color_builtin,
+	TYPE_COLOR                 : _color_builtin,	TYPE_STRING_NAME           : _color_string,
 	TYPE_NODE_PATH             : _color_string,		TYPE_RID                   : _color_number,
 	TYPE_OBJECT                : _color_object,		TYPE_CALLABLE              : _color_builtin,
-	TYPE_SIGNAL                : _color_builtin,		TYPE_DICTIONARY            : _color_builtin,
-	TYPE_ARRAY                 : _color_builtin,		TYPE_PACKED_BYTE_ARRAY     : _color_builtin,
-	TYPE_PACKED_INT32_ARRAY    : _color_builtin,		TYPE_PACKED_INT64_ARRAY    : _color_builtin,
-	TYPE_PACKED_FLOAT32_ARRAY  : _color_builtin,		TYPE_PACKED_FLOAT64_ARRAY  : _color_builtin,
-	TYPE_PACKED_STRING_ARRAY   : _color_builtin,		TYPE_PACKED_VECTOR2_ARRAY  : _color_builtin,
-	TYPE_PACKED_VECTOR3_ARRAY  : _color_builtin,		TYPE_PACKED_COLOR_ARRAY    : _color_builtin,
+	TYPE_SIGNAL                : _color_builtin,	TYPE_DICTIONARY            : _color_builtin,
+	TYPE_ARRAY                 : _color_builtin,	TYPE_PACKED_BYTE_ARRAY     : _color_builtin,
+	TYPE_PACKED_INT32_ARRAY    : _color_builtin,	TYPE_PACKED_INT64_ARRAY    : _color_builtin,
+	TYPE_PACKED_FLOAT32_ARRAY  : _color_builtin,	TYPE_PACKED_FLOAT64_ARRAY  : _color_builtin,
+	TYPE_PACKED_STRING_ARRAY   : _color_builtin,	TYPE_PACKED_VECTOR2_ARRAY  : _color_builtin,
+	TYPE_PACKED_VECTOR3_ARRAY  : _color_builtin,	TYPE_PACKED_COLOR_ARRAY    : _color_builtin,
 }
 
 const _FONT_SIZE_PROPS:Array[String] = [
@@ -230,8 +230,8 @@ func _tag_outline_color(text:String, color:Color) -> String:
 	return "[outline_color=%s]%s[/outline_color]" % [color.to_html(false), text]
 
 func _tag_outline_size(text:String, size:int) -> String:
-	#return "[_outline_size=" + str(size) + "]" + text + "[/_outline_size]"
-	return "[_outline_size=%d]%s[/_outline_size]" % [size, text]
+	#return "[outline_size=" + str(size) + "]" + text + "[/outline_size]"
+	return "[outline_size=%d]%s[/outline_size]" % [size, text]
 
 
 
