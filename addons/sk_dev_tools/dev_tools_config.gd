@@ -114,7 +114,7 @@ extends Resource
 
 ## If true, benchmark times will be reported in seconds. Otherwise
 ## they'll be in milliseconds.
-@export_enum("Seconds", "Milliseconds") var time_units := 0
+@export_enum("Seconds", "Milliseconds") var time_units := 1
 
 ## The float precision of benchmarking values.
 @export var decimal_precision := 4

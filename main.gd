@@ -47,7 +47,7 @@ func _process(_delta: float) -> void:
 		drawing_in_3d()
 		drawing_in_2d()
 		draw_help_info()
-	, {smoothing=200, precision=2, units=DevTools.MSEC} ) # <-- NOTE: these arguments are all optional
+	, {smoothing=200, precision=2} ) # <-- NOTE: these arguments are all optional
 
 
 

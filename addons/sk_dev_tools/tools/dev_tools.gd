@@ -115,7 +115,7 @@ enum {
 
 
 @warning_ignore("shadowed_variable_base_class")
-func print_bm(name:String, f:Callable, options:Dictionary) -> float:
+func print_bm(name:String, f:Callable, options:Variant=null) -> float:
 	return _it.print_bm(name, f, options)
 
 

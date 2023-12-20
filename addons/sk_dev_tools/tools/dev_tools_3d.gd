@@ -61,10 +61,10 @@ func _input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	assert(_drawing_visible == true)
-	#DevTools.print_bm(str(_process), func() -> void:
-	_redraw()
-	_clean_up()
-	#,{units=DevTools.MSEC})
+	DevTools.print_bm(str(_process), func() -> void:
+		_redraw()
+		_clean_up()
+	, {precision=2})
 
 
 func _redraw() -> void:

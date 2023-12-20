@@ -27,7 +27,7 @@ enum {
 }
 
 var _def_bm_smoothing:int = 15
-var _bm_time_units:int = SEC
+var _bm_time_units:int = MSEC
 var _bm_precision:int = 4
 var _max_smoothing := 100
 var _max_bm_precision := 16
@@ -346,40 +346,32 @@ func _get_cached(name:String) -> Dictionary:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func print_bm(name:String, f:Callable, options:Dictionary) -> float:
+func print_bm(name:String, fn:Callable, options:Variant=null) -> Variant:
 	#smoothing:=_def_bm_smoothing, precision:=_bm_precision, time_units:=_bm_time_units
 #) -> float:
 	if not _info_visible:
-		f.call()
-		return 0
-
-	var smoothing := _def_bm_smoothing \
-		if not "smoothing" in options  \
-		else clamp(options.smoothing, 0, _max_smoothing)
-
-	var precision := _bm_precision    \
-		if not "precision" in options \
-		else clamp(options.precision, 0, _max_bm_precision)
-
-	var time_units := _bm_time_units   \
-		if not "units" in options \
-		else clamp(options.units, 0, 2)
+		fn.call()
+		return
 
 	var t1:float = Time.get_ticks_msec()
-	f.call()
+	fn.call()
 	var t2:float = (Time.get_ticks_msec() - t1)
 
-	var cached := _get_cached(name)
-	#_count_frame(cached)
+	var smoothing: int  = _def_bm_smoothing
+	var precision: int  = _bm_precision
+	var time_units: int = _bm_time_units
+	if options:
+		if "smoothing" in options: smoothing  = clamp(options.smoothing, 0, _max_smoothing)
+		if "precision" in options: precision  = clamp(options.precision, 0, _max_bm_precision)
+		if "units"     in options: time_units = clamp(options.units, 0, 2)
 
-	#cached.time += t2
+	var cached := _get_cached(name)
 	var avg:float = t2 # = cached.time/cached.frames
 
 	if smoothing > 1:
 		cached.time += t2
 		if cached.history.size() > _def_bm_smoothing:
 			cached.time -= cached.history.pop_front()
-
 		cached.history.append(t2)
 		avg = cached.time/cached.history.size()
 
@@ -434,8 +426,6 @@ func benchmark(bm_name:StringName, max_benchmarks:int, iterations:int, fn:Callab
 
 		var output1 = "● %s  |  time/iteration:  %s  |  total time (%s iterations):  %s" % [bm_num, averaging, iterations, total_times]
 		print(output1)
-
-
 
 		bm.benchmarks += 1
 		bm.total_bms  += 1
