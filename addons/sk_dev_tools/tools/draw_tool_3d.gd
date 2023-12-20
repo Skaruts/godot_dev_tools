@@ -642,8 +642,8 @@ func _add_line_cube_(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	# if transform is to be orthonormalized, do it here before applying any
 	# scaling, or it will revert the scaling
 	@warning_ignore("shadowed_variable_base_class")
-	#var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
-	var transform := mm.get_instance_transform(idx)
+	#var transform := Transform3D()
+	var transform := mm.get_instance_transform(idx).orthonormalized()
 	transform.origin = (a+b)/2
 
 	if not transform.origin.is_equal_approx(b):
