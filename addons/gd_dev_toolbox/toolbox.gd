@@ -1,7 +1,7 @@
 extends Node
 
 
-var _data: Resource = load("res://addons/sk_dev_tools/shared.gd")
+var _data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 
 @onready var _it:CanvasLayer = $info_tool
 
@@ -14,8 +14,8 @@ var _data: Resource = load("res://addons/sk_dev_tools/shared.gd")
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 func _enter_tree() -> void:
 	# TODO: should I create a config file automatically, or should I
-	# leave it to the users to decide whether they want the config file or not?
-	# _data.check_config()
+	# leave it for users to decide to create one if they want?
+	# _data.validate_or_create_config()
 	pass
 
 
@@ -33,8 +33,8 @@ func _input(event: InputEvent) -> void:
 
 	if InputMap.has_action("dev_tools_drawing"):
 		if event.is_action_pressed("dev_tools_drawing"):
-			DevTools2D.toggle()
-			DevTools3D.toggle()
+			Toolbox2D.toggle()
+			Toolbox3D.toggle()
 	else:
 		var mods_ok :bool = event.ctrl_pressed          \
 			   				and not event.shift_pressed \
@@ -42,8 +42,8 @@ func _input(event: InputEvent) -> void:
 
 		if event.keycode in _data.DEF_KEYS \
 		and event.pressed and not event.echo and mods_ok:
-			DevTools2D.toggle()
-			DevTools3D.toggle()
+			Toolbox2D.toggle()
+			Toolbox3D.toggle()
 
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
@@ -58,20 +58,20 @@ func set_info_enabled(enabled:bool) -> void:
 	_it.set_enabled(enabled)
 
 func toggle_drawing()  -> void:
-	DevTools2D.toggle()
-	DevTools3D.toggle()
+	Toolbox2D.toggle()
+	Toolbox3D.toggle()
 
 func enable_drawing()  -> void:
-	DevTools2D.set_enabled(true)
-	DevTools3D.set_enabled(true)
+	Toolbox2D.set_enabled(true)
+	Toolbox3D.set_enabled(true)
 
 func disable_drawing() -> void:
-	DevTools2D.set_enabled(false)
-	DevTools3D.set_enabled(false)
+	Toolbox2D.set_enabled(false)
+	Toolbox3D.set_enabled(false)
 
 func set_drawing_enabled(enabled:bool) -> void:
-	DevTools2D.set_enabled(enabled)
-	DevTools3D.set_enabled(enabled)
+	Toolbox2D.set_enabled(enabled)
+	Toolbox3D.set_enabled(enabled)
 
 
 func print(key:String, val:Variant=null, fp:int=_it._def_float_precision) -> void:

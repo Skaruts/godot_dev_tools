@@ -112,7 +112,7 @@ func _process(delta: float) -> void:
 		_label_vals.custom_minimum_size = Vector2.ZERO
 	else:
 		_label_vals.custom_minimum_size = _label_vals.size
-	#DevTools.print("size_update_timer", _size_update_timer, 2)
+	#Toolbox.print("size_update_timer", _size_update_timer, 2)
 
 
 func _init_background() -> void:
@@ -133,7 +133,7 @@ func _init_background() -> void:
 
 
 func _init_config() -> void:
-	var data: Resource = preload("res://addons/sk_dev_tools/shared.gd")
+	var data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 	var config: Resource = data.get_config()
 	if not config: return
 

@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-var _data:Resource = preload("res://addons/sk_dev_tools/shared.gd")
+var _data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 
 var _drawing_visible := false
 

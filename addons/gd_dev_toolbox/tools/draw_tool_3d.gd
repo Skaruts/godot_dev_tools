@@ -354,7 +354,7 @@ func _ready() -> void:
 
 
 func _init_config() -> void:
-	var data: Resource = preload("res://addons/sk_dev_tools/shared.gd")
+	var data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 	var config: Resource = data.get_config()
 	if not config: return
 	#line_color               = config.line_color
@@ -620,7 +620,7 @@ func _points_are_equal(a:Vector3, b:Vector3) -> bool:
 	return true
 
 func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
-	#DevTools.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
+	#Toolbox.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
 		_add_line_cube_(a, b, color, thickness)
 	#)
 

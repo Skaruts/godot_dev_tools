@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="[PLUGIN] DevTools"
+config/name="[PLUGIN] Godot Dev Toolbox"
 config/tags=PackedStringArray("plugin")
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
@@ -18,9 +18,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DevTools="*res://addons/sk_dev_tools/tools/dev_tools.tscn"
-DevTools2D="*res://addons/sk_dev_tools/tools/dev_tools_2d.gd"
-DevTools3D="*res://addons/sk_dev_tools/tools/dev_tools_3d.gd"
+Toolbox="*res://addons/gd_dev_toolbox/toolbox.tscn"
+Toolbox2D="*res://addons/gd_dev_toolbox/toolbox_2d.gd"
+Toolbox3D="*res://addons/gd_dev_toolbox/toolbox_3d.gd"
 
 [debug]
 
@@ -29,7 +29,7 @@ gdscript/warnings/int_as_enum_without_match=2
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/plugin_refresher/plugin.cfg", "res://addons/sk_dev_tools/plugin.cfg")
+enabled=PackedStringArray("res://addons/gd_dev_toolbox/plugin.cfg", "res://addons/plugin_refresher/plugin.cfg")
 
 [input]
 

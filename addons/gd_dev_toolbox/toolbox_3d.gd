@@ -1,7 +1,7 @@
 extends Node3D
 
 
-var _data:Resource = preload("res://addons/sk_dev_tools/shared.gd")
+var _data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 
 var _draw_arrays:Dictionary
 var _drawing_visible := false
@@ -61,7 +61,7 @@ func _input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	assert(_drawing_visible == true)
-	DevTools.print_bm(str(_process), func() -> void:
+	Toolbox.print_bm(str(_process), func() -> void:
 		_redraw()
 		_clean_up()
 	, {precision=2})
