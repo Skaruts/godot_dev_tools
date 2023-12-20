@@ -50,25 +50,16 @@ extends Node3D
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 var single_color := false
 
-var line_color := Color.WHITE
-var backline_color:Color
-var face_color:Color
-var backface_color:Color
-
 var cast_shadows := GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 var line_thickness := 1.0
 var unshaded := true    # actually looks great shaded, except for the cylinder caps
 var on_top := false
 var no_shadows := true
-#var render_priority := 0
 var transparent := false
 var double_sided := false
 
-var back_alpha := 0.5
 var face_alpha := 0.5
-var darken_factor := 0.25
-var see_through := false  # TODO: this doesn't seem to work reliably
 
 # how thin must the unit-cube be in order to properly represent a line
 # of thickness 1. Lines will look too thick or too thin from too close
@@ -104,7 +95,7 @@ func clear() -> void:
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
 enum {A,B,C,D,E,F,G,H}
-func quad(verts:Array[Vector3], color:=face_color) -> void:
+func quad(verts:Array[Vector3], color:Color) -> void:
 	_im.surface_begin(Mesh.PRIMITIVE_TRIANGLES)#, _im_fore_mat)
 	var a := verts[0]
 	var b := verts[1]
@@ -122,7 +113,7 @@ func quad(verts:Array[Vector3], color:=face_color) -> void:
 
 
 
-func line(a:Vector3, b:Vector3, color:=line_color, thickness:=line_thickness) -> void:
+func line(a:Vector3, b:Vector3, color:Color, thickness:=line_thickness) -> void:
 	_add_line(a, b, color, thickness)
 
 # lines = array of arrays: [a, b, color, thickness]
@@ -134,7 +125,7 @@ func bulk_lines(lines:Array) -> void:
 
 
 # points = contiguous Array[Vector3]
-func polyline(points:Array, color:=line_color, thickness:=line_thickness) -> void:
+func polyline(points:Array, color:Color, thickness:=line_thickness) -> void:
 	for i in range(1, points.size(), 1):
 		_add_line(points[i-1], points[i], color, thickness)
 
@@ -170,7 +161,7 @@ func bulk_polylines(polylines:Array) -> void:
 
 
 
-func cube_faces(p1:Vector3, p2:Vector3, color:=line_color) -> void:
+func cube_faces(p1:Vector3, p2:Vector3, color:Color) -> void:
 #	var pos := Vector3(min(p1.x, p2.x), min(p1.y, p2.y), min(p1.z, p2.z))
 	var pos := (p1 + p2) / 2
 	var size := Vector3(p2.x-p1.x, p2.y-p1.y, p2.z-p1.z).abs()
@@ -179,7 +170,7 @@ func cube_faces(p1:Vector3, p2:Vector3, color:=line_color) -> void:
 
 
 
-func point_cube_faces(p:Vector3, size:=1.0, color:=line_color) -> void:
+func point_cube_faces(p:Vector3, size:float, color:Color) -> void:
 	_add_cube(p, Vector3(size, size, size), color)
 
 func bulk_point_cube_faces(cubes:Array) -> void:
@@ -190,7 +181,7 @@ func bulk_point_cube_faces(cubes:Array) -> void:
 
 
 
-func cube_lines(p1:Vector3, p2:Vector3, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
+func cube_lines(p1:Vector3, p2:Vector3, color:Color, thickness:=line_thickness, draw_faces:=false) -> void:
 	var a := Vector3( p1.x, p2.y, p1.z )
 	var b := Vector3( p2.x, p2.y, p1.z )
 	var c := Vector3( p2.x, p1.y, p1.z )
@@ -221,7 +212,7 @@ func bulk_cube_lines(_cube_lines:Array) -> void:
 
 
 
-func aabb(_aabb:AABB, color:=line_color, thickness:=line_thickness, draw_faces:=false) -> void:
+func aabb(_aabb:AABB, color:Color, thickness:=line_thickness, draw_faces:=false) -> void:
 	var p1 := _aabb.position
 	var p2 := p1+_aabb.size
 
@@ -354,10 +345,6 @@ func _ready() -> void:
 
 	_init_config()
 
-	backline_color = Color(line_color.darkened(darken_factor), back_alpha)
-	face_color     = Color(line_color, face_alpha)
-	backface_color = Color(face_color.darkened(darken_factor), back_alpha)
-
 	_label_nodes = Node3D.new()
 	add_child(_label_nodes)
 	_label_nodes.name = "3d_labels"
@@ -371,19 +358,14 @@ func _init_config() -> void:
 	var config: Resource = data.get_config()
 	if not config: return
 	#line_color               = config.line_color
-	#backline_color           = config.backline_color
-	#face_color               = config.face_color
-	#backface_color           = config.backface_color
-	#line_thickness           = config.line_thickness
+		#face_color               = config.face_color
+		#line_thickness           = config.line_thickness
 	unshaded                 = config.unshaded
 	on_top                   = config.on_top
+	#face_alpha               = config.face_alpha
 	#no_shadows               = config.no_shadows
 	#transparent              = config.transparent
 	#double_sided             = config.double_sided
-	#back_alpha               = config.back_alpha
-	#face_alpha               = config.face_alpha
-	#darken_factor            = config.darken_factor
-	#see_through              = config.see_through
 	width_factor             = config.width_factor
 	sphere_radial_segments   = config.sphere_radial_segments
 	sphere_rings             = config.sphere_rings
@@ -393,19 +375,8 @@ func _init_config() -> void:
 	cast_shadows             = int(config.cast_shadows)  as GeometryInstance3D.ShadowCastingSetting
 
 func _init_im() -> void:
-	if not see_through:
-		_im_base_mat = _create_material(face_color)
-		_im_base_mat.cull_mode = BaseMaterial3D.CULL_DISABLED if double_sided else BaseMaterial3D.CULL_BACK
-	else:
-		_im_fore_mat = _create_material(face_color)
-		_im_fore_mat.cull_mode = BaseMaterial3D.CULL_DISABLED if double_sided else BaseMaterial3D.CULL_BACK
-		_im_fore_mat.no_depth_test = false
-
-		_im_base_mat = _create_material(backface_color)
-		_im_base_mat.cull_mode = BaseMaterial3D.CULL_DISABLED if double_sided else BaseMaterial3D.CULL_BACK
-		_im_base_mat.render_priority = -1
-		_im_base_mat.next_pass = _im_fore_mat
-		_im_base_mat.no_depth_test = true
+	_im_base_mat = _create_material(Color(Color.WHITE, face_alpha))
+	_im_base_mat.cull_mode = BaseMaterial3D.CULL_DISABLED if double_sided else BaseMaterial3D.CULL_BACK
 
 	_im = ImmediateMesh.new()
 	var mi := MeshInstance3D.new()
@@ -416,16 +387,7 @@ func _init_im() -> void:
 
 
 func _init_mmis() -> void:
-	if not see_through:
-		_base_mat = _create_material(line_color)
-	else:
-		_fore_mat = _create_material(line_color)
-		_fore_mat.no_depth_test = false
-
-		_base_mat = _create_material(backline_color)
-		_base_mat.render_priority = -1
-		_base_mat.next_pass = _fore_mat
-		_base_mat.no_depth_test = true
+	_base_mat = _create_material(Color.WHITE)
 
 #	if _use_cylinders_for_lines:
 	_mms["cylinder_lines"] = _init_line_mesh__cylinder(_base_mat)
@@ -446,13 +408,12 @@ func _create_material(color:Color) -> StandardMaterial3D:
 	mat.vertex_color_use_as_albedo = not single_color
 	mat.no_depth_test = on_top
 	mat.disable_receive_shadows = no_shadows
-#	mat.render_priority = render_priority
 
 	if unshaded: mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	else:        mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 
-	if transparent or see_through: mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	else:                          mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+	if transparent: mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	else:           mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 
 	return mat
 
@@ -644,7 +605,7 @@ func _commit_instance(mm:MultiMesh, idx:int, transform:Transform3D, color:Color)
 
 
 
-func _add_line(a:Vector3, b:Vector3, color:=line_color, thickness:=line_thickness) -> void:
+func _add_line(a:Vector3, b:Vector3, color:Color, thickness:=line_thickness) -> void:
 	if _use_cylinders_for_lines:
 		_add_line_cylinder(a, b, color, thickness)
 	else:

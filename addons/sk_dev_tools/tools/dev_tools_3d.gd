@@ -104,7 +104,7 @@ func set_enabled(vis:bool, force:=false) -> void:
 func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0, _duration:=0.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([start, end, color, thickness])
-	#_dt.line(start, end, color, thickness)
+	#_dt.line(	start, end, color, thickness)
 
 
 func draw_polyline(points:Array, color:Color, thickness:=1.0, _duration:=0.0) -> void:
