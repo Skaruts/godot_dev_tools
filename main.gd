@@ -41,13 +41,13 @@ func _process(_delta: float) -> void:
 
 	# example benchmark using a lambda
 
-	# DevTools.bm(name, func, smoothing=15, precision=4, time_units=DevTools.SEC)
-	DevTools.bm("DevTools bm", func() -> void:
+	# DevTools.print_bm(name, func, options)
+	DevTools.print_bm("DevTools bm", func() -> void:
 		monitoring_data()
 		drawing_in_3d()
 		drawing_in_2d()
 		draw_help_info()
-	, 200, 5, DevTools.MSEC) # <-- NOTE: these arguments are all optional
+	, {smoothing=200, precision=2, units=DevTools.MSEC} ) # <-- NOTE: these arguments are all optional
 
 
 

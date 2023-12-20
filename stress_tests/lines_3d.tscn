@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://djjsvxtdjmsnj"]
+
+[ext_resource type="Script" path="res://stress_tests/lines_3d.gd" id="1_mk3tm"]
+[ext_resource type="Script" path="res://addons/free-look-camera/free_look_camera.gd" id="2_pdyy1"]
+
+[node name="lines_3d" type="Node3D"]
+script = ExtResource("1_mk3tm")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.938113, 0.34633, 0, -0.34633, 0.938113, 0, 4.09706, 5.47476)
+script = ExtResource("2_pdyy1")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+radius = 0.151233

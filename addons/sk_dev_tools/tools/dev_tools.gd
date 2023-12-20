@@ -45,6 +45,7 @@ func _input(event: InputEvent) -> void:
 			DevTools2D.toggle()
 			DevTools3D.toggle()
 
+
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
 #		PUBLIC API
@@ -53,6 +54,8 @@ func _input(event: InputEvent) -> void:
 func toggle_info()  -> void: _it.toggle()
 func enable_info()  -> void: _it.set_enabled(true)
 func disable_info() -> void: _it.set_enabled(false)
+func set_info_enabled(enabled:bool) -> void:
+	_it.set_enabled(enabled)
 
 func toggle_drawing()  -> void:
 	DevTools2D.toggle()
@@ -66,22 +69,24 @@ func disable_drawing() -> void:
 	DevTools2D.set_enabled(false)
 	DevTools3D.set_enabled(false)
 
+func set_drawing_enabled(enabled:bool) -> void:
+	DevTools2D.set_enabled(enabled)
+	DevTools3D.set_enabled(enabled)
+
 
 func print(key:String, val:Variant=null, fp:int=_it._def_float_precision) -> void:
 	_it.print(key, val, fp)
+
 
 func print_grouped(group_name:String, key:String, val:Variant=null,
 				   fp:int=_it._def_float_precision) -> void:
 	_it.print_grouped(group_name, key, val, fp)
 
 
-func printg(group_name:String, key:String, val:Variant=null,
-			fp:float = _it._def_float_precision) -> void:
-	_it.print_grouped(group_name, key, val, fp)
-
 func print_prop(node:Object, key:String, val:Variant=null,
 				fp:float = _it._def_float_precision) -> void:
 	_it.print_prop(node, key, val, fp)
+
 
 func is_registered(node:Object) -> bool:
 	return _it.is_registered(node)
@@ -89,6 +94,7 @@ func is_registered(node:Object) -> bool:
 
 func register(node:Object, values:Array) -> void:
 	_it.register(node, values)
+
 
 func unregister(node:Object, property_name:="") -> void:
 	_it.unregister(node, property_name)
@@ -101,8 +107,18 @@ enum {
 	MSEC,
 }
 
+#@warning_ignore("shadowed_variable_base_class")
+#func bm(name:String, f:Callable, smoothing:int = _it._def_bm_smoothing,
+		#precision:float = _it._bm_precision_secs
+		#, time_units:float = _it._bm_time_units) -> float:
+	#return _it.bm(name, f, smoothing, precision, time_units)
+
+
 @warning_ignore("shadowed_variable_base_class")
-func bm(name:String, f:Callable, smoothing:int = _it._def_bm_smoothing,
-		precision:float = _it._bm_precision_secs
-		, time_units:float = _it._bm_time_units) -> float:
-	return _it.bm(name, f, smoothing, precision, time_units)
+func print_bm(name:String, f:Callable, options:Dictionary) -> float:
+	return _it.print_bm(name, f, options)
+
+
+func benchmark(bm_name:StringName, num_benchmarks:int, num_iterations:int, fn:Callable) -> void:
+	_it.benchmark(bm_name, num_benchmarks, num_iterations, fn)
+

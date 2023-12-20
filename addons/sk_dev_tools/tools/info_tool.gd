@@ -28,8 +28,9 @@ enum {
 
 var _def_bm_smoothing:int = 15
 var _bm_time_units:int = SEC
-var _bm_precision_secs:int = 4
+var _bm_precision:int = 4
 var _max_smoothing := 100
+var _max_bm_precision := 16
 
 const _GROUP_PREFIX := "    "
 const _NODE_PROP_PREFIX := "    "
@@ -69,6 +70,8 @@ var _lines:Array[Dictionary]
 var _grouped_lines:Dictionary
 var _nodes:Dictionary
 var _node_properties:Dictionary
+var _bms: Dictionary
+
 
 var _text_keys:String
 var _text_vals:String
@@ -154,7 +157,7 @@ func _init_config() -> void:
 	_color_group             = config.group_color
 	_def_bm_smoothing        = config.smoothing
 	_bm_time_units           = config.time_units
-	_bm_precision_secs       = config.decimal_precision
+	_bm_precision            = config.decimal_precision
 	_max_smoothing           = config.max_smoothing
 
 
@@ -325,7 +328,6 @@ func unregister(node:Object, property_name:="") -> void:
 		_nodes.erase(node)
 
 
-
 @warning_ignore("shadowed_variable_base_class")
 func _get_cached(name:String) -> Dictionary:
 	if not name in _bm_cache:
@@ -343,17 +345,25 @@ func _get_cached(name:String) -> Dictionary:
 		#cached.time = 0
 
 
-
-
 @warning_ignore("shadowed_variable_base_class")
-func bm(name:String, f:Callable, smoothing:=_def_bm_smoothing,
-		precision:=_bm_precision_secs, time_units:=_bm_time_units
-) -> float:
+func print_bm(name:String, f:Callable, options:Dictionary) -> float:
+	#smoothing:=_def_bm_smoothing, precision:=_bm_precision, time_units:=_bm_time_units
+#) -> float:
 	if not _info_visible:
 		f.call()
 		return 0
 
-	smoothing = clamp(smoothing, 0, _max_smoothing)
+	var smoothing := _def_bm_smoothing \
+		if not "smoothing" in options  \
+		else clamp(options.smoothing, 0, _max_smoothing)
+
+	var precision := _bm_precision    \
+		if not "precision" in options \
+		else clamp(options.precision, 0, _max_bm_precision)
+
+	var time_units := _bm_time_units   \
+		if not "units" in options \
+		else clamp(options.units, 0, 2)
 
 	var t1:float = Time.get_ticks_msec()
 	f.call()
@@ -373,12 +383,78 @@ func bm(name:String, f:Callable, smoothing:=_def_bm_smoothing,
 		cached.history.append(t2)
 		avg = cached.time/cached.history.size()
 
-	var times_str:String
+	var times_str:String = "%." + str(precision) + "f"
 	match time_units:
-		SEC:  times_str = ("%." + str(precision) + "f s") % [avg/1000]
-		MSEC: times_str = "%.1f ms" % [avg]
+		SEC:  times_str = (times_str + " s") % [avg/1000]
+		MSEC: times_str = (times_str + " ms") % [avg]
 
-	self.print("> " + name, times_str)
+	print_grouped("Benchmarks", name, times_str)
 
 	#return ("%s: " + times_str) % [name]
 	return t2
+
+
+func benchmark(bm_name:StringName, max_benchmarks:int, iterations:int, fn:Callable) -> void:
+	#var info = getinfo(2, "nSl")
+	var bm: Dictionary
+	if not bm_name in _bms:
+		_bms[bm_name] = {
+			time           = 0.0,
+			total_time     = 0.0,
+			frames         = 0,
+			total_frames   = 0,
+			benchmarks     = 0,
+			total_bms      = 0,
+		}
+	bm = _bms[bm_name]
+
+	var t1:float = Time.get_ticks_msec()
+	fn.call()
+	var t2:float = (Time.get_ticks_msec() - t1)
+
+	bm.time   += t2
+	bm.frames += 1
+
+	if bm.frames % iterations == 0:
+		if bm.benchmarks == 0:
+			print("---------------------------------------------------------------------------------")
+		bm.total_frames += bm.frames
+		bm.total_time   += bm.time
+		var average: float = bm.time / float(bm.frames)
+
+		var bm_num      := "(%s/%d) %s" % [
+				str(bm.benchmarks+1).lpad(str(max_benchmarks).length(), ' '),
+				max_benchmarks,
+				bm_name,
+			]
+
+		#var filename    := "[%s:%d]" % [info.short_src:filename(), info.currentline]
+		var averaging   := "%.3f ms  (%.3f s)" % [average, average/1000]
+		var total_times := "%.3f ms  (%.3f s)" % [bm.time, bm.time/1000]
+
+		var output1 = "● %s  |  time/iteration:  %s  |  total time (%s iterations):  %s" % [bm_num, averaging, iterations, total_times]
+		print(output1)
+
+
+
+		bm.benchmarks += 1
+		bm.total_bms  += 1
+
+		if bm.benchmarks % max_benchmarks == 0:
+			var total_average: float = bm.total_time / float(bm.total_frames)
+			var output2 := "\n●  %s  >>>  total average:  %.6f ms/iter  (%.6f s/iter)\n" % [
+				bm_name,
+				total_average,
+				total_average/1000
+			]
+
+			print(output2)
+			#print("---------------------------------------------------------------------------------\n")
+			bm.benchmarks = 0
+			bm.total_bms = 0
+			bm.total_frames += bm.frames
+			bm.total_time   += bm.time
+
+
+		bm.time = 0
+		bm.frames = 0

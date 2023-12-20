@@ -448,8 +448,9 @@ func _create_material(color:Color) -> StandardMaterial3D:
 	mat.disable_receive_shadows = no_shadows
 #	mat.render_priority = render_priority
 
-	if unshaded:    mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	else:           mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+	if unshaded: mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	else:        mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+
 	if transparent or see_through: mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	else:                          mat.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
 
@@ -520,62 +521,6 @@ func _init_sphere_mesh(mat:StandardMaterial3D) -> MultiMesh:
 	sphere.material = mat
 
 	return _create_multimesh(sphere, "Spheres_MultiMeshInstance3D")
-
-
-#func _create_materials() -> void:
-#	_mat1 = StandardMaterial3D.new()
-##	_mat1.vertex_color_use_as_albedo = true
-#	_mat1.flags_unshaded = true
-#	_mat1.no_depth_test = true
-#	_mat1.disable_receive_shadows = true
-#	_mat1.flags_transparent = true
-#	_mat1.albedo_color = Color(1,1,1,0.25)
-#	_mat1.render_priority = -1
-#
-#	_mat2 = StandardMaterial3D.new()
-#	_mat2.vertex_color_use_as_albedo = true
-#	_mat2.flags_unshaded = unshaded
-#	_mat2.no_depth_test = false
-#	_mat2.disable_receive_shadows = true
-#	_mat2.flags_transparent = true
-#	_mat2.albedo_color = Color.WHITE
-##
-#	_mat1.next_pass = _mat2
-#	_mat2.next_pass = _mat2
-
-
-#func _create_materials():
-#	_mat1 = StandardMaterial3D.new()
-#	_mat1.vertex_color_use_as_albedo = true
-#	_mat1.flags_unshaded = unshaded
-#	_mat1.no_depth_test = true
-#	_mat1.disable_receive_shadows = true
-#	_mat1.flags_transparent = _USE_TRANSPARENCY
-#	_mat1.albedo_color = Color(1,1,1, _MAX_ALPHA) if _USE_TRANSPARENCY else Color.WHITE
-#
-##	if outlines:
-##		var np_mat := StandardMaterial3D.new()
-##		np_mat.flags_unshaded = unshaded
-##		np_mat.disable_receive_shadows = true
-##		np_mat.no_depth_test = true
-##		np_mat.albedo_color = Color.BLACK
-##		np_mat.params_grow = true
-##		np_mat.params_grow_amount = 0.005
-##		np_mat.render_priority = -1
-##
-##		_mat1.next_pass = np_mat
-
-
-
-#var shaded:BaseMaterial3D.ShadingMode:
-##	get: return _mat1.flags_unshaded
-##	set(enabled): _mat1.flags_unshaded = enabled
-#	get: return _mat1.shading_mode
-#	set(mode): _mat1.shading_mode = mode
-#
-#var on_top:bool:
-#	get: return _mat2.no_depth_test
-#	set(enabled): _mat2.no_depth_test = enabled
 
 
 @warning_ignore("shadowed_variable_base_class")
@@ -713,8 +658,12 @@ func _points_are_equal(a:Vector3, b:Vector3) -> bool:
 #	push_warning("points 'a' and 'b' are the same: %s == %s" % [a, b])
 	return true
 
-
 func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
+	#DevTools.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
+		_add_line_cube_(a, b, color, thickness)
+	#)
+
+func _add_line_cube_(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	# I had issues here with 'looking_at', which I can't quite remember,
 	# but I solved somehow. I posted it here:
 	#     https://godotforums.org/d/27860-transform-looking-at-not-working
@@ -729,22 +678,21 @@ func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	# and then using that index to get and set properties of the instance
 	var idx := _add_instance_to(mm)
 
-	# if transform is to be orthonormalized, do it here beback applying any
+	# if transform is to be orthonormalized, do it here before applying any
 	# scaling, or it will revert the scaling
 	@warning_ignore("shadowed_variable_base_class")
-	var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
-#	var transform := Transform()
+	#var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
+	var transform := mm.get_instance_transform(idx)
 	transform.origin = (a+b)/2
 
 	if not transform.origin.is_equal_approx(b):
-		#var target_direction := (b-transform.origin).normalized()
 		var target_direction := a.direction_to(b)
 		transform = transform.looking_at(b,
 			Vector3.UP if abs(target_direction.dot(Vector3.UP)) < _DOT_THRESHOLD
 			else Vector3.BACK
 		)
 
-	# TODO: this probably accumulates scaling if this instance was scaled beback,
+	# TODO: this probably accumulates scaling if this instance was scaled before,
 	#       but I've never seen any issues, so... I could be wrong.
 	transform.basis.x *= thickness
 	transform.basis.y *= thickness
