@@ -88,50 +88,50 @@ func drawing_in_2d() -> void:
 	# Example 2D drawing
 
 	# func draw_text(position, text, font_size, color, alignment=0)
-	Toolbox2D.draw_text(Vector2(250, 250), "Text without outline", 30, Color.ORANGE, true)
+	Toolbox2D.draw_text(Vector2(350, 250), "Text without outline", 30, Color.ORANGE, true)
 	# draw_text_outlined(position, text, font_size, out_size, color)
-	Toolbox2D.draw_text_outline(Vector2(650, 250), "Outline without text", 30, 3, Color.BLACK)
+	Toolbox2D.draw_text_outline(Vector2(750, 250), "Outline without text", 30, 3, Color.BLACK)
 
 	# you can also
-	Toolbox2D.draw_text(Vector2(120, 200), "Lines", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(320, 200), "Lines", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_line( p1, p2, color, thickness=1.0, antialiased=false )
-	Toolbox2D.draw_line(Vector2(100, 50), Vector2(200, 150), Color.DARK_GREEN, 4)
+	Toolbox2D.draw_line(Vector2(300, 50), Vector2(400, 150), Color.DARK_GREEN, 4)
 
 	# Toolbox2D.draw_polyline( [points], color, thickness:=1.0, antialiased=false )
 	Toolbox2D.draw_polyline([
-		Vector2(120,  70), Vector2(180,  70),
-		Vector2(180, 130), Vector2(120, 130),
-		Vector2(120,  90), Vector2(160,  90),
-		Vector2(160, 110), Vector2(140, 110)
+		Vector2(320,  70), Vector2(380,  70),
+		Vector2(380, 130), Vector2(320, 130),
+		Vector2(320,  90), Vector2(360,  90),
+		Vector2(360, 110), Vector2(340, 110)
 	], Color.BLUE_VIOLET, 4)
 
 
-	Toolbox2D.draw_text(Vector2(260, 200), "Circles", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(460, 200), "Circles", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_circle( filled?, center, axis/radius, color, thickness=1.0, antialiased=false )
-	Toolbox2D.draw_circle(Vector2(300, 100), 50, Color.BLUE, false, 4)
-	Toolbox2D.draw_circle(Vector2(300, 100), 20, Color.RED, true)
+	Toolbox2D.draw_circle(Vector2(500, 100), 50, Color.BLUE, false, 4)
+	Toolbox2D.draw_circle(Vector2(500, 100), 20, Color.RED, true)
 
 
-	Toolbox2D.draw_text(Vector2(420, 200), "Rects", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(600, 200), "Rects", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_rect( filled?, rect, color, thickness:=1.0, antialiased=false )
-	Toolbox2D.draw_rect(Rect2(400, 50, 100, 100), Color.GREEN_YELLOW, false, 4)
-	Toolbox2D.draw_rect(Rect2(425, 75, 50, 50), Color.GOLD, true)
+	Toolbox2D.draw_rect(Rect2(580, 50, 100, 100), Color.GREEN_YELLOW, false, 4)
+	Toolbox2D.draw_rect(Rect2(605, 75, 50, 50), Color.GOLD, true)
 
 
-	Toolbox2D.draw_text(Vector2(575, 200), "Arcs", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(725, 200), "Arcs", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_arc(center, radius, start_angle, end_angle, point_count, color, thickness=1.0, antialiased=false)
 	var t := Time.get_ticks_msec()*0.001
-	Toolbox2D.draw_arc(Vector2(600, 100), 50, 0,  TAU*cos(t), 32, Color.ORANGE_RED, 4)
-	Toolbox2D.draw_arc(Vector2(600, 100), 30, 0, -TAU*cos(t), 32, Color.ORANGE_RED, 4)
+	Toolbox2D.draw_arc(Vector2(750, 100), 50, 0,  TAU*cos(t), 32, Color.ORANGE_RED, 4)
+	Toolbox2D.draw_arc(Vector2(750, 100), 30, 0, -TAU*cos(t), 32, Color.ORANGE_RED, 4)
 
 
-	Toolbox2D.draw_text(Vector2(750, 200), "Vectors", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(850, 200), "Vectors", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_vector( position, direction, color, thickness=1.0, antialiased=false )
-	Toolbox2D.draw_vector(Vector2(800, 100), (Vector2.RIGHT*75).rotated(PI* cos(t)), Color.DARK_SLATE_BLUE, 3)
-	Toolbox2D.draw_vector(Vector2(800, 100), (Vector2.LEFT*50).rotated(PI*sin(t)), Color.DARK_ORCHID, 3)
+	Toolbox2D.draw_vector(Vector2(900, 100), (Vector2.RIGHT*75).rotated(PI* cos(t)), Color.DARK_SLATE_BLUE, 3)
+	Toolbox2D.draw_vector(Vector2(900, 100), (Vector2.LEFT*50).rotated(PI*sin(t)), Color.DARK_ORCHID, 3)
 
 
-	Toolbox2D.draw_text(Vector2(950, 200), "Transforms", 25, Color.WHITE, true, 10)
+	Toolbox2D.draw_text(Vector2(1000, 200), "Transforms", 25, Color.WHITE, true, 10)
 	$Icon.rotate(-PI*cos(t)*0.01)
 	$Icon.translate(Vector2(cos(t)*0.5, sin(t)*0.5))
 	$Icon/Icon2.rotate(-PI*cos(t)*0.01)
@@ -174,7 +174,7 @@ func drawing_in_3d() -> void:
 	Toolbox3D.draw_text(Vector3(0, 0.2, -0.5), "Spheres", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_sphere( filled?, position, radius, color )
 	Toolbox3D.draw_sphere(Vector3(0, 0, 0), 0.3, Color.BLUE, true)
-	Toolbox3D.draw_sphere(Vector3(0, 1.5, 0), 0.5, Color.BLACK, false, 0.5)
+	Toolbox3D.draw_sphere(Vector3(0, -0.5, -0.5), 0.5, Color.BLACK, false, 0.5)
 
 
 	Toolbox3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", 1, Color.GREEN_YELLOW)

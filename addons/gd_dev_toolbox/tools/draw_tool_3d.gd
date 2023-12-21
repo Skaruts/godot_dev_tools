@@ -95,7 +95,6 @@ func clear() -> void:
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #    Drawing API
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
-
 enum {A,B,C,D,E,F,G,H}
 func draw_quad(verts:Array[Vector3], color:Color) -> void:
 	_im.surface_begin(Mesh.PRIMITIVE_TRIANGLES)#, _im_fore_mat)
@@ -270,7 +269,11 @@ func bulk_cones(cones:Array) -> void:
 @warning_ignore("shadowed_variable_base_class")
 func draw_sphere(position:Vector3, color:Color, size:=1.0, filled:=true, thickness:=1.0) -> void:
 	if filled: _add_sphere_filled(position, color, size)
-	else:      _add_sphere_hollow(position, color, size, thickness)
+	else:
+		#Toolbox.benchmark(str(_add_sphere_hollow), 10, 1000, func() -> void:
+		_add_sphere_hollow(position, color, size, thickness)
+		#)
+
 
 # points = contiguous Array[Vector3]
 func batch_pheres(points:Array, colors:Variant, size:=1.0, filled:=true) -> void:
@@ -527,6 +530,7 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 func _create_circle_points(position:Vector3, axis:Vector3, num_segments:int, start_angle:=0, connect:=true) -> Array:
 	var radius := axis.length()
 	axis = axis.normalized()
+	assert(axis != Vector3.ZERO)
 
 	# TODO: when the axis used in the cross product below is the same
 	# as the circle's axis, use a perpendicular axis instead
@@ -572,6 +576,7 @@ func _create_circle_points(position:Vector3, axis:Vector3, num_segments:int, sta
 func _create_arc_points(position:Vector3, axis:Vector3, arc_angle:float, num_segments:int, start_angle:=0, connect:=false) -> Array:
 	var radius := axis.length()
 	axis = axis.normalized()
+	assert(axis != Vector3.ZERO)
 
 	var _cross_axis := Vector3.UP
 	if axis == _cross_axis:
@@ -583,7 +588,7 @@ func _create_arc_points(position:Vector3, axis:Vector3, arc_angle:float, num_seg
 	# this was intended for some edge cases, but it seems like it never happens
 	var dot :float = abs(cross.dot(axis))
 	if dot > 0.9:
-		printerr(_create_circle_points, ": THIS CODE HAS RUN!") # seems like this code never runs
+		printerr(_create_arc_points, ": THIS CODE HAS RUN!") # seems like this code never runs
 		cross = axis.cross(Vector3.UP) * radius
 
 #	print(axis, cross, dot)
@@ -790,9 +795,12 @@ func _add_sphere_hollow(position:Vector3, color:Color, diameter:=1.0, thickness:
 	var meridian_points := _create_circle_points(position, Vector3.RIGHT*radius, hollow_sphere_rings*2, 90)
 	meridian_points.resize(meridian_points.size()/2.0)   # only interested in half of the circle here
 
-	var a:Vector3 = meridian_points[0]
-	var start_direction := Vector3(position.x, a.y, position.y).direction_to(a)
+	var a:Vector3 = meridian_points[1] # don't use 0, as it is the same as 'position' in x and z
+	var start_direction := Vector3(position.x, a.y, position.z).direction_to(a)
+
 	var p1 := position - Vector3.UP*radius
+
+	#var polylines := []
 
 	var dist := (diameter)/float(hollow_sphere_rings)
 	for i in range(1, meridian_points.size()):
@@ -801,13 +809,17 @@ func _add_sphere_hollow(position:Vector3, color:Color, diameter:=1.0, thickness:
 		var p := Vector3(p1.x, mp.y, p1.z)
 		var points := _create_arc_points(p, Vector3.UP*r, 360, hollow_sphere_radial_segments, 90)
 		draw_polyline(points, color, thickness)
+		#polylines.append([points, color, thickness])
+
 
 	for i in hollow_sphere_radial_segments:
 		var angle := 360/hollow_sphere_radial_segments
 		var direction := start_direction.rotated(Vector3.UP, deg_to_rad(i * angle) )
 		var points := _create_arc_points(position, direction*radius, 180, hollow_sphere_rings, 90, false)
 		draw_polyline(points, color, thickness)
+		#polylines.append([points, color, thickness])
 
+	#bulk_polylines(polylines)
 
 
 
