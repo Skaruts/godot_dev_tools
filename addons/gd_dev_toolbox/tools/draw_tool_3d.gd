@@ -125,9 +125,15 @@ func bulk_lines(lines:Array) -> void:
 
 
 # points = contiguous Array[Vector3]
-func polyline(points:Array, color:Color, thickness:=line_thickness) -> void:
-	for i in range(1, points.size(), 1):
-		_add_line(points[i-1], points[i], color, thickness)
+func polyline(points:Array, color:Variant, thickness:=line_thickness) -> void:
+	if color is Color:
+		for i in range(1, points.size(), 1):
+			_add_line(points[i-1], points[i], color, thickness)
+	elif color is Array:
+		assert(color.size() == points.size())
+		for i in range(1, points.size(), 1):
+			_add_line(points[i-1], points[i], color[i], thickness)
+
 
 func bulk_polylines(polylines:Array) -> void:
 	for pl:Array in polylines:

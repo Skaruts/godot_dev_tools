@@ -119,12 +119,16 @@ func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0) -> void:
 	#_dt.line(	start, end, color, thickness)
 
 
-## Draw multiple line segments connected by the given [param points], using
+## Draws multiple line segments connected by the given [param points], using
 ## the given [param color] and line [param thickness]. [br]
 ## [br]
+## [param color] can be a single [Color], or an [Array] of [Color]s with the
+## same number of elements as [param points]. [br]
+## [br]
 ## [b]Note:[/b] [param points] must be Vector3.
-func draw_polyline(points:Array, color:Color, thickness:=1.0) -> void:
+func draw_polyline(points:Array, color:Variant, thickness:=1.0) -> void:
 	if not _drawing_visible: return
+	if color is Array: assert(color.size() == points.size())
 	_draw_arrays["polylines"].append([points, color, thickness])
 
 
@@ -132,7 +136,7 @@ func draw_polyline(points:Array, color:Color, thickness:=1.0) -> void:
 ## Draws a point using a cube shape at [param position] with size [param size],
 ## using the given [param color].
 @warning_ignore("shadowed_variable_base_class")
-func draw_point_cube(filled:bool, position:Variant, size:float, color:Color) -> void:
+func draw_point_cube(position:Variant, size:float, color:Color, filled:=false) -> void:
 	if not _drawing_visible: return
 	if filled:
 		_draw_arrays["cubes"].append([position, size, color])
@@ -152,23 +156,23 @@ func draw_aabb(aabb:AABB, color:Color, thickness:=1.0) -> void:
 ## [br]
 ## If [param filled] is [code]false[/code], the sphere will be a wireframe.
 @warning_ignore("shadowed_variable_base_class")
-func draw_sphere(filled:bool, position:Vector3, size:float, color:Color) -> void:
+func draw_sphere(position:Vector3, size:float, color:Color, filled:=false) -> void:
 	if not _drawing_visible: return
-	if filled:
-		_draw_arrays["spheres"].append([position, color, size])
-	else:
-		pass # _draw_arrays["wire_spheres"].append([position, color, size])
+	#if filled:
+	_draw_arrays["spheres"].append([position, color, size])
+	#else:
+	#	_draw_arrays["wire_spheres"].append([position, color, size])
 
 
 ## Draws a circle at [param position], using the given [param color] and line
 ## [param thickness]. The circle will be drawn perpendicular to [param normal],
 ## and the radius of the circle will be the length of the [param normal] vector. [br]
 ## [br]
-## If [param filled] is [code]false[/code], the circle will be a wireframe. [br]
+## It can optionally be [param filled] or hollow.
 ## [br]
-## [b]Note:[/b] the param filled currently has no effect.
+## [b]Note:[/b] the parameter [param filled] currently has no effect (NIY).
 @warning_ignore("shadowed_variable_base_class")
-func draw_circle(filled:bool, position:Vector3, normal:Vector3, color:Color, thickness:=1.0) -> void:
+func draw_circle(position:Vector3, normal:Vector3, color:Color, filled:=false, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	#if filled:
 	#	_draw_arrays["filled_circles"].append([position, radius, normal, color])
@@ -188,12 +192,12 @@ func draw_text(position:Vector3, text:String, size:float, color:Color, fixed_siz
 
 ## [param TODO: this is here only for the vectors, and needs to be sorted out]
 @warning_ignore("shadowed_variable_base_class")
-func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
+func draw_cone(position:Vector3, direction:Vector3, color:Color, filled:=false, thickness:=1.0) -> void:
 	if not _drawing_visible: return
-	if filled:
-		_draw_arrays["cones"].append([position, direction, color, thickness])
-	else:
-		pass # _draw_arrays["wire_cones"].append([position, direction, color, thickness])
+	#if filled:
+	_draw_arrays["cones"].append([position, direction, color, thickness])
+	#else:
+	#_draw_arrays["wire_cones"].append([position, direction, color, thickness])
 
 
 ## Draws an arrow representing a vector, at [param position], pointing toward
@@ -205,7 +209,7 @@ func draw_cone(filled:bool, position:Vector3, direction:Vector3, color:Color, th
 func draw_vector(position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	_draw_arrays["lines"].append([position, position+direction, color, thickness])
-	draw_cone(true, position+direction, direction, color, thickness*2)
+	draw_cone(position+direction, direction, color, true, thickness*2)
 
 
 ## Draws the [param node]'s [transform] using the given [param size] for the

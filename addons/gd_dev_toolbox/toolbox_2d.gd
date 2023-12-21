@@ -1,5 +1,8 @@
 extends CanvasLayer
 
+## An API for easily drawing 2D shapes.
+
+
 var _data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 
 var _drawing_visible := false
@@ -54,80 +57,109 @@ func _init_config() -> void:
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region Public API
+## Toggles 2D drawing on/off.
 func toggle()  -> void: set_enabled(not _drawing_visible)
+
+## Enables 2D drawing.
 func enable()  -> void: set_enabled(true)
+
+## Disables 2D drawing.
 func disable() -> void: set_enabled(false)
+
+## Sets 2D drawing on or off. [br]
+## [br]
+## [b]Note:[/b] The parameter [param __force] is intended for internal usage,
+## and should be ignored.
 func set_enabled(vis:bool, __force:=false) -> void:
 	if vis == _drawing_visible and not __force: return
 	_drawing_visible = vis
 	_dt.visible = _drawing_visible
 	set_process(_drawing_visible)
 
-
-
-func draw_line(from: Vector2, to: Vector2, color: Color, width: float = 1.0, antialiased:=false) -> void:
+## Draws a line from [param start] to [param end], using the given [param color]
+## and line [param width]. It can optionally be antialiased.
+func draw_line(start: Vector2, end: Vector2, color: Color, width:= 1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
-	_dt.add_line([from, to, color, width, antialiased])
+	_dt.add_line([start, end, color, width, antialiased])
 
 
-func draw_polyline(points: Array, color: Variant, width: float = 1.0, antialiased:=false ) -> void:
+## Draws multiple line segments connected by the given [param points], using
+## the given [param color] and line [param thickness]. [br]
+## [br]
+## [param color] can be a single [Color], or an [Array] of [Color]s with the
+## same number of elements as [param points]. [br]
+## [br]
+## [b]Note:[/b] [param points] must be Vector2.
+func draw_polyline(points: Array, color: Variant, thickness: float = 1.0, antialiased:=false ) -> void:
 	if not _drawing_visible: return
 	if color is Color:
-		_dt.add_polyline([points, color, width, antialiased])
+		_dt.add_polyline([points, color, thickness, antialiased])
 	elif color is Array:
-		_dt.add_polyline_colors([points, color, width, antialiased])
+		_dt.add_polyline_colors([points, color, thickness, antialiased])
 
 
-func draw_multiline(points: Array, color: Color, width: float = 1.0) -> void:
+## Draws multiple disconnected lines with a uniform [param thickness] and
+## [param color]. Each line is defined by two consecutive points in the
+## [param points] array, i.e. i-th segment consists of points[2 * i],
+## points[2 * i + 1] endpoints. When drawing large amounts of lines, this
+## is faster than using individual draw_line() calls. [br]
+## [br]
+## To draw interconnected lines, use [member draw_polyline()] instead.
+func draw_multiline(points: Array, color: Color, thickness: float = 1.0) -> void:
 	if not _drawing_visible: return
-	_dt.add_multiline([points, color, width])
+	_dt.add_multiline([points, color, thickness])
 
 
-func draw_circle(filled:bool, position:Vector2, radius:float, color:Color, width:=-1.0, antialiased:=false) -> void:
+## Draws a circle at [param position], using the given [param radius],
+## [param color] and line [param thickness]. It can optionally be [param filled]
+## and [param antialiased].
+func draw_circle(position:Vector2, radius:float, color:Color, filled:=false, thickness:=-1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	if filled: _dt.add_filled_circle([position, radius, color])
-	else:      _dt.add_circle([position, radius, color, width, antialiased])
+	else:      _dt.add_circle([position, radius, color, thickness, antialiased])
 
 
-func draw_rect(filled:bool, rect:Rect2, color:Color, width:=-1.0) -> void:
+## Draws the rectangle [param rect] using the given [param color] and line
+## [param thickness]. It can optionally be [param filled].
+func draw_rect(rect:Rect2, color:Color, filled:=false, thickness:=-1.0) -> void:
 	if not _drawing_visible: return
-	_dt.add_rect([rect, color, filled, width])
+	_dt.add_rect([rect, color, filled, thickness])
 
 
-# draw_arc(center, radius, start_angle, end_angle, point_count, color, width)
-func draw_arc(center: Vector2, radius: float, start_angle: float, end_angle: float, point_count: int, color: Color, width: float = 1.0, antialiased:=false) -> void:
+# draw_arc(center, radius, start_angle, end_angle, point_count, color, thickness)
+func draw_arc(center: Vector2, radius: float, start_angle: float, end_angle: float, point_count: int, color: Color, thickness: float = 1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
-	_dt.add_arc([center, radius, start_angle, end_angle, point_count, color, width, antialiased])
+	_dt.add_arc([center, radius, start_angle, end_angle, point_count, color, thickness, antialiased])
 
 
-func draw_vector(position: Vector2, direction: Vector2, color: Color, width: float = 1.0, antialiased:=false) -> void:
+func draw_vector(position: Vector2, direction: Vector2, color: Color, thickness: float = 1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	var a := position
 	var b := position+direction
 
-	draw_line(position, position+direction, color, width, antialiased)
+	draw_line(position, position+direction, color, thickness, antialiased)
 
 	var inv_dir := (b-a).normalized()*20
 	var c := b + inv_dir.rotated(deg_to_rad(150))
 	var d := b + inv_dir.rotated(deg_to_rad(210))
 	#var points = PoolVector2Array([a, b, c])
 	#draw_polygon(points, PoolColorArray([color]))
-	draw_line(b, c, color, width, antialiased)
-	draw_line(b, d, color, width, antialiased)
+	draw_line(b, c, color, thickness, antialiased)
+	draw_line(b, d, color, thickness, antialiased)
 
 
-func draw_transform(node:Node2D, size:float, local:=false, width:=1.0, antialiased:=false) -> void:
+func draw_transform(node:Node2D, size:float, local:=false, thickness:=1.0, antialiased:=false) -> void:
 	if not _drawing_visible: return
 	var t :Transform2D = node.global_transform if not local else node.transform
 	var o :Vector2 = node.global_transform.origin
 
-	draw_line(o, o+t.x.normalized()*size, Color.RED,             width, antialiased)
-	draw_line(o, o+t.y.normalized()*size, Color.GREEN,             width, antialiased)
-	#draw_vector(o, t.x*size, Color.RED,             width, antialiased)
-	#draw_vector(o, t.y*size, Color.GREEN,           width, antialiased)
+	draw_line(o, o+t.x.normalized()*size, Color.RED,             thickness, antialiased)
+	draw_line(o, o+t.y.normalized()*size, Color.GREEN,             thickness, antialiased)
+	#draw_vector(o, t.x*size, Color.RED,             thickness, antialiased)
+	#draw_vector(o, t.y*size, Color.GREEN,           thickness, antialiased)
 
 
-	#draw_vector(b, c, color, width, antialiased)
+	#draw_vector(b, c, color, thickness, antialiased)
 
 #draw_string(font, Vector2(500, 300), str, 0, ss, font_size, Color.RED)
 func draw_text(position:Vector2, text:String, font_size:float,
