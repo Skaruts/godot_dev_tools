@@ -1,8 +1,8 @@
 # Godot Dev Toolbox
 
-A few handy tools for general development and debugging that coalesced into a single, easier to use addon. It provides a panel for easily monitoring variables, and a few functions for quick benchmarking, and 2D and 3D drawing.
+A few handy tools for general development and debugging. Toolbox provides a monitoring panel for easily monitoring variables, and a few functions for quick benchmarking, and 2D and 3D drawing.
 
-Toolbox gets around Godot's lack of support for line thickness in 3D by using stretched 3D shapes to make thick 3D lines.
+Toolbox gets around Godot's lack of support for line thickness in 3D by using 3D shapes to make thick 3D lines.
 
 
 
