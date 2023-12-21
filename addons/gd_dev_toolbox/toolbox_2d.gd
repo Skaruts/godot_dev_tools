@@ -57,8 +57,8 @@ func _init_config() -> void:
 func toggle()  -> void: set_enabled(not _drawing_visible)
 func enable()  -> void: set_enabled(true)
 func disable() -> void: set_enabled(false)
-func set_enabled(vis:bool, force:=false) -> void:
-	if vis == _drawing_visible and not force: return
+func set_enabled(vis:bool, __force:=false) -> void:
+	if vis == _drawing_visible and not __force: return
 	_drawing_visible = vis
 	_dt.visible = _drawing_visible
 	set_process(_drawing_visible)

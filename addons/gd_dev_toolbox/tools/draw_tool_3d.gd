@@ -281,14 +281,14 @@ func bulk_spheres(points:Array) -> void:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func circle(position:Vector3, radius:float, axis:Vector3, color:Color, thickness:=1.0) -> void:
-	var points := _create_circle_points(position, radius, axis, color)
+func circle(position:Vector3, normal:Vector3, color:Color, thickness:=1.0) -> void:
+	var points := _create_circle_points(position, normal, color)
 	points.append(points[0])
 	polyline(points, color, thickness)
 
 func bulk_circles(circles:Array) -> void:
 	for c:Array in circles:
-		circle(c[0], c[1], c[2], c[3], c[4])
+		circle(c[0], c[1], c[2], c[3])
 
 
 
@@ -516,7 +516,8 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region Internal API
 @warning_ignore("shadowed_variable_base_class")
-func _create_circle_points(position:Vector3, radius:float, axis:Vector3, _color:Color) -> Array:
+func _create_circle_points(position:Vector3, axis:Vector3, _color:Color) -> Array:
+	var radius := axis.length()
 	axis = axis.normalized()
 
 	# TODO: when the axis used in the cross product below is the same

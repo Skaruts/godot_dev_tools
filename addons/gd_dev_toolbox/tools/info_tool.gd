@@ -275,7 +275,7 @@ func _create_line(key:String, val:Variant, fp:float) -> Dictionary:
 	return { key=key, val=val, fp=fp }
 
 
-func print(key:String, val:Variant=null, fp:=_def_float_precision) -> void:
+func print(key:String, val:Variant, fp:=_def_float_precision) -> void:
 	if not _info_visible: return
 	var line := _create_line(key, val, fp)
 	_lines.append(line)
@@ -293,7 +293,7 @@ func print_grouped(group_name:String, key:String, val:Variant=null, fp:=_def_flo
 	_grouped_lines[group_name].append(line)
 
 
-func print_prop(node:Object, key:String, val:Variant=null, fp:=_def_float_precision) -> void:
+func print_prop(node:Object, key:String, val:Variant, fp:=_def_float_precision) -> void:
 	if not _info_visible: return
 
 	var line := _create_line(key, val, fp)
@@ -307,7 +307,7 @@ func is_registered(node:Object) -> bool:
 	return node in _nodes
 
 
-func register(node:Object, property_names:Array, fp:=2) -> void:
+func register(node:Object, property_names:Array, fp:=_def_float_precision) -> void:
 	if not node in _nodes:
 		_nodes[node] = {}
 
@@ -386,7 +386,7 @@ func print_bm(name:String, fn:Callable, options:Variant=null) -> Variant:
 	return t2
 
 
-func benchmark(bm_name:StringName, max_benchmarks:int, iterations:int, fn:Callable) -> void:
+func benchmark(bm_name:String, max_benchmarks:int, iterations:int, fn:Callable) -> void:
 	#var info = getinfo(2, "nSl")
 	var bm: Dictionary
 	if not bm_name in _bms:
