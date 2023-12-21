@@ -1,8 +1,13 @@
 # Godot Dev Toolbox
 
-A few handy tools for general development and debugging that I've developed over time and gathered up into a single easier to use addon. It provides a panel for easily monitoring variables, and a few functions for quick benchmarking, and 2D and 3D drawing.
+A few handy tools for general development and debugging that coalesced into a single, easier to use addon. It provides a panel for easily monitoring variables, and a few functions for quick benchmarking, and 2D and 3D drawing.
 
 Toolbox gets around Godot's lack of support for line thickness in 3D by using stretched 3D shapes to make thick 3D lines.
+
+
+
+ !!!!!    SCREENSHOT    !!!!!
+
 
 
 ## Usage:
@@ -13,7 +18,7 @@ There are three autoloads added by this addon:
 - `Toolbox2D`  - for 2D shape drawing
 - `Toolbox3D`  - for 3D shape drawing
 
-You can use them to display information in the way you find most suitable.
+You can use them to display information in the way you find most suitable. Check out example/example.gd for some examples, and the in-editor documentation for more in depth information.
 
 ### Input Actions
 
@@ -36,13 +41,6 @@ The default keys are:
 Toolbox can be customized using a config resource file. You can create a new `ToolboxConfig` resource, and save it at the root of your project as `toolbox_config.tres` or `ToolboxConfig.tres` (or `.res`). I did my best to document the options.
 
 
-## Toolbox API
-	- Toolbox.print_bm(name:String, fn:Callable, options:Dictionary=null)
-		- options can contain
-			- smoothing:int    - how much to smoothen the reported times
-			- precision:int    - the floating point precision for the reported times
-			- units:int        - time units: Toolbox.SEC or Toolbox.MSEC
 
-	- Toolbox.benchmark(name:String, num_benchmarks:int, num_iterations:int, fn:Callable)
 
 
