@@ -19,6 +19,7 @@ var _color_z_axis:Color = Color(0, 0.10, 1)
 	cones     = _dt.bulk_cones,
 	circles   = _dt.bulk_circles,
 	spheres   = _dt.bulk_spheres,
+	hollow_spheres   = _dt.bulk_hollow_spheres,
 	cubes     = _dt.bulk_point_cube_faces,
 	aabbs     = _dt.bulk_aabbs,
 	labels    = _dt.bulk_text,
@@ -156,12 +157,13 @@ func draw_aabb(aabb:AABB, color:Color, thickness:=1.0) -> void:
 ## [br]
 ## If [param filled] is [code]false[/code], the sphere will be a wireframe.
 @warning_ignore("shadowed_variable_base_class")
-func draw_sphere(position:Vector3, size:float, color:Color, filled:=false) -> void:
+func draw_sphere(position:Vector3, size:float, color:Color, filled:=false, thickness:=1.0) -> void:
 	if not _drawing_visible: return
-	#if filled:
-	_draw_arrays["spheres"].append([position, color, size])
-	#else:
-	#	_draw_arrays["wire_spheres"].append([position, color, size])
+	if filled:
+		_draw_arrays["spheres"].append([position, color, size, filled, thickness])
+	else:
+		_draw_arrays["hollow_spheres"].append([position, color, size, filled, thickness])
+
 
 
 ## Draws a circle at [param position], using the given [param color] and line

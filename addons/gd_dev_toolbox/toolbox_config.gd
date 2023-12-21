@@ -165,17 +165,24 @@ extends Resource
 #-------------------------------------------------------------------------------
 
 ## How many radial segments the spheres will be made of (the vertical lines)
-@export var sphere_radial_segments := 24
+@export_range(3, 128) var sphere_radial_segments := 24
 
 ## How many rings the spheres will be made of (the horizontal lines)
-@export var sphere_rings := 12
+@export_range(2, 128) var sphere_rings := 12
+
+## How many radial segments the wireframe spheres will be made of (the vertical lines)
+@export_range(4, 128) var hollow_sphere_radial_segments := 8
+
+## How many rings the wireframe spheres will be made of (the horizontal lines)
+@export_range(2, 128) var hollow_sphere_rings := 6
+
 
 ## How many line segments the circles will be made of
-@export var circle_segments := 32
+@export_range(4, 128) var circle_segments := 32
 
 ## How many radial segments the cylinders will be made of (the vertical lines)
 ## NOTE: cylinders are not being used for anything yet.
-@export var cylinder_radial_segments := 5
+@export_range(4, 128) var cylinder_radial_segments := 5
 
 
 #-------------------------------------------------------------------------------

@@ -53,11 +53,11 @@ var single_color := false
 var cast_shadows := GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 var line_thickness := 1.0
-var unshaded := true    # actually looks great shaded, except for the cylinder caps
-var on_top := false
-var no_shadows := true
-var transparent := false
-var double_sided := false
+var unshaded       := true    # actually looks great shaded, except for the cylinder caps
+var on_top         := false
+var no_shadows     := true
+var transparent    := false
+var double_sided   := false
 
 var face_alpha := 0.5
 
@@ -66,13 +66,15 @@ var face_alpha := 0.5
 # or too afar, so this must be tweaked according to the intended usage.
 var width_factor := 0.01
 
-var sphere_radial_segments := 24
-var sphere_rings    := 12
-var circle_segments := 32
-var cylinder_radial_segments := 5
+var sphere_radial_segments        := 24
+var sphere_rings                  := 12
+var hollow_sphere_radial_segments := 8
+var hollow_sphere_rings           := 6
+var circle_segments               := 32
+var cylinder_radial_segments      := 5
 
 # how many instances to add to the MultiMeshInstance when the pool is full
-var instance_increment := 16
+var instance_increment            := 16
 
 
 
@@ -95,7 +97,7 @@ func clear() -> void:
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
 enum {A,B,C,D,E,F,G,H}
-func quad(verts:Array[Vector3], color:Color) -> void:
+func draw_quad(verts:Array[Vector3], color:Color) -> void:
 	_im.surface_begin(Mesh.PRIMITIVE_TRIANGLES)#, _im_fore_mat)
 	var a := verts[0]
 	var b := verts[1]
@@ -113,7 +115,7 @@ func quad(verts:Array[Vector3], color:Color) -> void:
 
 
 
-func line(a:Vector3, b:Vector3, color:Color, thickness:=line_thickness) -> void:
+func draw_line(a:Vector3, b:Vector3, color:Color, thickness:=line_thickness) -> void:
 	_add_line(a, b, color, thickness)
 
 # lines = array of arrays: [a, b, color, thickness]
@@ -125,7 +127,7 @@ func bulk_lines(lines:Array) -> void:
 
 
 # points = contiguous Array[Vector3]
-func polyline(points:Array, color:Variant, thickness:=line_thickness) -> void:
+func draw_polyline(points:Array, color:Variant, thickness:=line_thickness) -> void:
 	if color is Color:
 		for i in range(1, points.size(), 1):
 			_add_line(points[i-1], points[i], color, thickness)
@@ -137,7 +139,7 @@ func polyline(points:Array, color:Variant, thickness:=line_thickness) -> void:
 
 func bulk_polylines(polylines:Array) -> void:
 	for pl:Array in polylines:
-		polyline(pl[0], pl[1], pl[2])
+		draw_polyline(pl[0], pl[1], pl[2])
 
 
 
@@ -162,12 +164,12 @@ func bulk_polylines(polylines:Array) -> void:
 
 #func cube(p1:Vector3, p2:Vector3, flags:=ALL) -> void:
 	#if flags & WIRE:  cube_lines(p1, p2, line_color, line_thickness)
-	#if flags & FACES: cube_faces(p1, p2, line_color)
+	#if flags & FACES: draw_cube_faces(p1, p2, line_color)
 
 
 
 
-func cube_faces(p1:Vector3, p2:Vector3, color:Color) -> void:
+func draw_cube_faces(p1:Vector3, p2:Vector3, color:Color) -> void:
 #	var pos := Vector3(min(p1.x, p2.x), min(p1.y, p2.y), min(p1.z, p2.z))
 	var pos := (p1 + p2) / 2
 	var size := Vector3(p2.x-p1.x, p2.y-p1.y, p2.z-p1.z).abs()
@@ -176,7 +178,7 @@ func cube_faces(p1:Vector3, p2:Vector3, color:Color) -> void:
 
 
 
-func point_cube_faces(p:Vector3, size:float, color:Color) -> void:
+func draw_point_cube_faces(p:Vector3, size:float, color:Color) -> void:
 	_add_cube(p, Vector3(size, size, size), color)
 
 func bulk_point_cube_faces(cubes:Array) -> void:
@@ -200,15 +202,15 @@ func cube_lines(p1:Vector3, p2:Vector3, color:Color, thickness:=line_thickness, 
 	var pl1 := [a,b,c,d,a]
 	var pl2 := [e,f,g,h,e]
 
-	polyline(pl1, color, thickness)
-	polyline(pl2, color, thickness)
+	draw_polyline(pl1, color, thickness)
+	draw_polyline(pl2, color, thickness)
 	_add_line(a, e, color, thickness)
 	_add_line(b, f, color, thickness)
 	_add_line(c, g, color, thickness)
 	_add_line(d, h, color, thickness)
 
 	if draw_faces:
-		cube_faces(p1, p2, color)
+		draw_cube_faces(p1, p2, color)
 
 func bulk_cube_lines(_cube_lines:Array) -> void:
 	for c:Array in _cube_lines:
@@ -218,7 +220,7 @@ func bulk_cube_lines(_cube_lines:Array) -> void:
 
 
 
-func aabb(_aabb:AABB, color:Color, thickness:=line_thickness, draw_faces:=false) -> void:
+func draw_aabb(_aabb:AABB, color:Color, thickness:=line_thickness, draw_faces:=false) -> void:
 	var p1 := _aabb.position
 	var p2 := p1+_aabb.size
 
@@ -234,27 +236,27 @@ func aabb(_aabb:AABB, color:Color, thickness:=line_thickness, draw_faces:=false)
 	var pl1 := [a,b,c,d,a]
 	var pl2 := [e,f,g,h,e]
 
-	polyline(pl1, color, thickness)
-	polyline(pl2, color, thickness)
+	draw_polyline(pl1, color, thickness)
+	draw_polyline(pl2, color, thickness)
 	_add_line(a, e, color, thickness)
 	_add_line(b, f, color, thickness)
 	_add_line(c, g, color, thickness)
 	_add_line(d, h, color, thickness)
 
 	if draw_faces:
-		cube_faces(p1, p2, color)
+		draw_cube_faces(p1, p2, color)
 
 func bulk_aabbs(aabbs:Array) -> void:
 	for c:Array in aabbs:
 		# pos, size, color, thickness, draw_faces
-		aabb(c[0], c[1], c[2], c[3])
+		draw_aabb(c[0], c[1], c[2], c[3])
 
 
 
 
 # useful for drawing vectors as arrows, for example
 @warning_ignore("shadowed_variable_base_class")
-func cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
+func draw_cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0) -> void:
 	_add_cone(position, direction, color, thickness)
 
 # cones = array of arrays: [position, direction, color, thickness]
@@ -266,41 +268,45 @@ func bulk_cones(cones:Array) -> void:
 
 
 @warning_ignore("shadowed_variable_base_class")
-func sphere(position:Vector3, color:Color, size:=1.0) -> void:
-	_add_sphere(position, color, size)
+func draw_sphere(position:Vector3, color:Color, size:=1.0, filled:=true, thickness:=1.0) -> void:
+	if filled: _add_sphere_filled(position, color, size)
+	else:      _add_sphere_hollow(position, color, size, thickness)
 
 # points = contiguous Array[Vector3]
-func batch_pheres(points:Array, colors:Variant, size:=1.0) -> void:
+func batch_pheres(points:Array, colors:Variant, size:=1.0, filled:=true) -> void:
 	if colors is Color:
 		for p:Vector3 in points:
-			_add_sphere(p, colors, size)
+			draw_sphere(p, colors, size, filled)
 	elif colors is Array[Color]:
 		for i:int in points.size():
-			_add_sphere(points[i], colors[i], size)
+			draw_sphere(points[i], colors[i], size, filled)
 
 # points = array of arrays: [position, color, size]
 func bulk_spheres(points:Array) -> void:
 	for p:Array in points:
-		_add_sphere(p[0], p[1], p[2])
+		draw_sphere(p[0], p[1], p[2], p[3])
+
+func bulk_hollow_spheres(points:Array) -> void:
+	for p:Array in points:
+		draw_sphere(p[0], p[1], p[2], p[3], p[4])
 
 
 
 
 @warning_ignore("shadowed_variable_base_class")
-func circle(position:Vector3, normal:Vector3, color:Color, thickness:=1.0) -> void:
-	var points := _create_circle_points(position, normal, color)
-	points.append(points[0])
-	polyline(points, color, thickness)
+func draw_circle(position:Vector3, normal:Vector3, color:Color, thickness:=1.0, num_segments:=circle_segments) -> void:
+	var points := _create_circle_points(position, normal, num_segments)
+	draw_polyline(points, color, thickness)
 
 func bulk_circles(circles:Array) -> void:
 	for c:Array in circles:
-		circle(c[0], c[1], c[2], c[3])
+		draw_circle(c[0], c[1], c[2], c[3])
 
 
 
 
 @warning_ignore("shadowed_variable_base_class")
-func text(position:Vector3, string:String, color:Color, size:=1.0) -> void:
+func draw_text(position:Vector3, string:String, color:Color, size:=1.0) -> void:
 	_add_label(position, string, color, size)
 
 func bulk_text(labels:Array) -> void:
@@ -363,22 +369,18 @@ func _init_config() -> void:
 	var data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
 	var config: Resource = data.get_config()
 	if not config: return
-	#line_color               = config.line_color
-		#face_color               = config.face_color
-		#line_thickness           = config.line_thickness
-	unshaded                 = config.unshaded
-	on_top                   = config.on_top
-	#face_alpha               = config.face_alpha
-	#no_shadows               = config.no_shadows
-	#transparent              = config.transparent
-	#double_sided             = config.double_sided
-	width_factor             = config.width_factor
-	sphere_radial_segments   = config.sphere_radial_segments
-	sphere_rings             = config.sphere_rings
-	circle_segments          = config.circle_segments
-	cylinder_radial_segments = config.cylinder_radial_segments
-	instance_increment       = config.instance_increment
-	cast_shadows             = int(config.cast_shadows)  as GeometryInstance3D.ShadowCastingSetting
+
+	unshaded                      = config.unshaded
+	on_top                        = config.on_top
+	width_factor                  = config.width_factor
+	sphere_radial_segments        = config.sphere_radial_segments
+	sphere_rings                  = config.sphere_rings
+	hollow_sphere_radial_segments = config.hollow_sphere_radial_segments
+	hollow_sphere_rings           = config.hollow_sphere_rings
+	circle_segments               = config.circle_segments
+	cylinder_radial_segments      = config.cylinder_radial_segments
+	instance_increment            = config.instance_increment
+	cast_shadows                  = int(config.cast_shadows)  as GeometryInstance3D.ShadowCastingSetting
 
 func _init_im() -> void:
 	_im_base_mat = _create_material(Color(Color.WHITE, face_alpha))
@@ -522,22 +524,22 @@ func _create_multimesh(mesh:Mesh, name:String) -> MultiMesh:
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 #region Internal API
 @warning_ignore("shadowed_variable_base_class")
-func _create_circle_points(position:Vector3, axis:Vector3, _color:Color) -> Array:
+func _create_circle_points(position:Vector3, axis:Vector3, num_segments:int, start_angle:=0, connect:=true) -> Array:
 	var radius := axis.length()
 	axis = axis.normalized()
 
 	# TODO: when the axis used in the cross product below is the same
 	# as the circle's axis, use a perpendicular axis instead
-	var _cross_axis := Vector3.RIGHT
+	var _cross_axis := Vector3.UP
 	if axis == _cross_axis:
-		_cross_axis = Vector3.UP
+		_cross_axis = Vector3.RIGHT
 		#if _cross_axis == Vector3.RIGHT:
 			#_cross_axis = Vector3.UP
 		#elif _cross_axis == Vector3.UP:
 			#_cross_axis = Vector3.RIGHT
 
 	var points := []
-	var cross := axis.cross(_cross_axis).normalized() *  radius
+	var cross := axis.cross(_cross_axis).normalized()
 
 	# this was intended for some edge cases, but it seems like it never happens
 	var dot :float = abs(cross.dot(axis))
@@ -548,14 +550,62 @@ func _create_circle_points(position:Vector3, axis:Vector3, _color:Color) -> Arra
 #	print(axis, cross, dot)
 
 	# draw a debug cross-product vector
-	#line(position, position+cross, _color, 2)
-	#cone(position+cross, cross, _color, 2)
+	#draw_line(position, position+cross, Color.PURPLE, 2)
+	#cone(position+cross, cross, Color.PURPLE, 2)
 
-	for r:int in range(0, 360, 360/float(circle_segments)):
-		var c := cross.rotated(axis, deg_to_rad(r)).normalized()
+	var dist := 360.0/float(num_segments)
+	for i:int in num_segments+1:
+		var r := deg_to_rad(start_angle+dist*i)
+		var c := cross.rotated(axis, r)
 		var p := position + c * radius
 		points.append(p)
 
+	#for r:int in range(start_angle, 360+start_angle, 360/float(num_segments)):
+		#var c := cross.rotated(axis, deg_to_rad(r)).normalized()
+		#var p := position + c * radius
+		#points.append(p)
+	#if connect:
+		#points.append(points[0])
+	return points
+
+
+func _create_arc_points(position:Vector3, axis:Vector3, arc_angle:float, num_segments:int, start_angle:=0, connect:=false) -> Array:
+	var radius := axis.length()
+	axis = axis.normalized()
+
+	var _cross_axis := Vector3.UP
+	if axis == _cross_axis:
+		_cross_axis = Vector3.RIGHT
+
+	var points := []
+	var cross := axis.cross(_cross_axis).normalized()# *  radius
+
+	# this was intended for some edge cases, but it seems like it never happens
+	var dot :float = abs(cross.dot(axis))
+	if dot > 0.9:
+		printerr(_create_circle_points, ": THIS CODE HAS RUN!") # seems like this code never runs
+		cross = axis.cross(Vector3.UP) * radius
+
+#	print(axis, cross, dot)
+
+	# draw a debug cross-product vector
+	#draw_line(position, position+cross, Color.PURPLE, 2)
+	#cone(position+cross, cross, Color.PURPLE, 2)
+	#arc_angle += 4
+
+	var dist := arc_angle/float(num_segments)
+	for i:int in num_segments+1:
+		var r := deg_to_rad(start_angle+dist*i)
+		var c := cross.rotated(axis, r)
+		var p := position + c * radius
+		points.append(p)
+
+	#for r:int in range(start_angle, start_angle+arc_angle, arc_angle/float(num_segments)):
+		#var c := cross.rotated(axis, deg_to_rad(r))
+		#var p := position + c * radius
+		#points.append(p)
+	#if connect:
+		#points.append(points[0])
 	return points
 
 
@@ -722,7 +772,7 @@ func _add_cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0)
 
 
 @warning_ignore("shadowed_variable_base_class")
-func _add_sphere(position:Vector3, color:Color, size:=1.0) -> void:
+func _add_sphere_filled(position:Vector3, color:Color, size:=1.0) -> void:
 	var mm:MultiMesh = _mms["spheres"]
 
 	var idx := _add_instance_to(mm)
@@ -733,6 +783,32 @@ func _add_sphere(position:Vector3, color:Color, size:=1.0) -> void:
 	transform.basis = transform.basis.scaled(Vector3.ONE * size)
 
 	_commit_instance(mm, idx, transform, color)
+
+
+func _add_sphere_hollow(position:Vector3, color:Color, diameter:=1.0, thickness:=1.0) -> void:
+	var radius := diameter/2.0
+	var meridian_points := _create_circle_points(position, Vector3.RIGHT*radius, hollow_sphere_rings*2, 90)
+	meridian_points.resize(meridian_points.size()/2.0)   # only interested in half of the circle here
+
+	var a:Vector3 = meridian_points[0]
+	var start_direction := Vector3(position.x, a.y, position.y).direction_to(a)
+	var p1 := position - Vector3.UP*radius
+
+	var dist := (diameter)/float(hollow_sphere_rings)
+	for i in range(1, meridian_points.size()):
+		var mp:Vector3 = meridian_points[i]
+		var r:float = absf(mp.z-p1.z)
+		var p := Vector3(p1.x, mp.y, p1.z)
+		var points := _create_arc_points(p, Vector3.UP*r, 360, hollow_sphere_radial_segments, 90)
+		draw_polyline(points, color, thickness)
+
+	for i in hollow_sphere_radial_segments:
+		var angle := 360/hollow_sphere_radial_segments
+		var direction := start_direction.rotated(Vector3.UP, deg_to_rad(i * angle) )
+		var points := _create_arc_points(position, direction*radius, 180, hollow_sphere_rings, 90, false)
+		draw_polyline(points, color, thickness)
+
+
 
 
 @warning_ignore("shadowed_variable_base_class")

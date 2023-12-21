@@ -174,6 +174,7 @@ func drawing_in_3d() -> void:
 	Toolbox3D.draw_text(Vector3(0, 0.2, -0.5), "Spheres", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_sphere( filled?, position, radius, color )
 	Toolbox3D.draw_sphere(Vector3(0, 0, 0), 0.3, Color.BLUE, true)
+	Toolbox3D.draw_sphere(Vector3(0, 1.5, 0), 0.5, Color.BLACK, false, 0.5)
 
 
 	Toolbox3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", 1, Color.GREEN_YELLOW)

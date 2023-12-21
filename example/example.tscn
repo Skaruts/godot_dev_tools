@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dryiod0tautyv"]
+[gd_scene load_steps=9 format=3 uid="uid://dryiod0tautyv"]
 
 [ext_resource type="Script" path="res://example/example.gd" id="1_jmahl"]
 [ext_resource type="Script" path="res://addons/free-look-camera/free_look_camera.gd" id="2_lpa46"]
@@ -21,6 +21,9 @@ glow_enabled = true
 albedo_texture = ExtResource("3_25ovw")
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycg4k"]
+albedo_texture = ExtResource("3_25ovw")
 
 [node name="main" type="Node3D"]
 script = ExtResource("1_jmahl")
@@ -51,3 +54,13 @@ texture = ExtResource("3_25ovw")
 [node name="Icon2" type="Sprite2D" parent="Icon"]
 position = Vector2(128, 126)
 texture = ExtResource("3_25ovw")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="."]
+visible = false
+material_override = SubResource("StandardMaterial3D_ycg4k")
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12397, 0, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_ycg4k")
+rings = 2
