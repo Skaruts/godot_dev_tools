@@ -22,8 +22,8 @@ class Foo:
 
 func _ready() -> void:
 	# you can optionally turn things on at startup
-	Toolbox.enable_info()
-	Toolbox.enable_drawing()
+	Toolbox.monitoring_enable()
+	Toolbox.drawing_enable()
 
 
 	# this will register the listed properties of 'foo', which will
@@ -108,14 +108,14 @@ func drawing_in_2d() -> void:
 
 	Toolbox2D.draw_text(Vector2(260, 200), "Circles", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_circle( filled?, center, axis/radius, color, thickness=1.0, antialiased=false )
-	Toolbox2D.draw_circle(false, Vector2(300, 100), 50, Color.BLUE, 4)
-	Toolbox2D.draw_circle(true, Vector2(300, 100), 20, Color.RED)
+	Toolbox2D.draw_circle(Vector2(300, 100), 50, Color.BLUE, false, 4)
+	Toolbox2D.draw_circle(Vector2(300, 100), 20, Color.RED, true)
 
 
 	Toolbox2D.draw_text(Vector2(420, 200), "Rects", 25, Color.WHITE, true, 10)
 	# Toolbox2D.draw_rect( filled?, rect, color, thickness:=1.0, antialiased=false )
-	Toolbox2D.draw_rect(false, Rect2(400, 50, 100, 100), Color.GREEN_YELLOW, 4)
-	Toolbox2D.draw_rect(true, Rect2(425, 75, 50, 50), Color.GOLD)
+	Toolbox2D.draw_rect(Rect2(400, 50, 100, 100), Color.GREEN_YELLOW, false, 4)
+	Toolbox2D.draw_rect(Rect2(425, 75, 50, 50), Color.GOLD, true)
 
 
 	Toolbox2D.draw_text(Vector2(575, 200), "Arcs", 25, Color.WHITE, true, 10)
@@ -150,12 +150,12 @@ func drawing_in_3d() -> void:
 	var t := Time.get_ticks_msec()*0.001
 
 	# Toolbox3D.draw_text( position, text, color, size=1 )
-	Toolbox3D.draw_text(Vector3(0, 2.2, 0), "Lines", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, 2.2, 0), "Lines", 1, Color.GREEN_YELLOW)
 	# Toolbox.draw_line( p1, p2, color, thickness=1.0 )
 	Toolbox3D.draw_line(Vector3(0, 2, -2), Vector3(0, 2, 2), Color.DARK_RED, 1)
 
 
-	Toolbox3D.draw_text(Vector3(-1, 1.2, 2.5), "Polylines", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(-1, 1.2, 2.5), "Polylines", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_polyline( [points], color, thickness=1.0 )
 	Toolbox3D.draw_polyline( [
 		Vector3(-1, 1, 3), Vector3(-1, 0, 3), Vector3(-1, 0, 2),
@@ -164,46 +164,45 @@ func drawing_in_3d() -> void:
 	], Color.DARK_ORANGE, 2 )
 
 
-	Toolbox3D.draw_text(Vector3(0, 1.2, 0), "Circles", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, 1.2, 0), "Circles", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_circle( filled?, position, axis/radius, color, thickness=1.0 )
 
-	Toolbox3D.draw_circle(false, Vector3(), 1.0,  Vector3(0, cos(t), sin(t)), Color.RED,   2)
-	Toolbox3D.draw_circle(false, Vector3(), 0.75, Vector3(cos(t), 0, sin(t)), Color.GREEN, 2)
-	Toolbox3D.draw_circle(false, Vector3(), 0.5,  Vector3(cos(t), sin(t), 0), Color.BLUE,  2)
+	Toolbox3D.draw_circle(Vector3(), Vector3(0, cos(t), sin(t)).normalized()*1.0, Color.RED,   false, 2)
+	Toolbox3D.draw_circle(Vector3(), Vector3(cos(t), 0, sin(t)).normalized()*0.75, Color.GREEN, false, 2)
+	Toolbox3D.draw_circle(Vector3(), Vector3(cos(t), sin(t), 0).normalized()*0.5, Color.BLUE,  false, 2)
 
-
-	Toolbox3D.draw_text(Vector3(0, 0.2, -0.5), "Spheres", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, 0.2, -0.5), "Spheres", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_sphere( filled?, position, radius, color )
-	Toolbox3D.draw_sphere(true, Vector3(0, 0, 0), 0.3, Color.BLUE)
+	Toolbox3D.draw_sphere(Vector3(0, 0, 0), 0.3, Color.BLUE, true)
 
 
-	Toolbox3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, 0.3, -2.5), "Cubes", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_cube( filled?, position, size, color )
-	Toolbox3D.draw_cube(true, Vector3(0, 0, -2), 0.25, Color.DARK_RED)
+	Toolbox3D.draw_point_cube(Vector3(0, 0, -2), 0.25, Color.DARK_RED, true)
 
 
-	Toolbox3D.draw_text(Vector3(0.75, 0.75, 2), "Vectors", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0.75, 0.75, 2), "Vectors", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_vector( position, direction, color, thickness=1.0 )
 	Toolbox3D.draw_vector(Vector3(1, 0, 1.5), Vector3(0, 2*sin(t), 2*sin(t)), Color.GREEN, 3)
 	Toolbox3D.draw_vector(Vector3(0.5, 0, 1.5), Vector3.UP*cos(t), Color.DARK_RED, 3)
 
 
-	Toolbox3D.draw_text(Vector3(0, -0.2, 0.75), "Origins", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, -0.2, 0.75), "Origins", 1, Color.GREEN_YELLOW)
 	# Toolbox3D.draw_origin( position, size, thickness=1.0 )
 	Toolbox3D.draw_origin(Vector3(), 1, 4)
 
-	Toolbox3D.draw_text(Vector3(0, 1.3, -1.75), "AABBs", Color.GREEN_YELLOW, 1)
+	Toolbox3D.draw_text(Vector3(0, 1.3, -1.75), "AABBs", 1, Color.GREEN_YELLOW)
 	var pos := Vector3(0.1*cos(t), 0, -2+(0.1*sin(t)))
 	var size := Vector3.ONE
 	# Toolbox3D.draw_aabb( position, size, color, thickness=1.0 )
 	Toolbox3D.draw_aabb(AABB(pos, size), Color.DARK_SALMON, 1)
 
 
-	Toolbox3D.draw_text(Vector3(0, 1.3, -4.5), "Transforms", Color.GREEN_YELLOW, 1)
-	# Toolbox3D.draw_transform( node_3d, size, local=false, thickness=1.0 )
+	Toolbox3D.draw_text(Vector3(0, 1.3, -4.5), "Transforms", 1, Color.GREEN_YELLOW)
+	# Toolbox3D.draw_transform( node_3d, local:=false, size:=1.0, thickness=1.0 )
 	$CSGTorus3D.rotate_z(deg_to_rad(1))
 	$CSGTorus3D.rotate_y(deg_to_rad(1))
-	Toolbox3D.draw_transform($CSGTorus3D, 0.5, false, 4)
+	Toolbox3D.draw_transform($CSGTorus3D, true, 0.5, 4)
 
 
 

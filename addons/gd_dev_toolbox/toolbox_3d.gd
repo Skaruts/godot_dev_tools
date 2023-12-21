@@ -216,7 +216,7 @@ func draw_vector(position:Vector3, direction:Vector3, color:Color, thickness:=1.
 ## length of the lines, and line [param thickness] [br]
 ## [br]
 ## [param local] determines whether to use the local or global transform.
-func draw_transform(node:Node3D, local:=false, size:=1, thickness:=1) -> void:
+func draw_transform(node:Node3D, local:=false, size:=1.0, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	var b := node.global_basis if not local else node.basis
 	var o := node.global_position
