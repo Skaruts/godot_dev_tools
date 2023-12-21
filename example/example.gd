@@ -28,7 +28,7 @@ func _ready() -> void:
 
 	# this will register the listed properties of 'foo', which will
 	# be displayed and updated automatically forever, or until you
-	# call Toolbox.unregister().
+	# call Toolbox.unregister(foo).
 	Toolbox.register(foo, ["x", "y"])
 
 	# NOTE: register() should be called only once, in _init, _ready
