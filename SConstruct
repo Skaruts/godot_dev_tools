@@ -23,14 +23,14 @@ if env["platform"] == "windows" and env["target"] == "template_debug":
 
 if env["platform"] == "osx":
 	library = env.SharedLibrary(
-		"addons/tbloader/bin/libtbloader.{}.framework/libtbloader.{}".format(
+		"addons/gd_dev_toolbox/bin/libaddon.{}.framework/libaddon.{}".format(
 			env["platform"], env["platform"]
 		),
 		source=sources,
 	)
 else:
 	library = env.SharedLibrary(
-		"addons/tbloader/bin/tbloader.{}.{}{}".format(
+		"addons/gd_dev_toolbox/bin/addon.{}.{}{}".format(
 			env["platform"], env["arch"], env["SHLIBSUFFIX"]
 		),
 		source=sources,

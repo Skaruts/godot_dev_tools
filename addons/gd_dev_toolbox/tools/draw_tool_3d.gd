@@ -270,9 +270,9 @@ func bulk_cones(cones:Array) -> void:
 func draw_sphere(position:Vector3, color:Color, size:=1.0, filled:=true, thickness:=1.0) -> void:
 	if filled: _add_sphere_filled(position, color, size)
 	else:
-		#Toolbox.benchmark(str(_add_sphere_hollow), 10, 1000, func() -> void:
-		_add_sphere_hollow(position, color, size, thickness)
-		#)
+		Toolbox.benchmark(str(_add_sphere_hollow), 10, 1000, func() -> void:
+			_add_sphere_hollow(position, color, size, thickness)
+		)
 
 
 # points = contiguous Array[Vector3]
@@ -346,13 +346,6 @@ var _base_mat:StandardMaterial3D
 var _fore_mat:StandardMaterial3D
 var _im_base_mat:StandardMaterial3D
 var _im_fore_mat:StandardMaterial3D
-
-
-func _init(_name:Variant=null) -> void:
-	if name:
-		assert(_name is String)  # TODO: or use 'typeof()'?
-		name = "DebugDrawTool3D" if not _name else _name
-#	_create_materials()
 
 
 func _ready() -> void:

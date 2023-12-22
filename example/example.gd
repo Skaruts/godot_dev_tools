@@ -21,6 +21,11 @@ class Foo:
 
 
 func _ready() -> void:
+	#var g := DrawTool3D_GDE.new()
+	#g.init()
+	#print(g.width_factor)
+	#g.width_factor = 1
+
 	# you can optionally turn things on at startup
 	Toolbox.monitoring_enable()
 	Toolbox.drawing_enable()

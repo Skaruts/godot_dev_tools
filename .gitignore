@@ -13,5 +13,6 @@ export_presets.cfg
 
 # User ignores
 *BAK*
-
-
+bin/
+*.obj
+*dblite

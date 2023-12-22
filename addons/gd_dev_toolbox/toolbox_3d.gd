@@ -36,7 +36,11 @@ func _ready() -> void:
 	#print(_ready)
 	add_child(_dt)
 
-	_init_config()
+	var g:Node3D = DrawTool3D_GDE.new() as Node3D
+	add_child(g)
+	_init_config(g)
+
+
 
 	for key:String in _api_lookup:
 		_draw_arrays[key] = []
@@ -44,9 +48,11 @@ func _ready() -> void:
 	set_enabled(_drawing_visible, true)
 
 
-func _init_config() -> void:
+func _init_config(g:DrawTool3D_GDE) -> void:
 	var config: Resource = _data.get_config()
 	if not config: return
+
+	g.init(config)
 
 	_color_x_axis = config.x_axis_color
 	_color_y_axis = config.y_axis_color
