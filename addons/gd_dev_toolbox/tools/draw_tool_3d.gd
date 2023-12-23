@@ -642,13 +642,13 @@ func align_with_y(tr:Transform3D, new_y:Vector3) -> Transform3D:
 func _add_instance_to(mm:MultiMesh) -> int:
 	# the index of a new instance is count-1
 	var idx := mm.visible_instance_count
-	mm.visible_instance_count += 1
 
 	# if the visible count reaches the instance count, then more instances are needed
-	if mm.instance_count <= mm.visible_instance_count:
+	if mm.instance_count <= mm.visible_instance_count+1:
 		# this is enough to make the MultiMesh create more instances internally
 		mm.instance_count += instance_increment
 
+	mm.visible_instance_count += 1
 	return idx
 
 
@@ -680,12 +680,6 @@ func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	#)
 
 func _add_line_cube_(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
-	# I had issues here with 'looking_at', which I can't quite remember,
-	# but I solved somehow. I posted it here:
-	#     https://godotforums.org/d/27860-transform-looking-at-not-working
-	# I found a potentially better solution instead of 'looking_at', used
-	# below, in the cylinder line function
-
 	if _points_are_equal(a, b): return
 
 	var mm:MultiMesh = _mms["cube_lines"]
@@ -703,18 +697,27 @@ func _add_line_cube_(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 
 	if not transform.origin.is_equal_approx(b):
 		var target_direction := a.direction_to(b)
-		transform = transform.looking_at(b,
-			Vector3.UP if abs(target_direction.dot(Vector3.UP)) < _DOT_THRESHOLD
-			else Vector3.BACK
+		var dot := absf(target_direction.dot(Vector3.UP))
+		transform = transform.looking_at(
+			b,
+			Vector3.UP if dot < _DOT_THRESHOLD else Vector3.BACK
 		)
 
-	# TODO: this probably accumulates scaling if this instance was scaled before,
-	#       but I've never seen any issues, so... I could be wrong.
+	# add this, so the lines go slightly over the points and corners look right
+	var corner_fix:float = width_factor * thickness
+
 	transform.basis.x *= thickness
 	transform.basis.y *= thickness
-	transform.basis.z *= a.distance_to(b) + width_factor * thickness
+	transform.basis.z *= a.distance_to(b) + corner_fix
+
+	#transform.basis = transform.basis.scaled(Vector3(
+		#thickness,
+		#thickness,
+		#a.distance_to(b) + corner_fix,
+	#))
 
 	_commit_instance(mm, idx, transform, color)
+
 
 
 func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:

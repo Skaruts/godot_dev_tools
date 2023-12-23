@@ -12,17 +12,23 @@ var _color_y_axis:Color = Color(0.025, 0.31, 0)
 var _color_z_axis:Color = Color(0, 0.10, 1)
 
 #@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
+@onready var _gde_dt3d:Node3D = DrawTool3D_GDE.new() as Node3D
 @onready var _dt:Node = load(_data.DT_3D_PATH).new()
 @onready var _api_lookup := {
-	lines     = _dt.bulk_lines,
-	polylines = _dt.bulk_polylines,
-	cones     = _dt.bulk_cones,
-	circles   = _dt.bulk_circles,
-	spheres   = _dt.bulk_spheres,
-	hollow_spheres   = _dt.bulk_hollow_spheres,
-	cubes     = _dt.bulk_point_cube_faces,
-	aabbs     = _dt.bulk_aabbs,
-	labels    = _dt.bulk_text,
+	lines          = _dt.bulk_lines,
+	polylines      = _dt.bulk_polylines,
+	cones          = _dt.bulk_cones,
+	circles        = _dt.bulk_circles,
+	spheres        = _dt.bulk_spheres,
+	hollow_spheres = _dt.bulk_hollow_spheres,
+	cubes          = _dt.bulk_point_cube_faces,
+	aabbs          = _dt.bulk_aabbs,
+	labels         = _dt.bulk_text,
+
+	lines_dge            = _gde_dt3d.bulk_lines,
+	polylines_dge        = _gde_dt3d.bulk_polylines,
+	spheres_dge          = _gde_dt3d.bulk_spheres,
+	hollow_spheres_dge   = _gde_dt3d.bulk_hollow_spheres,
 }
 
 
@@ -36,10 +42,9 @@ func _ready() -> void:
 	#print(_ready)
 	add_child(_dt)
 
-	var g:Node3D = DrawTool3D_GDE.new() as Node3D
-	add_child(g)
-	_init_config(g)
 
+	add_child(_gde_dt3d)
+	_init_config()
 
 
 	for key:String in _api_lookup:
@@ -48,11 +53,11 @@ func _ready() -> void:
 	set_enabled(_drawing_visible, true)
 
 
-func _init_config(g:DrawTool3D_GDE) -> void:
+func _init_config() -> void:
 	var config: Resource = _data.get_config()
 	if not config: return
 
-	g.init(config)
+	_gde_dt3d.init(config)
 
 	_color_x_axis = config.x_axis_color
 	_color_y_axis = config.y_axis_color
@@ -69,14 +74,16 @@ func _input(event: InputEvent) -> void:
 
 func _process(_delta: float) -> void:
 	assert(_drawing_visible == true)
-	#Toolbox.print_bm(str(_process), func() -> void:
-	_redraw()
-	_clean_up()
-	#, {precision=2})
+	Toolbox.print_bm(str(_process), func() -> void:
+		_redraw()
+		_clean_up()
+	, {precision=2})
 
 
 func _redraw() -> void:
 	_dt.clear()
+	_gde_dt3d.clear()
+
 
 	for key:String in _draw_arrays:
 		_api_lookup[key].call(_draw_arrays[key])
@@ -125,6 +132,10 @@ func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0) -> void:
 	_draw_arrays["lines"].append([start, end, color, thickness])
 	#_dt.line(	start, end, color, thickness)
 
+func draw_line2(start:Vector3, end:Vector3, color:Color, thickness:=1.0) -> void:
+	if not _drawing_visible: return
+	_draw_arrays["lines_dge"].append([start, end, color, thickness])
+	#_dt.line(	start, end, color, thickness)
 
 ## Draws multiple line segments connected by the given [param points], using
 ## the given [param color] and line [param thickness]. [br]
@@ -137,6 +148,12 @@ func draw_polyline(points:Array, color:Variant, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	if color is Array: assert(color.size() == points.size())
 	_draw_arrays["polylines"].append([points, color, thickness])
+
+func draw_polyline2(points:Array, color:Variant, thickness:=1.0) -> void:
+	if not _drawing_visible: return
+	if color is Array: assert(color.size() == points.size())
+	_draw_arrays["polylines_gde"].append([points, color, thickness])
+
 
 
 ## [param TODO: this must be changed. Points vs cubes/spheres]
@@ -170,6 +187,13 @@ func draw_sphere(position:Vector3, size:float, color:Color, filled:=false, thick
 	else:
 		_draw_arrays["hollow_spheres"].append([position, color, size, filled, thickness])
 
+@warning_ignore("shadowed_variable_base_class")
+func draw_sphere2(position:Vector3, size:float, color:Color, filled:=false, thickness:=1.0) -> void:
+	if not _drawing_visible: return
+	#if filled:
+		#_draw_arrays["spheres_dge"].append([position, color, size, filled, thickness])
+	#else:
+	_draw_arrays["hollow_spheres_dge"].append([position, color, size, false, thickness])
 
 
 ## Draws a circle at [param position], using the given [param color] and line

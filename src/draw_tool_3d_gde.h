@@ -11,6 +11,7 @@
 #include <godot_cpp/classes/standard_material3d.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
 #include <godot_cpp/classes/multi_mesh.hpp>
+#include <godot_cpp/classes/label3d.hpp>
 // #include <godot_cpp/classes/control.hpp>
 // #include <godot_cpp/classes/config_file.hpp>
 // #include <godot_cpp/variant/dictionary.hpp>
@@ -23,7 +24,7 @@
 
 using namespace godot;
 
-#define _DOT_THRESHOLD 0.999
+
 
 class DrawTool3D_GDE : public Node3D {
 	GDCLASS(DrawTool3D_GDE, Node3D);
@@ -33,7 +34,7 @@ private:
 	// uint32_t  m_visual_layer_mask      = 1;
 	// Ref<Dictionary> m_config;
 	Dictionary _mms;    // MultiMeshes
-	ImmediateMesh _im;
+	Ref<ImmediateMesh> _im;
 
 	bool _use_cylinders_for_lines = false;  // my cylinders code is not working in Godot 4
 
@@ -98,6 +99,22 @@ private:
 	Ref<MultiMesh> _init_cube_mesh(Ref<StandardMaterial3D> mat);
 	Ref<MultiMesh> _init_sphere_mesh(Ref<StandardMaterial3D> mat);
 
+	Transform3D _align_with_y(Transform3D tr, Vector3 new_y);
+	bool _points_are_equal(Vector3 a, Vector3 b);
+	int _add_instance_to(Ref<MultiMesh> mm);
+	void _commit_instance(Ref<MultiMesh> mm, int idx, Transform3D transform, Color color);
+	void _add_line(Vector3 a, Vector3 b, Color color, float thickness);
+	void _add_line_cube(Vector3 a, Vector3 b, Color color, float thickness);
+	void _add_cone(Vector3 position, Vector3 direction, Color color, float thickness);
+	void _add_sphere_filled(Vector3 position, Color color, float size);
+	void _add_sphere_hollow(Vector3 position, Color color, float diameter, float thickness);
+	void _add_cube(Vector3 position, Vector3 size, Color color);
+
+	Label3D* _create_new_label(bool fixed_size);
+	void _clear_labels();
+	void _add_label(Vector3 position, String string, Color color, float size, bool fixed_size);
+
+
 public:
 	DrawTool3D_GDE();
 	~DrawTool3D_GDE();
@@ -107,9 +124,17 @@ public:
 	void init(Ref<Resource> config);
 	void clear();
 
-	void set_width_factor(float n);
-	float get_width_factor();
+	void draw_line(Vector3 a, Vector3 b, Color color, float thickness);
+	void bulk_lines(Array lines);
 
+	void draw_polyline(Array points, Variant color, float thickness);
+	void bulk_polylines(Array polylines);
 
+	void draw_sphere(Vector3 position, Color color, float size, bool filled, float thickness);
+	void batch_pheres(Array points, Variant color, float size, bool filled, float thickness);
+	void bulk_spheres(Array points);
+	void bulk_hollow_spheres(Array points);
+	// void test1(int i);
+	// void test1(String foo);
 
 };
