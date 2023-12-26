@@ -1,9 +1,0 @@
-[gd_scene load_steps=3 format=3 uid="uid://c3r7sfcsrd2a7"]
-
-[ext_resource type="Script" path="res://addons/gd_dev_toolbox/toolbox.gd" id="1_aj6jm"]
-[ext_resource type="PackedScene" uid="uid://bvy0x88a1qcxv" path="res://addons/gd_dev_toolbox/tools/info_tool.tscn" id="2_155af"]
-
-[node name="DevTools" type="Node"]
-script = ExtResource("1_aj6jm")
-
-[node name="info_tool" parent="." instance=ExtResource("2_155af")]

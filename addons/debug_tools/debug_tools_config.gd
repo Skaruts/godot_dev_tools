@@ -1,7 +1,7 @@
-class_name ToolboxConfig
+class_name DebugToolsConfig
 extends Resource
 
-## The configuration file for the Godot Dev Tools Addon
+## The configuration file for the Debug Tools Addon
 
 
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
@@ -16,7 +16,7 @@ extends Resource
 @export var info_tool_layer := 128
 
 ## The CanvasLayer the 2D drawing tool uses. Keep it high enough so the tool
-## can draw over everything else, except the Toolbox tools that rely on
+## can draw over everything else, except the debug tools that rely on
 ## GUI elements, like the info panel.
 @export var drawing_tool_layer := 125
 

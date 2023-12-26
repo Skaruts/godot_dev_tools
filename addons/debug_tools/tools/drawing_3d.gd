@@ -270,7 +270,7 @@ func bulk_cones(cones:Array) -> void:
 func draw_sphere(position:Vector3, color:Color, size:=1.0, filled:=true, thickness:=1.0) -> void:
 	if filled: _add_sphere_filled(position, color, size)
 	else:
-		Toolbox.benchmark(str(_add_sphere_hollow), 10, 1000, func() -> void:
+		debug.benchmark(str(_add_sphere_hollow), 10, 1000, func() -> void:
 			_add_sphere_hollow(position, color, size, thickness)
 		)
 
@@ -362,7 +362,7 @@ func _ready() -> void:
 
 
 func _init_config() -> void:
-	var data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
+	var data: Resource = load("res://addons/debug_tools/shared.gd")
 	var config: Resource = data.get_config()
 	if not config: return
 
@@ -676,7 +676,7 @@ func _points_are_equal(a:Vector3, b:Vector3) -> bool:
 
 
 func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
-	#Toolbox.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
+	#debug.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
 		_add_line_cube_(a, b, color, thickness)
 	#)
 

@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=3 uid="uid://bvy0x88a1qcxv"]
 
-[ext_resource type="StyleBox" uid="uid://do2uw4dfnyi88" path="res://addons/gd_dev_toolbox/bg.tres" id="1_de4x1"]
-[ext_resource type="Script" path="res://addons/gd_dev_toolbox/tools/info_tool.gd" id="1_kgxg4"]
+[ext_resource type="StyleBox" uid="uid://do2uw4dfnyi88" path="res://addons/debug_tools/bg.tres" id="1_de4x1"]
+[ext_resource type="Script" path="res://addons/debug_tools/tools/monitoring_tool.gd" id="1_kgxg4"]
 
-[node name="info_tool" type="CanvasLayer"]
+[node name="monitoring_tool" type="CanvasLayer"]
 layer = 128
 script = ExtResource("1_kgxg4")
 

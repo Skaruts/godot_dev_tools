@@ -1,8 +1,0 @@
-[configuration]
-entry_symbol = "draw_tool_3d_init"
-compatibility_minimum = "4.1"
-
-[libraries]
-windows.64 = "bin/addon.windows.x86_64.dll"
-linux.64 = "bin/lib_addon.linux.x86_64.so"
-macos.64 = "bin/lib_addon.macos.universal.dylib"

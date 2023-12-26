@@ -3,7 +3,7 @@ extends CanvasLayer
 ## An API for easily drawing 2D shapes.
 
 
-var _data: Resource = load("res://addons/gd_dev_toolbox/shared.gd")
+var _data: Resource = load("res://addons/debug_tools/shared.gd")
 
 var _drawing_visible := false
 
@@ -33,8 +33,8 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
 
-	if InputMap.has_action("dev_tools_2d_drawing"):
-		if event.is_action_pressed("dev_tools_2d_drawing"):
+	if InputMap.has_action(_data.INPUT_ACTION_2D_DRAWING):
+		if event.is_action_pressed(_data.INPUT_ACTION_2D_DRAWING):
 			toggle()
 
 
@@ -157,7 +157,7 @@ func draw_transform(node:Node2D, size:float, local:=false, thickness:=1.0, antia
 	draw_line(o, o+t.y.normalized()*size, Color.GREEN,             thickness, antialiased)
 	#draw_vector(o, t.x*size, Color.RED,             thickness, antialiased)
 	#draw_vector(o, t.y*size, Color.GREEN,           thickness, antialiased)
-
+#
 
 	#draw_vector(b, c, color, thickness, antialiased)
 

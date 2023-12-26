@@ -21,9 +21,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Toolbox="*res://addons/gd_dev_toolbox/toolbox.tscn"
-Toolbox2D="*res://addons/gd_dev_toolbox/toolbox_2d.gd"
-Toolbox3D="*res://addons/gd_dev_toolbox/toolbox_3d.gd"
+debug="*res://addons/debug_tools/debug.tscn"
+debug2d="*res://addons/debug_tools/debug_2d.gd"
+debug3d="*res://addons/debug_tools/debug_3d.gd"
 
 [debug]
 
@@ -36,7 +36,7 @@ window/size/always_on_top=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gd_dev_toolbox/plugin.cfg", "res://addons/plugin_refresher/plugin.cfg")
+enabled=PackedStringArray("res://addons/debug_tools/plugin.cfg", "res://addons/plugin_refresher/plugin.cfg")
 
 [input]
 
