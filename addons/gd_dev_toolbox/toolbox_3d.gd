@@ -10,6 +10,10 @@ var _drawing_visible := false
 var _color_x_axis:Color = Color(0.72, 0.02, 0.02)
 var _color_y_axis:Color = Color(0.025, 0.31, 0)
 var _color_z_axis:Color = Color(0, 0.10, 1)
+var _color_x_axis_neg:Color
+var _color_y_axis_neg:Color
+var _color_z_axis_neg:Color
+
 
 #@onready var _dt :Node3D = preload("res://to_plugin/draw_tool_3d.gd").new()
 @onready var _gde_dt3d:Node3D = DrawTool3D_GDE.new() as Node3D
@@ -25,10 +29,12 @@ var _color_z_axis:Color = Color(0, 0.10, 1)
 	aabbs          = _dt.bulk_aabbs,
 	labels         = _dt.bulk_text,
 
-	lines_dge            = _gde_dt3d.bulk_lines,
-	polylines_dge        = _gde_dt3d.bulk_polylines,
-	spheres_dge          = _gde_dt3d.bulk_spheres,
-	hollow_spheres_dge   = _gde_dt3d.bulk_hollow_spheres,
+	lines_gde            = _gde_dt3d.bulk_lines,
+	polylines_gde        = _gde_dt3d.bulk_polylines,
+	cones_gde            = _gde_dt3d.bulk_cones,
+	spheres_gde          = _gde_dt3d.bulk_spheres,
+	hollow_spheres_gde   = _gde_dt3d.bulk_hollow_spheres,
+
 }
 
 
@@ -63,6 +69,12 @@ func _init_config() -> void:
 	_color_y_axis = config.y_axis_color
 	_color_z_axis = config.z_axis_color
 
+	var negative_darken_factor = config.negative_darken_factor
+
+	_color_x_axis_neg = _color_x_axis.darkened(negative_darken_factor)
+	_color_y_axis_neg = _color_y_axis.darkened(negative_darken_factor)
+	_color_z_axis_neg = _color_z_axis.darkened(negative_darken_factor)
+
 
 func _input(event: InputEvent) -> void:
 	if not event is InputEventKey: return
@@ -84,9 +96,26 @@ func _redraw() -> void:
 	_dt.clear()
 	_gde_dt3d.clear()
 
+	#for key:String in _draw_arrays:
+		#_api_lookup[key].call(_draw_arrays[key])
 
-	for key:String in _draw_arrays:
-		_api_lookup[key].call(_draw_arrays[key])
+	_dt.bulk_lines(_draw_arrays["lines"])
+	_dt.bulk_polylines(_draw_arrays["polylines"])
+	_dt.bulk_cones(_draw_arrays["cones"])
+	_dt.bulk_circles(_draw_arrays["circles"])
+	_dt.bulk_spheres(_draw_arrays["spheres"])
+	_dt.bulk_hollow_spheres(_draw_arrays["hollow_spheres"])
+	_dt.bulk_point_cube_faces(_draw_arrays["cubes"])
+	_dt.bulk_aabbs(_draw_arrays["aabbs"])
+	_dt.bulk_text(_draw_arrays["labels"])
+
+	Toolbox.print_bm(str("gde ports"), func() -> void:
+		_gde_dt3d.bulk_lines(_draw_arrays["lines_gde"])
+		_gde_dt3d.bulk_polylines(_draw_arrays["polylines_gde"])
+		_gde_dt3d.bulk_hollow_spheres(_draw_arrays["hollow_spheres_gde"])
+		_gde_dt3d.bulk_spheres(_draw_arrays["spheres_gde"])
+		_gde_dt3d.bulk_cones(_draw_arrays["cones_gde"])
+	, {precision=2})
 
 
 func _clean_up() -> void:
@@ -134,7 +163,7 @@ func draw_line(start:Vector3, end:Vector3, color:Color, thickness:=1.0) -> void:
 
 func draw_line2(start:Vector3, end:Vector3, color:Color, thickness:=1.0) -> void:
 	if not _drawing_visible: return
-	_draw_arrays["lines_dge"].append([start, end, color, thickness])
+	_draw_arrays["lines_gde"].append([start, end, color, thickness])
 	#_dt.line(	start, end, color, thickness)
 
 ## Draws multiple line segments connected by the given [param points], using
@@ -191,9 +220,9 @@ func draw_sphere(position:Vector3, size:float, color:Color, filled:=false, thick
 func draw_sphere2(position:Vector3, size:float, color:Color, filled:=false, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	#if filled:
-		#_draw_arrays["spheres_dge"].append([position, color, size, filled, thickness])
+		#_draw_arrays["spheres_gde"].append([position, color, size, filled, thickness])
 	#else:
-	_draw_arrays["hollow_spheres_dge"].append([position, color, size, false, thickness])
+	_draw_arrays["hollow_spheres_gde"].append([position, color, size, false, thickness])
 
 
 ## Draws a circle at [param position], using the given [param color] and line
@@ -227,7 +256,8 @@ func draw_text(position:Vector3, text:String, size:float, color:Color, fixed_siz
 func draw_cone(position:Vector3, direction:Vector3, color:Color, filled:=false, thickness:=1.0) -> void:
 	if not _drawing_visible: return
 	#if filled:
-	_draw_arrays["cones"].append([position, direction, color, thickness])
+	#_draw_arrays["cones"].append([position, direction, color, thickness])
+	_draw_arrays["cones_gde"].append([position, direction, color, thickness])
 	#else:
 	#_draw_arrays["wire_cones"].append([position, direction, color, thickness])
 
@@ -262,8 +292,13 @@ func draw_transform(node:Node3D, local:=false, size:=1.0, thickness:=1.0) -> voi
 ## origin, using the given [param size] for the length of the lines, and
 ## line [param thickness].
 @warning_ignore("shadowed_variable_base_class")
-func draw_origin(position:Vector3, size:=1.0, thickness:=1.0) -> void:
+func draw_origin(position:Vector3, size:=1.0, thickness:=1.0, draw_negative:=true) -> void:
 	if not _drawing_visible: return
 	draw_line(position, Vector3.RIGHT*size, _color_x_axis, thickness)
 	draw_line(position, Vector3.UP*size, _color_y_axis, thickness)
 	draw_line(position, Vector3.BACK*size, _color_z_axis, thickness)
+
+	if draw_negative:
+		draw_line(position, -Vector3.RIGHT*size, _color_x_axis.darkened(0.75), thickness)
+		draw_line(position, -Vector3.UP*size,    _color_y_axis.darkened(0.75), thickness)
+		draw_line(position, -Vector3.BACK*size,  _color_z_axis.darkened(0.75), thickness)

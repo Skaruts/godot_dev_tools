@@ -198,6 +198,9 @@ extends Resource
 ## The color used for lines that represent the Z axis (in transforms, origins, etc)
 @export var z_axis_color := Color(0, 0.10, 1)
 
+## How much to darken the axis colors when drawing the negative side of an origin.
+@export var negative_darken_factor := 0.75
+
 
 
 

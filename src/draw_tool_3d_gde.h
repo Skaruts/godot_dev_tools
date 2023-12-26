@@ -132,6 +132,8 @@ public:
 
 	void draw_sphere(Vector3 position, Color color, float size, bool filled, float thickness);
 	void batch_pheres(Array points, Variant color, float size, bool filled, float thickness);
+	void draw_cone(Vector3 position, Vector3 direction, Color color, float thickness);
+	void bulk_cones(Array cones);
 	void bulk_spheres(Array points);
 	void bulk_hollow_spheres(Array points);
 	// void test1(int i);

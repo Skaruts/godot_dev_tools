@@ -52,6 +52,8 @@ void DrawTool3D_GDE::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("bulk_spheres", "points"), &DrawTool3D_GDE::bulk_spheres);
 	ClassDB::bind_method(D_METHOD("bulk_hollow_spheres", "points"), &DrawTool3D_GDE::bulk_hollow_spheres);
 
+	ClassDB::bind_method(D_METHOD("draw_cone", "position", "direction", "color", "thickness"), &DrawTool3D_GDE::draw_cone);
+	ClassDB::bind_method(D_METHOD("bulk_cones", "cones"), &DrawTool3D_GDE::bulk_cones);
 
 	// ClassDB::bind_static_method("DrawTool3D_GDE", D_METHOD(
 	// 	"_create_arc_points", "position", "axis", "arc_angle", "num_segments", "start_angle"),
@@ -281,12 +283,12 @@ Transform3D DrawTool3D_GDE::_align_with_y(Transform3D tr, Vector3 new_y) {
 	float dot = new_y.dot(VECTOR3_FORWARD);
 
 	if (dot == -1 || dot == 1) {
-		tr.basis[1] = new_y;
-		tr.basis[2] = tr.basis[0].cross(new_y);
+		tr.basis.get_column(1) = new_y;
+		tr.basis.get_column(2) = tr.basis.get_column(0).cross(new_y);
 		tr.basis = tr.basis.orthonormalized();
 	} else {
-		tr.basis[1] = new_y;
-		tr.basis[0] = -tr.basis[2].cross(new_y);
+		tr.basis.get_column(1) = new_y;
+		tr.basis.get_column(0) = -tr.basis.get_column(2).cross(new_y);
 		tr.basis = tr.basis.orthonormalized();
 	}
 	return tr;
@@ -361,9 +363,14 @@ void DrawTool3D_GDE::_add_line_cube(Vector3 a, Vector3 b, Color color, float thi
 		thickness,
 		thickness,
 		a.distance_to(b) + corner_fix
-	)
+	);
+	// transform.basis = transform.basis.scaled(sc);
+	// transform = transform.scaled(sc);
+	transform = transform.scaled_local(sc);
 
-	transform.basis = transform.basis.scaled(sc);
+	// transform.basis = transform.basis.transposed();
+	// UtilityFunctions::printt(transform);
+	// UtilityFunctions::printt(transform.basis[0]);
 	// transform.basis[0] *= thickness;
 	// transform.basis[1] *= thickness;
 	// transform.basis[2] *= a.distance_to(b) + corner_fix;
@@ -377,11 +384,20 @@ void DrawTool3D_GDE::_add_cone(Vector3 position, Vector3 direction, Color color,
 	Ref<MultiMesh> mm = _mms["cones"];
 
 	int idx = _add_instance_to(mm);
-	// Transform3D* transform = memnew(Transform3D());
+
 	Transform3D transform = mm->get_instance_transform(idx).orthonormalized();
 	transform.origin = position;
-	transform = _align_with_y(transform, direction);
-	transform.basis = transform.basis.scaled(VECTOR3_ONE * thickness);
+
+	Vector3 b = position+direction;
+
+	if (!transform.origin.is_equal_approx(b)) {
+		Vector3 target_direction = position.direction_to(b);
+		float dot = Math::absf(target_direction.dot(VECTOR3_UP));
+		transform = transform.looking_at(b, dot < _DOT_THRESHOLD ? VECTOR3_UP : VECTOR3_BACK);
+	}
+
+	transform = transform.rotated_local(VECTOR3_RIGHT, Math::deg_to_rad(-90.0));
+	transform = transform.scaled_local(VECTOR3_ONE * thickness);
 
 	_commit_instance(mm, idx, transform, color);
 }
@@ -553,6 +569,17 @@ void DrawTool3D_GDE::bulk_polylines(Array polylines) {
 
 
 
+void DrawTool3D_GDE::draw_cone(Vector3 position, Vector3 direction, Color color, float thickness) {
+	_add_cone(position, direction, color, thickness);
+}
+
+// cones = array of arrays: [position, direction, color, thickness]
+void DrawTool3D_GDE::bulk_cones(Array cones) {
+	for (int i = 0; i < cones.size(); i++) {
+		Array c = cones[i];
+		_add_cone(c[0], c[1], c[2], c[3]);
+	}
+}
 
 
 

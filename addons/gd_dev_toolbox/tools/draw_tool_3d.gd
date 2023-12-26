@@ -335,7 +335,7 @@ const _DOT_THRESHOLD := 0.999
 var _mms:Dictionary    # MultiMeshes
 var _im:ImmediateMesh
 
-var _use_cylinders_for_lines := false  # my cylinders code is not working in Godot 4
+var _use_cylinders_for_lines := true  # my cylinders code is not working in Godot 4
 
 var _labels:Array[Label3D]
 var _label_nodes:Node3D
@@ -674,6 +674,7 @@ func _points_are_equal(a:Vector3, b:Vector3) -> bool:
 #	push_warning("points 'a' and 'b' are the same: %s == %s" % [a, b])
 	return true
 
+
 func _add_line_cube(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	#Toolbox.benchmark(str(_add_line_cube_), 10, 10000, func() -> void:
 		_add_line_cube_(a, b, color, thickness)
@@ -691,30 +692,23 @@ func _add_line_cube_(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> void:
 	# if transform is to be orthonormalized, do it here before applying any
 	# scaling, or it will revert the scaling
 	@warning_ignore("shadowed_variable_base_class")
-	#var transform := Transform3D()
 	var transform := mm.get_instance_transform(idx).orthonormalized()
 	transform.origin = (a+b)/2
 
 	if not transform.origin.is_equal_approx(b):
-		var target_direction := a.direction_to(b)
-		var dot := absf(target_direction.dot(Vector3.UP))
-		transform = transform.looking_at(
-			b,
-			Vector3.UP if dot < _DOT_THRESHOLD else Vector3.BACK
-		)
+		var up_vec := Vector3.UP
+		if absf(a.direction_to(b).dot(Vector3.UP)) > _DOT_THRESHOLD:
+			up_vec = Vector3.BACK
+		transform = transform.looking_at(b, up_vec )
 
 	# add this, so the lines go slightly over the points and corners look right
 	var corner_fix:float = width_factor * thickness
 
-	transform.basis.x *= thickness
-	transform.basis.y *= thickness
-	transform.basis.z *= a.distance_to(b) + corner_fix
-
-	#transform.basis = transform.basis.scaled(Vector3(
-		#thickness,
-		#thickness,
-		#a.distance_to(b) + corner_fix,
-	#))
+	transform = transform.scaled_local(Vector3(
+		thickness,
+		thickness,
+		a.distance_to(b) + corner_fix,
+	))
 
 	_commit_instance(mm, idx, transform, color)
 
@@ -730,26 +724,19 @@ func _add_line_cylinder(a:Vector3, b:Vector3, color:Color, thickness:=1.0) -> vo
 	var transform := Transform3D() # mm.get_instance_transform(idx).orthonormalized()
 	transform.origin = (a+b)/2
 
-	#var target_direction := (b-transform.origin).normalized()
-	var target_direction := a.direction_to(b)
 	if not transform.origin.is_equal_approx(b):
-		transform = align_with_y(transform, target_direction)
+		var up_vec := Vector3.UP
+		if absf(a.direction_to(b).dot(Vector3.UP)) > _DOT_THRESHOLD:
+			up_vec = Vector3.BACK
+		transform = transform.looking_at(b, up_vec )
 
-	#	printt("target_direction", target_direction, b)
-#	transform = transform.looking_at(b,
-#		Vector3.BACK if abs(target_direction.dot(Vector3.FORWARD)) < _DOT_THRESHOLD
-#		else Vector3.UP
-#	)
-
-	#	var dot = abs(target_direction.dot(axis))
-	#	if dot > 0.9:
-	#		print("I WAS HERE") # this seems to never run
-	#		cross = axis.cross(Vector3.UP) * radius
-
-
-	transform.basis.x *= thickness
-	transform.basis.y *= a.distance_to(b) # + width_factor * thickness # stretch the Y instead
-	transform.basis.z *= thickness
+	var corner_fix:float = width_factor * thickness
+	transform = transform.rotated_local(Vector3.RIGHT, deg_to_rad(-90));
+	transform = transform.scaled_local(Vector3(
+		thickness,
+		a.distance_to(b) + corner_fix,
+		thickness
+	));
 
 	_commit_instance(mm, idx, transform, color)
 
@@ -762,12 +749,17 @@ func _add_cone(position:Vector3, direction:Vector3, color:Color, thickness:=1.0)
 	var transform := Transform3D()
 	transform.origin = position
 
-	transform = align_with_y(transform, direction)
-	#transform.basis = transform.basis.scaled(direction)
-	transform.basis = transform.basis.scaled(Vector3.ONE * thickness)
-	#transform.basis = transform.basis.scaled(Vector3(1, 3, 1))
-	#transform.basis = transform.basis.scaled((Vector3(thickness, length, thickness)).direction_to(position+direction))
+	var a := position
+	var b := position+direction
 
+	if not transform.origin.is_equal_approx(b):
+		var up_vec := Vector3.UP
+		if absf(a.direction_to(b).dot(Vector3.UP)) > _DOT_THRESHOLD:
+			up_vec = Vector3.BACK
+		transform = transform.looking_at(b, up_vec)
+
+	transform = transform.rotated_local(Vector3.RIGHT, deg_to_rad(-90));
+	transform = transform.scaled_local(Vector3.ONE * thickness);
 
 	_commit_instance(mm, idx, transform, color)
 
@@ -786,7 +778,31 @@ func _add_sphere_filled(position:Vector3, color:Color, size:=1.0) -> void:
 	_commit_instance(mm, idx, transform, color)
 
 
+
 func _add_sphere_hollow(position:Vector3, color:Color, diameter:=1.0, thickness:=1.0) -> void:
+	var radius := diameter/2.0
+	#var meridian_points := _create_circle_points(position, Vector3.RIGHT*radius, hollow_sphere_rings*2, 90)
+	#meridian_points.resize(meridian_points.size()/2.0)   # only interested in half of the circle here
+
+	var pts := _create_arc_points(position, Vector3.UP*radius, 360, 16, 90, false)
+	draw_polyline(pts, color, thickness)
+	#draw_circle(position, Vector3.UP*radius, color, thickness, 16)
+
+	var num_segments := 4
+	var angle := 360/num_segments
+
+	for i in num_segments/2:
+		var direction := Vector3.RIGHT.rotated(Vector3.UP, deg_to_rad(i * angle))
+		var points := _create_arc_points(position, direction*radius, 360, 16, 90, false)
+		#draw_circle(position, direction*radius, Color.GREEN, thickness)
+		draw_polyline(points, color, thickness)
+
+
+
+
+
+
+func _add_sphere_hollow2(position:Vector3, color:Color, diameter:=1.0, thickness:=1.0) -> void:
 	var radius := diameter/2.0
 	var meridian_points := _create_circle_points(position, Vector3.RIGHT*radius, hollow_sphere_rings*2, 90)
 	meridian_points.resize(meridian_points.size()/2.0)   # only interested in half of the circle here

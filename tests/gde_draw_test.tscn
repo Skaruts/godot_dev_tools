@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dr88i6c08deum"]
+[gd_scene load_steps=10 format=3 uid="uid://dr88i6c08deum"]
 
 [ext_resource type="Script" path="res://tests/gde_draw_test.gd" id="1_vq8sh"]
 [ext_resource type="Script" path="res://addons/free-look-camera/free_look_camera.gd" id="2_nck73"]
@@ -20,6 +20,12 @@ glow_enabled = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5prr1"]
 albedo_texture = ExtResource("2_qdolk")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_afup0"]
+albedo_texture = ExtResource("2_qdolk")
+uv1_triplanar = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sv4va"]
+
 [node name="gde_draw_test" type="Node3D"]
 script = ExtResource("1_vq8sh")
 
@@ -35,55 +41,75 @@ transform = Transform3D(0.894811, -0.190782, 0.403628, 0.0513696, 0.942087, 0.33
 script = ExtResource("2_nck73")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.5, 0.5, 0.5)
 
+[node name="CSGBox3D12" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+visible = false
+material_override = SubResource("StandardMaterial3D_afup0")
+size = Vector3(10, 0.5, 10)
+
 [node name="CSGBox3D2" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 1)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D8" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, -2)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D10" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -2)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D11" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D6" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -2)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 2)
+visible = false
 material_override = SubResource("StandardMaterial3D_5prr1")
 size = Vector3(0.1, 0.1, 0.1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_sv4va")

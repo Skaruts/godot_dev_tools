@@ -8,6 +8,10 @@
 
 config_version=5
 
+[DevToolbox]
+
+test_settings/foooo=0
+
 [application]
 
 config/name="[PLUGIN] Godot Dev Toolbox"
@@ -25,6 +29,10 @@ Toolbox3D="*res://addons/gd_dev_toolbox/toolbox_3d.gd"
 
 gdscript/warnings/untyped_declaration=2
 gdscript/warnings/int_as_enum_without_match=2
+
+[display]
+
+window/size/always_on_top=true
 
 [editor_plugins]
 
